@@ -1,16 +1,33 @@
+# Dependencies and local npm cache
 node_modules/
+.npm/
+
+# Build output and tool caches
 dist/
 coverage/
 .cache/
 .vite/
+.vite-temp/
 *.tsbuildinfo
+
+# Logs and diagnostic reports
 *.log
+report.*.json
+
+# Local environment configuration
 .env
 .env.*
 !.env.example
+
+# Operating system metadata
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# Local editor settings and temporary files
 .idea/
+*.swp
+*.swo
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

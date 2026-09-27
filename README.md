@@ -52,4 +52,4 @@ Reserved folders contain ownership notes, not working libraries. Add their packa
 
 ## Repository status
 
-Local Git repository; no remote or deployment is configured. Packages are private and no distribution license has been selected. Decide licensing before publishing. The original engine is not a dependency.
+The Git repository has a configured GitHub remote; no deployment configuration is included. Packages are private and no distribution license has been selected. Decide licensing before publishing. The original engine is not a dependency.

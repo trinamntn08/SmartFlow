@@ -150,28 +150,28 @@ Start with graphs without cycles. Loops, persistent state, streaming, and time-b
 
 Keep the graph format and execution logic independent of the interface.
 
+Arrows below indicate permitted import dependencies, not runtime data flow. The application composes bundled extensions through their public interfaces, following the [architecture boundaries](../architecture/README.md).
+
 ```mermaid
 flowchart TB
-    UI["Workspace UI<br/>Graph · Inspector · Viewers"]
+    UI["Web application / composition root<br/>Graph · Inspector · Viewers"]
     CORE["Core model<br/>Projects · Types · Validation · Commands"]
     RUN["Execution runtime<br/>Scheduling · Results · Cancellation"]
     API["Extension interfaces<br/>Types · Nodes · Views · Execution adapters"]
     THREE["Included 3D package<br/>Scenes · Geometry · Materials · Viewport"]
     OTHER["Additional domain packages<br/>Data · Images · Text · Other fields"]
-    BROWSER["Browser worker"]
-    LOCAL["Local process"]
-    REMOTE["Remote worker"]
-
-    UI <--> CORE
-    CORE <--> RUN
+    UI --> CORE
+    UI --> API
+    UI --> RUN
+    UI --> THREE
+    UI --> OTHER
+    RUN --> CORE
+    RUN --> API
+    THREE --> CORE
     THREE --> API
+    OTHER --> CORE
     OTHER --> API
-    API --> UI
     API --> CORE
-    API --> RUN
-    RUN --> BROWSER
-    RUN --> LOCAL
-    RUN --> REMOTE
 ```
 
 These boundaries allow:
@@ -185,7 +185,7 @@ These boundaries allow:
 
 Store large outputs separately from the graph. The project references images, geometry, and other assets rather than embedding every runtime result into its document.
 
-The diagram describes the intended architecture, not a requirement to implement all execution environments in the first release.
+The diagram describes planned package dependencies. Execution backends communicate through explicit adapter contracts; browser workers, local processes, and remote workers are possible implementations, not required first-release packages. Core has no dependency on the SDK, runtime, application, or concrete extensions. The SDK depends only on core.
 
 ## 6. Desktop and web strategy
 

@@ -29,6 +29,8 @@ npm run check
 
 This runs Prettier, strict TypeScript, and a Vite production build. Output is in `apps/web/dist`, which is ignored by Git. Use `npm run preview` to serve it on port 4173.
 
+The web workspace checks browser source with `apps/web/tsconfig.json` (DOM and Vite client types) and Vite tooling with `apps/web/tsconfig.node.json` (Node types). Keep browser source under `src` and include additional Node tooling files in the tooling configuration so each environment is checked separately.
+
 There is no graph runtime or feature test suite yet. Add a test runner and behavior tests with the first implementation slice; do not use a passing empty test command as evidence of correctness. Test graph validation, parameter invalidation, cancellation, persistence, and missing extensions as those features arrive.
 
 ## Editor
