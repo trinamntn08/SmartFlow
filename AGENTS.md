@@ -2,7 +2,7 @@
 
 ## Start here
 
-Read `README.md`, `docs/ROADMAP.md`, and the documentation for the area being changed. Read `docs/product/VisualWorkspaceProposal.md` for product decisions and `docs/architecture/README.md` before changing package boundaries. Inspect current code and Git status; do not assume roadmap items exist.
+Read `README.md`, `docs/ROADMAP.md`, and the documentation for the area being changed. Read `docs/product/SmartFlowProposal.md` for product decisions and `docs/architecture/README.md` before changing package boundaries. Inspect current code and Git status; do not assume roadmap items exist.
 
 ## Product constraints
 

@@ -33,11 +33,11 @@ There is no graph runtime or feature test suite yet. Add a test runner and behav
 
 ## Editor
 
-Open `visual-workspace.code-workspace` or the repository folder. VS Code tasks cover install, dev, check, and build. Prettier is recommended for formatting. Recommendations do not automatically install extensions.
+Open `smartflow.code-workspace` or the repository folder. VS Code tasks cover install, dev, check, and build. Prettier is recommended for formatting. Recommendations do not automatically install extensions.
 
 ## Dependencies and workspaces
 
-Use npm and the committed lockfile. Add application packages with `npm install <package> --workspace @visual-workspace/web`. Add shared development tools at the root. Packages under `packages/*` and `extensions/*` become npm workspaces once they have their own manifests.
+Use npm and the committed lockfile. Add application packages with `npm install <package> --workspace @smartflow/web`. Add shared development tools at the root. Packages under `packages/*` and `extensions/*` become npm workspaces once they have their own manifests.
 
 Use package exports for shared code instead of reaching into another package's internal files. The core and SDK must remain independent of React and concrete domain packages.
 

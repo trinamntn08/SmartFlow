@@ -2,6 +2,8 @@
 
 ## Available now
 
+- Project name and branding: SmartFlow.
+
 - Independent local repository and product proposal.
 - Shared agent instructions and development workflow.
 - React/TypeScript browser starter with npm workspaces.
@@ -37,11 +39,11 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 ## Open decisions
 
-- Final name, audience, market, and license.
+- Audience, market, and license.
 - Node canvas and 3D rendering libraries.
 - Project schema, extension packaging, and compatibility policy.
 - Browser storage and asset strategy.
 - First-release performance targets and supported browsers.
 - Whether desktop packaging or remote services are needed.
 
-Follow [the product proposal](product/VisualWorkspaceProposal.md) for requirements. The bootstrap framework is replaceable and does not settle the final product platform.
+Follow [the product proposal](product/SmartFlowProposal.md) for requirements. The bootstrap framework is replaceable and does not settle the final product platform.

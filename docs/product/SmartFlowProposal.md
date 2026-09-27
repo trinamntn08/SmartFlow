@@ -1,4 +1,4 @@
-# Extensible Visual Workspace — Product Proposal
+# SmartFlow — Product Proposal
 
 Status: revised exploratory proposal. The application domain, audience, technology choices, and delivery platform remain open. Interactive node graphs, extensibility, and 3D scene support are requirements.
 

@@ -1,8 +1,16 @@
 {
-  "name": "visual-workspace",
+  "name": "smartflow",
   "version": "0.0.0",
   "private": true,
-  "description": "Extensible visual workspace with required 3D scene support.",
+  "description": "SmartFlow is an extensible visual workspace with required 3D scene support.",
+  "keywords": [
+    "smartflow",
+    "visual-programming",
+    "node-graphs",
+    "workflows",
+    "3d",
+    "extensible"
+  ],
   "type": "module",
   "packageManager": "npm@11.17.0",
   "engines": {
@@ -15,9 +23,9 @@
     "extensions/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace @visual-workspace/web",
-    "build": "npm run build --workspace @visual-workspace/web",
-    "preview": "npm run preview --workspace @visual-workspace/web",
+    "dev": "npm run dev --workspace @smartflow/web",
+    "build": "npm run build --workspace @smartflow/web",
+    "preview": "npm run preview --workspace @smartflow/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -1,11 +1,11 @@
-# Visual Workspace
+# SmartFlow
 
 An independent, extensible visual workspace for interactive node graphs and their results.
 3D scene workflows are a required capability. Other fields extend the same platform through packages; the final audience and application domain remain open.
 
 ## Current state
 
-This repository contains the product proposal, architecture boundaries, agent guidance, and a runnable browser development starter. The graph editor, execution runtime, and domain packages are planned, not implemented. Visual Workspace is a working name.
+This repository contains the product proposal, architecture boundaries, agent guidance, and a runnable browser development starter. The graph editor, execution runtime, and domain packages are planned, not implemented. The project is named SmartFlow.
 
 ## Start locally
 
@@ -28,7 +28,7 @@ npm run preview
 
 ## Read first
 
-- [Product proposal](docs/product/VisualWorkspaceProposal.md)
+- [Product proposal](docs/product/SmartFlowProposal.md)
 - [Architecture](docs/architecture/README.md)
 - [Roadmap and current status](docs/ROADMAP.md)
 - [Local development](docs/DEVELOPMENT.md)

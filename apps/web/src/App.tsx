@@ -3,9 +3,9 @@ export function App() {
     <main>
       <header>
         <span className="mark" aria-hidden="true">
-          VW
+          SF
         </span>
-        <span>Visual Workspace</span>
+        <span>SmartFlow</span>
         <span className="badge">Development starter</span>
       </header>
       <section className="intro" aria-labelledby="title">
