@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.cache/
+.vite/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/extensions.json

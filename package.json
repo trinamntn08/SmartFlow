@@ -1,0 +1,31 @@
+{
+  "name": "visual-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Extensible visual workspace with required 3D scene support.",
+  "type": "module",
+  "packageManager": "npm@11.17.0",
+  "engines": {
+    "node": ">=24.19.0 <25",
+    "npm": ">=11 <12"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "extensions/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @visual-workspace/web",
+    "build": "npm run build --workspace @visual-workspace/web",
+    "preview": "npm run preview --workspace @visual-workspace/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm run typecheck && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.0",
+    "prettier": "3.9.9",
+    "typescript": "7.0.2"
+  }
+}
