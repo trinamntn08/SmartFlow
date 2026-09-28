@@ -1,7 +1,9 @@
 # Extension SDK
 
-Status: reserved; no implementation yet.
+Status: initial TypeScript contracts; no registration or execution implementation yet.
 
 Own public contracts for domain types, nodes, parameter controls, viewers, package compatibility, and execution capabilities. Depend only on the core; do not import concrete extensions.
 
-Add a private package manifest and behavior tests when implementation begins. See the root architecture guide and roadmap for the first slice.
+Exports provisional extension, type, port, parameter, node, viewer identity,
+migration and execution capability contracts. Viewer mounting and registry behavior
+remain to be implemented. The package typechecks without DOM or React types.
