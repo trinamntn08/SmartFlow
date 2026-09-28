@@ -15,6 +15,7 @@ This setup provides development context. It does not install an AI SDK into the 
 3. State the intended behavior and how completion will be verified.
 4. Implement a bounded slice, respecting package ownership.
 5. Run relevant checks and report results and remaining limitations.
+6. Commit the completed step with its checkpoint documentation before starting the next step, and report the commit hash.
 
 For a new extension, begin with a concrete graph, its data types, and viewer behavior. Extend the SDK only where that example needs a public contract. Verify that the platform does not import the new domain.
 

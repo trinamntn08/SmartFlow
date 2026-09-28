@@ -3,6 +3,8 @@ node_modules/
 .npm/
 
 # Build output and tool caches
+build/
+CMakeUserPresets.json
 dist/
 coverage/
 .cache/

@@ -5,9 +5,13 @@ An independent, extensible visual workspace for interactive node graphs and thei
 
 ## Current state
 
-This repository contains the product proposal, architecture boundaries, agent guidance, and a runnable browser development starter. The graph editor, execution runtime, and domain packages are planned, not implemented. The project is named SmartFlow.
+SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. The first native checkpoint includes the copied QtNodes canvas and a numeric graph preview. Pipeline and 3D migration are still pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
 
 ## Start locally
+
+Follow [native development](docs/NATIVE_DEVELOPMENT.md) to build and run the C++/Qt application. The old repository is preserved and is not required by the new build.
+
+### Future web prototype
 
 Use Node.js 24 (the tested version is in `.node-version`) and npm 11.
 
@@ -24,7 +28,7 @@ npm run format
 npm run preview
 ```
 
-`check` verifies formatting, TypeScript, and a production build. `preview` serves an existing build on http://127.0.0.1:4173. No API keys, database, native engine, or remote service are required.
+`check` verifies formatting, TypeScript, persistence tests, and a production build. `preview` serves an existing build on http://127.0.0.1:4173. No API keys, database, native engine, or remote service are required.
 
 ## Read first
 
@@ -40,9 +44,12 @@ npm run preview
 
 | Path                     | Responsibility                                     | State               |
 | ------------------------ | -------------------------------------------------- | ------------------- |
+| `native/app`             | Native C++/Qt shell and adapters                   | Migration preview   |
+| `native/vendor`          | Copied QtNodes sources and retained license        | Native dependency   |
+| `native/tests`           | Native graph behavior tests                        | Initial tests       |
 | `apps/web`               | Browser interface and application composition      | Development starter |
-| `packages/core`          | Domain-independent project and graph model         | Reserved            |
-| `packages/extension-sdk` | Public extension contracts                         | Reserved            |
+| `packages/core`          | Domain-independent project and graph model         | Initial persistence |
+| `packages/extension-sdk` | Public extension contracts                         | Initial contracts   |
 | `packages/runtime`       | Validation, scheduling, execution state            | Reserved            |
 | `extensions/scene-3d`    | Included 3D types, nodes, and viewer               | Reserved            |
 | `extensions/data`        | Independent non-3D validation package              | Reserved            |
@@ -52,4 +59,4 @@ Reserved folders contain ownership notes, not working libraries. Add their packa
 
 ## Repository status
 
-The Git repository has a configured GitHub remote; no deployment configuration is included. Packages are private and no distribution license has been selected. Decide licensing before publishing. The original engine is not a dependency.
+The Git repository has a configured GitHub remote; no deployment configuration is included. Packages are private and no distribution license has been selected. Copied dependencies retain their own licenses. The original checkout is never a build/runtime dependency.

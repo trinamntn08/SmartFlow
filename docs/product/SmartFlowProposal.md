@@ -1,8 +1,8 @@
 # SmartFlow — Product Proposal
 
-Status: revised exploratory proposal. The application domain, audience, technology choices, and delivery platform remain open. Interactive node graphs, extensibility, and 3D scene support are requirements.
+Status: native C++/Qt selected as the starting application by the user on 2026-09-27. TypeScript/browser work is retained for a future extension. The application domain and audience remain open. Interactive node graphs, extensibility, and 3D scene support are requirements. Earlier browser/platform candidate sections below are exploratory background, superseded where they conflict with [decision 0003](../architecture/decisions/0003-native-first.md).
 
-This proposal describes an independent product that could live in a new repository. It originates from Pipeline Builder and 3D scene applications, and must retain the ability to build and visualize 3D scene workflows. Its architecture should support additional domains through extensions without depending on the current engine or its source code.
+This proposal describes an independent product in a new repository. It originates from Pipeline Builder and 3D scene applications, and must retain the ability to build and visualize 3D scene workflows. Reuse audited native source by copying it with its licenses into SmartFlow; builds must not depend on the old checkout. Its architecture should support additional domains through extensions.
 
 ## 1. Product vision
 
