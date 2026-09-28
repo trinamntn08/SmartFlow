@@ -1,0 +1,72 @@
+# Explicitly reviewed N2 source subset; no legacy build scripts are used.
+add_library(smartflow_legacy STATIC
+  lib_base64/src/base64.cpp
+  lib_platform/src/RandomDevice.cpp
+  lib_platform/src/SetThreadName.cpp
+  tp_data/src/AbstractMember.cpp
+  tp_data/src/AbstractMemberFactory.cpp
+  tp_data/src/Collection.cpp
+  tp_data/src/CollectionFactory.cpp
+  tp_data/src/Globals.cpp
+  tp_data/src/members/FileMember.cpp
+  tp_data/src/members/NumberMatrixMember.cpp
+  tp_data/src/members/NumberMember.cpp
+  tp_data/src/members/NumberVectorMember.cpp
+  tp_data/src/members/StringIDMember.cpp
+  tp_data/src/members/StringIDVectorMember.cpp
+  tp_data/src/members/StringMember.cpp
+  tp_pipeline/src/ComplexObject.cpp
+  tp_pipeline/src/ComplexObjectFactory.cpp
+  tp_pipeline/src/ComplexObjectManager.cpp
+  tp_pipeline/src/Globals.cpp
+  tp_pipeline/src/Parameter.cpp
+  tp_pipeline/src/PipelineDetails.cpp
+  tp_pipeline/src/PipelineManager.cpp
+  tp_pipeline/src/step_delegates/NoneStepDelegate.cpp
+  tp_pipeline/src/StepContext.cpp
+  tp_pipeline/src/StepDelegate.cpp
+  tp_pipeline/src/StepDelegateMap.cpp
+  tp_pipeline/src/StepDetails.cpp
+  tp_pipeline/src/StepOutput.cpp
+  tp_pipeline/src/StepProfilingData.cpp
+  tp_task_queue/src/AsyncWorkQueue.cpp
+  tp_task_queue/src/Globals.cpp
+  tp_task_queue/src/SynchronizationPoint.cpp
+  tp_task_queue/src/Task.cpp
+  tp_task_queue/src/TaskQueue.cpp
+  tp_task_queue/src/WorkQueue.cpp
+  tp_utils/src/AbstractCrossThreadCallback.cpp
+  tp_utils/src/AbstractTimerCallback.cpp
+  tp_utils/src/BinaryUtils.cpp
+  tp_utils/src/CountStackTrace.cpp
+  tp_utils/src/DebugUtils.cpp
+  tp_utils/src/detail/StaticState.cpp
+  tp_utils/src/FileUtils.cpp
+  tp_utils/src/Garbage.cpp
+  tp_utils/src/Globals.cpp
+  tp_utils/src/JSONUtils.cpp
+  tp_utils/src/MutexUtils.cpp
+  tp_utils/src/Progress.cpp
+  tp_utils/src/RefCount.cpp
+  tp_utils/src/StackTrace.cpp
+  tp_utils/src/StringID.cpp
+  tp_utils/src/TimerThread.cpp
+  tp_utils/src/TimeUtils.cpp
+)
+target_include_directories(smartflow_legacy SYSTEM PUBLIC
+  lib_base64/inc
+  lib_date/inc
+  lib_json/inc
+  lib_platform/inc
+  lib_stduuid/inc
+  tp_data/inc
+  tp_pipeline/inc
+  tp_task_queue/inc
+  tp_utils/inc
+  lib_json/inc/nlohmann
+)
+if(MSVC)
+  target_compile_options(smartflow_legacy PUBLIC /Zc:__cplusplus /utf-8)
+  target_compile_definitions(smartflow_legacy PUBLIC TP_WIN32 TP_WIN32_MSVC TP_WIN32_STATIC NOMINMAX _CRT_SECURE_NO_WARNINGS)
+endif()
+set_target_properties(smartflow_legacy PROPERTIES AUTOMOC OFF)

@@ -4,7 +4,12 @@
 
 - Native C++/Qt is the primary implementation direction; TypeScript is retained for a future extension.
 - First native migration: copied QtNodes canvas, independent CMake build, numeric graph preview and native tests.
-- Pipeline runtime, inspector and 3D modules have not yet been copied.
+- N2: selected pipeline/data/task sources copied with licenses and provenance;
+  background execution adapter validates ports/dependencies, rejects cycles,
+  propagates failures, isolates graph snapshots and supports cancellation.
+  See [checkpoint N2](agents/handoffs/2026-09-28-native-checkpoint-n2.md).
+- Canvas/inspector integration and 3D modules remain pending. N2 is a migration
+  foundation, not a production runtime or plugin loader.
 - Project name and branding: SmartFlow.
 
 - Independent local repository and product proposal.
@@ -23,8 +28,8 @@ The list below records the earlier TypeScript plan. It is superseded for current
 implementation by this native migration sequence:
 
 1. Completed N1: copied QtNodes canvas and native shell, with build/tests.
-2. Next, N2: audit and copy pipeline/data/task dependencies with licenses, test node/port and execution behavior.
-3. Copy and adapt the pipeline inspector/workspace; test parameter edits and undo; record N3.
+2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
+3. Next, N3: copy and adapt the pipeline inspector/workspace, connect the execution adapter, and test parameter edits and undo.
 4. Copy the required 3D modules and their audited dependencies; test primitive/transform/material/viewer behavior; record N4.
 5. Establish native project persistence, unknown-extension preservation and a non-3D workflow; record N5.
 

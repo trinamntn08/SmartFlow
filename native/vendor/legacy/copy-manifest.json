@@ -1,0 +1,936 @@
+{
+  "sourceCommit": "d6f457e8415445d00eaf7e9fbf9e5047768ea637",
+  "copiedOn": "2026-09-28",
+  "files": [
+    {
+      "path": "lib_base64/inc/base64.h",
+      "sourceSha256": "119be19728001204480e1bb50023502ba66eb81af65c01a821f1d49c9208b1f9",
+      "copiedSha256": "119be19728001204480e1bb50023502ba66eb81af65c01a821f1d49c9208b1f9"
+    },
+    {
+      "path": "lib_base64/LICENSE",
+      "sourceSha256": "aa85a4b425bd0ffe295c08efddc253296c50afdabb39b8fe3f1ece0325266b2a",
+      "copiedSha256": "aa85a4b425bd0ffe295c08efddc253296c50afdabb39b8fe3f1ece0325266b2a"
+    },
+    {
+      "path": "lib_base64/src/base64.cpp",
+      "sourceSha256": "9e3d25fecb6b5d7aa3cdba53f8e9ba5d7d6438a119e14587ca713e01845d2a4c",
+      "copiedSha256": "9e3d25fecb6b5d7aa3cdba53f8e9ba5d7d6438a119e14587ca713e01845d2a4c"
+    },
+    {
+      "path": "lib_date/inc/date/date.h",
+      "sourceSha256": "240668ca4a9d6145b45c718aeabe8f1748660505783ef1b3b916b9ccf1f63fd1",
+      "copiedSha256": "240668ca4a9d6145b45c718aeabe8f1748660505783ef1b3b916b9ccf1f63fd1"
+    },
+    {
+      "path": "lib_date/LICENSE.txt",
+      "sourceSha256": "c90f6c00fb961170560299cbda28ca2d45804913aa8b2a9f36dbb8e0028d6930",
+      "copiedSha256": "c90f6c00fb961170560299cbda28ca2d45804913aa8b2a9f36dbb8e0028d6930"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/adl_serializer.hpp",
+      "sourceSha256": "242b578e1a41c97dec6890bd88bdb824cdb76a9edd849c108299a59469d327e0",
+      "copiedSha256": "242b578e1a41c97dec6890bd88bdb824cdb76a9edd849c108299a59469d327e0"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/byte_container_with_subtype.hpp",
+      "sourceSha256": "c7dc197cbb54b9168373b4b9a3e1cc57cc5583bfcf5008b722b363335bc53511",
+      "copiedSha256": "c7dc197cbb54b9168373b4b9a3e1cc57cc5583bfcf5008b722b363335bc53511"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/abi_macros.hpp",
+      "sourceSha256": "1c7dc7c5062b199a35853f4056ed00ed359ef8fa5c7fb15a58bc79598ec21422",
+      "copiedSha256": "1c7dc7c5062b199a35853f4056ed00ed359ef8fa5c7fb15a58bc79598ec21422"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/conversions/from_json.hpp",
+      "sourceSha256": "b37ced0ba32f8ac5834b4c96058ca5e445bccea27f46299a359eed0ecbf2e58e",
+      "copiedSha256": "b37ced0ba32f8ac5834b4c96058ca5e445bccea27f46299a359eed0ecbf2e58e"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/conversions/to_chars.hpp",
+      "sourceSha256": "5fe11205c45dbd08373244d743f38e89ceefb8c9b5fc4c68077117c786d53bef",
+      "copiedSha256": "5fe11205c45dbd08373244d743f38e89ceefb8c9b5fc4c68077117c786d53bef"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/conversions/to_json.hpp",
+      "sourceSha256": "73bad524856d475a6071fd7b5422f80df13ba7586f0d4b48141c2ec60cebcf89",
+      "copiedSha256": "73bad524856d475a6071fd7b5422f80df13ba7586f0d4b48141c2ec60cebcf89"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/exceptions.hpp",
+      "sourceSha256": "55299c55106de2624ca7aa6a5705ad6ff53814c1b52f8fe8d2872f13c956c95a",
+      "copiedSha256": "55299c55106de2624ca7aa6a5705ad6ff53814c1b52f8fe8d2872f13c956c95a"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/hash.hpp",
+      "sourceSha256": "74a9e3af772127cf0b12ee794abc8c47b5bea74ce658d0d20179a26be5d95d0d",
+      "copiedSha256": "74a9e3af772127cf0b12ee794abc8c47b5bea74ce658d0d20179a26be5d95d0d"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/input/binary_reader.hpp",
+      "sourceSha256": "484bcc276c4fa6c7c61a93a8223f3e53bb4dc966e688e96641a93a50d7e503e9",
+      "copiedSha256": "484bcc276c4fa6c7c61a93a8223f3e53bb4dc966e688e96641a93a50d7e503e9"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/input/input_adapters.hpp",
+      "sourceSha256": "bd549419506089c82c94446f939587362ff01516b8e6624c472e704d27b1be42",
+      "copiedSha256": "bd549419506089c82c94446f939587362ff01516b8e6624c472e704d27b1be42"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/input/json_sax.hpp",
+      "sourceSha256": "9147c9d07784a5f3de890d68401ae07d03d0bc0db24ebcbe7beb8a31cfd858a0",
+      "copiedSha256": "9147c9d07784a5f3de890d68401ae07d03d0bc0db24ebcbe7beb8a31cfd858a0"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/input/lexer.hpp",
+      "sourceSha256": "550c275f09d55deb1705b97b8a15b02f211ea0ba87e95452e7a023b854bb024c",
+      "copiedSha256": "550c275f09d55deb1705b97b8a15b02f211ea0ba87e95452e7a023b854bb024c"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/input/parser.hpp",
+      "sourceSha256": "094aed22cfdd641ac15ef59bfef8dd1e23fd92373633a92ed928cb580f0cbd7e",
+      "copiedSha256": "094aed22cfdd641ac15ef59bfef8dd1e23fd92373633a92ed928cb580f0cbd7e"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/input/position_t.hpp",
+      "sourceSha256": "0c9c5be26020c0a7929f3cc1e7e0065589d6a8f4dc1bd2ee13f10ef1a7efaa24",
+      "copiedSha256": "0c9c5be26020c0a7929f3cc1e7e0065589d6a8f4dc1bd2ee13f10ef1a7efaa24"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/iterators/internal_iterator.hpp",
+      "sourceSha256": "e75cf5e3c9ae358055bf3335fa2c5b6bbfbd1e24ea3dfdb62c187f37a8e2b485",
+      "copiedSha256": "e75cf5e3c9ae358055bf3335fa2c5b6bbfbd1e24ea3dfdb62c187f37a8e2b485"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/iterators/iter_impl.hpp",
+      "sourceSha256": "70d81ebb931db43a19fe3872a3fb1bc91fab27509c8d29ee4c4dd247b384cae1",
+      "copiedSha256": "70d81ebb931db43a19fe3872a3fb1bc91fab27509c8d29ee4c4dd247b384cae1"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/iterators/iteration_proxy.hpp",
+      "sourceSha256": "839efba147f6f15c693c741039daa3d383c2f4afb8fe653e4dad49a9f998d1d1",
+      "copiedSha256": "839efba147f6f15c693c741039daa3d383c2f4afb8fe653e4dad49a9f998d1d1"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/iterators/iterator_traits.hpp",
+      "sourceSha256": "04b0edaeb214aa1c932b9078849a8fbbbda9c7a241b4cbc28a90b6d11c959443",
+      "copiedSha256": "04b0edaeb214aa1c932b9078849a8fbbbda9c7a241b4cbc28a90b6d11c959443"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/iterators/json_reverse_iterator.hpp",
+      "sourceSha256": "031b45c4f90ab7d64ecb6606fad880d867a23fc63a431f0de34f0fc104307b66",
+      "copiedSha256": "031b45c4f90ab7d64ecb6606fad880d867a23fc63a431f0de34f0fc104307b66"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/iterators/primitive_iterator.hpp",
+      "sourceSha256": "6c949107bb779cecb8beba0835f7292656b52b08c3f6a6d3b27229b58c28aefe",
+      "copiedSha256": "6c949107bb779cecb8beba0835f7292656b52b08c3f6a6d3b27229b58c28aefe"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/json_custom_base_class.hpp",
+      "sourceSha256": "70da7c5b17777f8da6d83310d6526856542585efa8a078db61227b11aaf9ec0b",
+      "copiedSha256": "70da7c5b17777f8da6d83310d6526856542585efa8a078db61227b11aaf9ec0b"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/json_pointer.hpp",
+      "sourceSha256": "4cf537ad88b2d686d5a349b26da7e012ba9a58b01a0ab2badaa796d9150e69bb",
+      "copiedSha256": "4cf537ad88b2d686d5a349b26da7e012ba9a58b01a0ab2badaa796d9150e69bb"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/json_ref.hpp",
+      "sourceSha256": "1660750dd10a562aac1eea37021f1e7138a5d6d50b051815708497a8d30bf60d",
+      "copiedSha256": "1660750dd10a562aac1eea37021f1e7138a5d6d50b051815708497a8d30bf60d"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/macro_scope.hpp",
+      "sourceSha256": "70d2b2aa49a93170ded3d0c0d1b0f76103fdd09704ba5ecc862bc03095920847",
+      "copiedSha256": "70d2b2aa49a93170ded3d0c0d1b0f76103fdd09704ba5ecc862bc03095920847"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/macro_unscope.hpp",
+      "sourceSha256": "5f7040df475e2c943d9b22c335b61600deb14b1e48a69b3450de4c4a08c320bc",
+      "copiedSha256": "5f7040df475e2c943d9b22c335b61600deb14b1e48a69b3450de4c4a08c320bc"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/call_std/begin.hpp",
+      "sourceSha256": "379660c15a30b84ff2a67e22734638f608cc37b34648461c7e9167da1153d861",
+      "copiedSha256": "379660c15a30b84ff2a67e22734638f608cc37b34648461c7e9167da1153d861"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/call_std/end.hpp",
+      "sourceSha256": "deca609bf200442f452b848c19f28ee30879df0ca35e959ed3b41f861c92df55",
+      "copiedSha256": "deca609bf200442f452b848c19f28ee30879df0ca35e959ed3b41f861c92df55"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/cpp_future.hpp",
+      "sourceSha256": "486ba5a3724131d0c1646e36d9a4a9877505b2914078347e6067bb65593f01ce",
+      "copiedSha256": "486ba5a3724131d0c1646e36d9a4a9877505b2914078347e6067bb65593f01ce"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/detected.hpp",
+      "sourceSha256": "f79aa1f107e4dfd4554753e6fe05364a1147ef4498d3125cfc939a5534d2d527",
+      "copiedSha256": "f79aa1f107e4dfd4554753e6fe05364a1147ef4498d3125cfc939a5534d2d527"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/identity_tag.hpp",
+      "sourceSha256": "bba9559dec8519de3044b537e96a59a601831797a5a3c38bf8023a6d949118d0",
+      "copiedSha256": "bba9559dec8519de3044b537e96a59a601831797a5a3c38bf8023a6d949118d0"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/is_sax.hpp",
+      "sourceSha256": "1f81d6098b9aad02a95c27ec333bbb13eec3c5171b968e39b7ecb1b06b16c55b",
+      "copiedSha256": "1f81d6098b9aad02a95c27ec333bbb13eec3c5171b968e39b7ecb1b06b16c55b"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/std_fs.hpp",
+      "sourceSha256": "fb514154ea8c11c04a00efeb2e89edbfd40f149ed39ef36568d9b2a1062e85e0",
+      "copiedSha256": "fb514154ea8c11c04a00efeb2e89edbfd40f149ed39ef36568d9b2a1062e85e0"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/type_traits.hpp",
+      "sourceSha256": "1f901f9e4bcd585ff22c6b0c0956566ba8a4a1238a490a64e7755a2c313040d5",
+      "copiedSha256": "1f901f9e4bcd585ff22c6b0c0956566ba8a4a1238a490a64e7755a2c313040d5"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/meta/void_t.hpp",
+      "sourceSha256": "581e7b157457eb9c488793f2cd7066b2c1ba31d5e9fea6f0d67c8c732b5088e4",
+      "copiedSha256": "581e7b157457eb9c488793f2cd7066b2c1ba31d5e9fea6f0d67c8c732b5088e4"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/output/binary_writer.hpp",
+      "sourceSha256": "665ce1ea5fb2cb425896b713bdd8d8d5a6d69688924fa6e2efaffb4e9d132011",
+      "copiedSha256": "665ce1ea5fb2cb425896b713bdd8d8d5a6d69688924fa6e2efaffb4e9d132011"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/output/output_adapters.hpp",
+      "sourceSha256": "1e0bcc375b4d84180649198e2f8061f5968a10a6913231fee097689d281ed565",
+      "copiedSha256": "1e0bcc375b4d84180649198e2f8061f5968a10a6913231fee097689d281ed565"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/output/serializer.hpp",
+      "sourceSha256": "259c611d4b1147e3626d25bc05994b28f91f4fcca2e578e486dcf51c0234e5c8",
+      "copiedSha256": "259c611d4b1147e3626d25bc05994b28f91f4fcca2e578e486dcf51c0234e5c8"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/string_concat.hpp",
+      "sourceSha256": "e8001630045f800c0ebcfc19e2b2f90139a4d20a9a359e134657767fd6fa9aa2",
+      "copiedSha256": "e8001630045f800c0ebcfc19e2b2f90139a4d20a9a359e134657767fd6fa9aa2"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/string_escape.hpp",
+      "sourceSha256": "3bf6687ffa7f6fd3034591adfdd6ea073584df83694c6b57feed9ada965801e7",
+      "copiedSha256": "3bf6687ffa7f6fd3034591adfdd6ea073584df83694c6b57feed9ada965801e7"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/detail/value_t.hpp",
+      "sourceSha256": "60a7e24b34e93b8ba40eecf310a40c55042754328271c246f9cc1069f6a25958",
+      "copiedSha256": "60a7e24b34e93b8ba40eecf310a40c55042754328271c246f9cc1069f6a25958"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/json.hpp",
+      "sourceSha256": "2432cbf7f4258453538eca193cd937fc777462ae2ce8ee9f46e6ee460ef56bea",
+      "copiedSha256": "2432cbf7f4258453538eca193cd937fc777462ae2ce8ee9f46e6ee460ef56bea"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/json_fwd.hpp",
+      "sourceSha256": "c5b950b428534861b5869254fd773afc724112fc9e141bd1fc89189640a3ae5d",
+      "copiedSha256": "c5b950b428534861b5869254fd773afc724112fc9e141bd1fc89189640a3ae5d"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/ordered_map.hpp",
+      "sourceSha256": "31d1bb02500b734e09c27ce2cc216c8af188344fbc19a6946ae301a12c7b62df",
+      "copiedSha256": "31d1bb02500b734e09c27ce2cc216c8af188344fbc19a6946ae301a12c7b62df"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/thirdparty/hedley/hedley.hpp",
+      "sourceSha256": "20d6c1c6d6c30365f68a45093798937971b593919fb3051431f0c015dfa671fb",
+      "copiedSha256": "20d6c1c6d6c30365f68a45093798937971b593919fb3051431f0c015dfa671fb"
+    },
+    {
+      "path": "lib_json/inc/nlohmann/thirdparty/hedley/hedley_undef.hpp",
+      "sourceSha256": "0f8902f26872f40a2514e9c9be2fcebfce6cde0022e9364fddd17fb49575b146",
+      "copiedSha256": "0f8902f26872f40a2514e9c9be2fcebfce6cde0022e9364fddd17fb49575b146"
+    },
+    {
+      "path": "lib_json/LICENSE.MIT",
+      "sourceSha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14",
+      "copiedSha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/Android.h",
+      "sourceSha256": "81e9795082ab283c62eff99d2316982bea606a0390959b3cc9ca1e6e5acef009",
+      "copiedSha256": "81e9795082ab283c62eff99d2316982bea606a0390959b3cc9ca1e6e5acef009"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/Format.h",
+      "sourceSha256": "c7f9b50f45cf5dade2ffadd61f4294d16d1502677510a64f29a5a116508b9eeb",
+      "copiedSha256": "c7f9b50f45cf5dade2ffadd61f4294d16d1502677510a64f29a5a116508b9eeb"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/Globals.h",
+      "sourceSha256": "8316001ab22ec677c8a3c03cbd89f13c6fa3ea72d4340b36fd52668d6a8138b0",
+      "copiedSha256": "8316001ab22ec677c8a3c03cbd89f13c6fa3ea72d4340b36fd52668d6a8138b0"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/NotNull.h",
+      "sourceSha256": "09e86a1d91637d4416899afc3da625efe481e5780f72fc199fa62ca4bc6aa65a",
+      "copiedSha256": "09e86a1d91637d4416899afc3da625efe481e5780f72fc199fa62ca4bc6aa65a"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/OSX.h",
+      "sourceSha256": "216af8795bba528f3dc1329b0461def9bd840e729efb032dc879dfaf21ff9543",
+      "copiedSha256": "216af8795bba528f3dc1329b0461def9bd840e729efb032dc879dfaf21ff9543"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/Polyfill.h",
+      "sourceSha256": "3a78bae4359ce14092f59646024f49bcda99ac14cce72dab24bf3fd364b95312",
+      "copiedSha256": "3a78bae4359ce14092f59646024f49bcda99ac14cce72dab24bf3fd364b95312"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/RandomDevice.h",
+      "sourceSha256": "3196b6e0e8df5c3e0c4c891407407b993f75b04931dbd976c4294d461f7f8c07",
+      "copiedSha256": "3196b6e0e8df5c3e0c4c891407407b993f75b04931dbd976c4294d461f7f8c07"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/SetThreadName.h",
+      "sourceSha256": "dd33c231e35a4e7568de016e0d047b42d5bd204f74e5f6edd5c87fdcb388b9cd",
+      "copiedSha256": "dd33c231e35a4e7568de016e0d047b42d5bd204f74e5f6edd5c87fdcb388b9cd"
+    },
+    {
+      "path": "lib_platform/inc/lib_platform/Warnings.h",
+      "sourceSha256": "96ec333f1d8575f1a04de0ce3809c067531a822d4db32ce6243f6699e6f44e15",
+      "copiedSha256": "96ec333f1d8575f1a04de0ce3809c067531a822d4db32ce6243f6699e6f44e15"
+    },
+    {
+      "path": "lib_platform/LICENSE",
+      "sourceSha256": "c070cb51008605271f7b9c0920238f38869e60656e25cb334e5934433c4febb2",
+      "copiedSha256": "c070cb51008605271f7b9c0920238f38869e60656e25cb334e5934433c4febb2"
+    },
+    {
+      "path": "lib_platform/src/RandomDevice.cpp",
+      "sourceSha256": "b2345c1f1eed6117c14edb113a464d2383b4a7f2e353d748213d9be747b6c341",
+      "copiedSha256": "b2345c1f1eed6117c14edb113a464d2383b4a7f2e353d748213d9be747b6c341"
+    },
+    {
+      "path": "lib_platform/src/SetThreadName.cpp",
+      "sourceSha256": "9d3ec201a9c97151e8958707c3f5ca3baad694ec5159e0db932e5a737773ed74",
+      "copiedSha256": "9d3ec201a9c97151e8958707c3f5ca3baad694ec5159e0db932e5a737773ed74"
+    },
+    {
+      "path": "lib_stduuid/inc/gsl/gsl_assert",
+      "sourceSha256": "ddfbf8092255db5fb94a587ba6ef60828ebc685e430b454f994f4e9596d26f59",
+      "copiedSha256": "ddfbf8092255db5fb94a587ba6ef60828ebc685e430b454f994f4e9596d26f59"
+    },
+    {
+      "path": "lib_stduuid/inc/gsl/gsl_byte",
+      "sourceSha256": "9eb228d37b7d1f9f0be9fbcc4c364b1741b2fbb1cbc49542ac46e974d344a267",
+      "copiedSha256": "9eb228d37b7d1f9f0be9fbcc4c364b1741b2fbb1cbc49542ac46e974d344a267"
+    },
+    {
+      "path": "lib_stduuid/inc/gsl/gsl_util",
+      "sourceSha256": "264d44877d1d9cd57d3eec434a6961dc0453cef24f113591a3a85589c94db724",
+      "copiedSha256": "264d44877d1d9cd57d3eec434a6961dc0453cef24f113591a3a85589c94db724"
+    },
+    {
+      "path": "lib_stduuid/inc/gsl/span",
+      "sourceSha256": "10d6d30c7f0dfadd35d8f4227cb657a464a03098fb5a3cf1c150295cef2c9c3d",
+      "copiedSha256": "10d6d30c7f0dfadd35d8f4227cb657a464a03098fb5a3cf1c150295cef2c9c3d"
+    },
+    {
+      "path": "lib_stduuid/inc/lib_stduuid/uuid.h",
+      "sourceSha256": "5ec8df70a6f488ca87c62b39f59780b503977d41a02d706856a616e49809810c",
+      "copiedSha256": "5ec8df70a6f488ca87c62b39f59780b503977d41a02d706856a616e49809810c"
+    },
+    {
+      "path": "lib_stduuid/LICENSE",
+      "sourceSha256": "afb11426e09da40a1ae4f8fa17ddcc6b6a52d14df04c29bc5bcd06eb8730624d",
+      "copiedSha256": "afb11426e09da40a1ae4f8fa17ddcc6b6a52d14df04c29bc5bcd06eb8730624d"
+    },
+    {
+      "path": "tp_data/inc/tp_data/AbstractMember.h",
+      "sourceSha256": "ca59b4dfad678f4fd70d848a93d61929f9e4985cb17874e00590232af5164408",
+      "copiedSha256": "ca59b4dfad678f4fd70d848a93d61929f9e4985cb17874e00590232af5164408"
+    },
+    {
+      "path": "tp_data/inc/tp_data/AbstractMemberFactory.h",
+      "sourceSha256": "7b983120588f1b3c1eae2937e069101c0133377a6ec980142fcf4aa46b4ba11b",
+      "copiedSha256": "7b983120588f1b3c1eae2937e069101c0133377a6ec980142fcf4aa46b4ba11b"
+    },
+    {
+      "path": "tp_data/inc/tp_data/Collection.h",
+      "sourceSha256": "f0a1619ce88ae4330e3a29c09ed52b0efc7c3ad084b09bc5dd5f787f92c34ffe",
+      "copiedSha256": "f0a1619ce88ae4330e3a29c09ed52b0efc7c3ad084b09bc5dd5f787f92c34ffe"
+    },
+    {
+      "path": "tp_data/inc/tp_data/CollectionFactory.h",
+      "sourceSha256": "7632c4980479b106c748c4a1ac4d3426ba42b0fb37e2ca37f4b3a18f3d4c9ff2",
+      "copiedSha256": "7632c4980479b106c748c4a1ac4d3426ba42b0fb37e2ca37f4b3a18f3d4c9ff2"
+    },
+    {
+      "path": "tp_data/inc/tp_data/Globals.h",
+      "sourceSha256": "7f0c956920ffdb8f0fa1a6203aac77be3c9c563a9bba8aed75ce49cf38cd4427",
+      "copiedSha256": "7f0c956920ffdb8f0fa1a6203aac77be3c9c563a9bba8aed75ce49cf38cd4427"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/FileMember.h",
+      "sourceSha256": "58b9325e5bf3d5b8b5f0e40c20ad2d14ac2a94e964ca457f860b2f17d619a488",
+      "copiedSha256": "58b9325e5bf3d5b8b5f0e40c20ad2d14ac2a94e964ca457f860b2f17d619a488"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/NumberMatrixMember.h",
+      "sourceSha256": "56c424e268be7557b1e3f662b4800980ffe9be36fcc0555bbedfad1c4d3b0d4d",
+      "copiedSha256": "56c424e268be7557b1e3f662b4800980ffe9be36fcc0555bbedfad1c4d3b0d4d"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/NumberMember.h",
+      "sourceSha256": "2ea82bb8e4694bb59d33d415508698e468bad0f067cdb216799ae595846cada4",
+      "copiedSha256": "2ea82bb8e4694bb59d33d415508698e468bad0f067cdb216799ae595846cada4"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/NumberVectorMember.h",
+      "sourceSha256": "73b0812db3307f91a3236be8a106cba495d032e53bdd2f580a4c48b014853975",
+      "copiedSha256": "73b0812db3307f91a3236be8a106cba495d032e53bdd2f580a4c48b014853975"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/StringIDMember.h",
+      "sourceSha256": "45f28427104fc313d300865e63405e81140db822aecdd5298b39cc5059fd25e3",
+      "copiedSha256": "45f28427104fc313d300865e63405e81140db822aecdd5298b39cc5059fd25e3"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/StringIDVectorMember.h",
+      "sourceSha256": "34736a79fbca134300884365528146d7addeae6b273ab9ef48e6bd6edbad1bd7",
+      "copiedSha256": "34736a79fbca134300884365528146d7addeae6b273ab9ef48e6bd6edbad1bd7"
+    },
+    {
+      "path": "tp_data/inc/tp_data/members/StringMember.h",
+      "sourceSha256": "85ba6982fbbb7041628df3fc19d6183a5c43f473e06b79ba2dde898dc676e365",
+      "copiedSha256": "85ba6982fbbb7041628df3fc19d6183a5c43f473e06b79ba2dde898dc676e365"
+    },
+    {
+      "path": "tp_data/LICENSE",
+      "sourceSha256": "f3ec33f92df104957c6a72b9c543dc42c1f33b3d25861accc1f7110c3b2d6b60",
+      "copiedSha256": "f3ec33f92df104957c6a72b9c543dc42c1f33b3d25861accc1f7110c3b2d6b60"
+    },
+    {
+      "path": "tp_data/src/AbstractMember.cpp",
+      "sourceSha256": "3c42cbac6c16d38b498f8810800e035cb9031a56c92078ad6b104c392ba564b7",
+      "copiedSha256": "3c42cbac6c16d38b498f8810800e035cb9031a56c92078ad6b104c392ba564b7"
+    },
+    {
+      "path": "tp_data/src/AbstractMemberFactory.cpp",
+      "sourceSha256": "9b05789e8b72a1bc0959b40d0809f6a97b627e57268189ff2f35b989a1c51498",
+      "copiedSha256": "9b05789e8b72a1bc0959b40d0809f6a97b627e57268189ff2f35b989a1c51498"
+    },
+    {
+      "path": "tp_data/src/Collection.cpp",
+      "sourceSha256": "42b3dd8c532ace0b8fa859ad17739f129a655cd08007b787d700c7c217dbad15",
+      "copiedSha256": "42b3dd8c532ace0b8fa859ad17739f129a655cd08007b787d700c7c217dbad15"
+    },
+    {
+      "path": "tp_data/src/CollectionFactory.cpp",
+      "sourceSha256": "0b560f484d0d5a6e9818a9228268371f1716434c580dbb758b930c3885bae347",
+      "copiedSha256": "0b560f484d0d5a6e9818a9228268371f1716434c580dbb758b930c3885bae347"
+    },
+    {
+      "path": "tp_data/src/Globals.cpp",
+      "sourceSha256": "77cb7e20e4ea2be42af65b4ade2a073dd9edf9e65b52b2ce58812bca8d1d86e3",
+      "copiedSha256": "77cb7e20e4ea2be42af65b4ade2a073dd9edf9e65b52b2ce58812bca8d1d86e3"
+    },
+    {
+      "path": "tp_data/src/members/FileMember.cpp",
+      "sourceSha256": "6a4c72e681d422cde3f350aa9c11400bec326dabcc205b5e7714f6c0eba54ae0",
+      "copiedSha256": "6a4c72e681d422cde3f350aa9c11400bec326dabcc205b5e7714f6c0eba54ae0"
+    },
+    {
+      "path": "tp_data/src/members/NumberMatrixMember.cpp",
+      "sourceSha256": "4fa8ce86fac869ff54b19a641de30803294d5978e02995ab064566f7551c0e5c",
+      "copiedSha256": "4fa8ce86fac869ff54b19a641de30803294d5978e02995ab064566f7551c0e5c"
+    },
+    {
+      "path": "tp_data/src/members/NumberMember.cpp",
+      "sourceSha256": "6e3dc216c3006ad8017d5a64ee191e0ec9b28700bf84e07ef49d08eac49c2a59",
+      "copiedSha256": "6e3dc216c3006ad8017d5a64ee191e0ec9b28700bf84e07ef49d08eac49c2a59"
+    },
+    {
+      "path": "tp_data/src/members/NumberVectorMember.cpp",
+      "sourceSha256": "e5457799830c3e5ee0c54b0fb2e94a3b86165afe551eb3388978381c493c03b3",
+      "copiedSha256": "e5457799830c3e5ee0c54b0fb2e94a3b86165afe551eb3388978381c493c03b3"
+    },
+    {
+      "path": "tp_data/src/members/StringIDMember.cpp",
+      "sourceSha256": "8f3a447f44809c9ce109d6e3159204ae9aec28dd0c8bf9c70d4e16c2724c99eb",
+      "copiedSha256": "8f3a447f44809c9ce109d6e3159204ae9aec28dd0c8bf9c70d4e16c2724c99eb"
+    },
+    {
+      "path": "tp_data/src/members/StringIDVectorMember.cpp",
+      "sourceSha256": "6f42f52f7f941a61d773623858084e74f96e62ba9a35df640adb9479b618d656",
+      "copiedSha256": "6f42f52f7f941a61d773623858084e74f96e62ba9a35df640adb9479b618d656"
+    },
+    {
+      "path": "tp_data/src/members/StringMember.cpp",
+      "sourceSha256": "e597bebb74d41a904c2ebc40933d042f95821e3d14d848c03a9bc00d9902ef7c",
+      "copiedSha256": "e597bebb74d41a904c2ebc40933d042f95821e3d14d848c03a9bc00d9902ef7c"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/ComplexObject.h",
+      "sourceSha256": "f82930fd70b39d4d813a79164824789dc8d73ec1487ba35a0163924a600b4fb7",
+      "copiedSha256": "f82930fd70b39d4d813a79164824789dc8d73ec1487ba35a0163924a600b4fb7"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/ComplexObjectFactory.h",
+      "sourceSha256": "3790e1f0911b46f84b3bfc5827649965c2bd41cbc0d953fee58a64160a19b41b",
+      "copiedSha256": "3790e1f0911b46f84b3bfc5827649965c2bd41cbc0d953fee58a64160a19b41b"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/ComplexObjectManager.h",
+      "sourceSha256": "a004ea7c4a05e2fa94a690624635d66890ac78417f2d90e3193e59246fc43106",
+      "copiedSha256": "a004ea7c4a05e2fa94a690624635d66890ac78417f2d90e3193e59246fc43106"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/Globals.h",
+      "sourceSha256": "eb0780ec615ff23f25824f536056e10cf6ec02e83e4e099d0b1babcf193de153",
+      "copiedSha256": "eb0780ec615ff23f25824f536056e10cf6ec02e83e4e099d0b1babcf193de153"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/Parameter.h",
+      "sourceSha256": "ce06accfea407fe24c08b12ed11bd28a0e0d9089de3a91998a2d9e220e53a880",
+      "copiedSha256": "ce06accfea407fe24c08b12ed11bd28a0e0d9089de3a91998a2d9e220e53a880"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/PipelineDetails.h",
+      "sourceSha256": "dc832f8ffed30c860ed4283339cf4a1f857ea079783728861252ca9ce0b26f44",
+      "copiedSha256": "dc832f8ffed30c860ed4283339cf4a1f857ea079783728861252ca9ce0b26f44"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/PipelineManager.h",
+      "sourceSha256": "402f493ea108c939c119c058311cdb99d8383bc608a4af70b2a8a314d8e6ecb8",
+      "copiedSha256": "402f493ea108c939c119c058311cdb99d8383bc608a4af70b2a8a314d8e6ecb8"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/step_delegates/NoneStepDelegate.h",
+      "sourceSha256": "fee5dc92cb0fa6f12334bbb6b9201a5bc359ad14acc76b149c14ea763c6927a1",
+      "copiedSha256": "fee5dc92cb0fa6f12334bbb6b9201a5bc359ad14acc76b149c14ea763c6927a1"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/StepContext.h",
+      "sourceSha256": "671d0d29968b3055cf0804348320aead7eecb19ccee2b35b48d1ec4bbd0210d4",
+      "copiedSha256": "671d0d29968b3055cf0804348320aead7eecb19ccee2b35b48d1ec4bbd0210d4"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/StepDelegate.h",
+      "sourceSha256": "a5c1e2c0f2f82d084c1dcc1ba7668612e50d57496ea189ae60445c6e46fd1be4",
+      "copiedSha256": "a5c1e2c0f2f82d084c1dcc1ba7668612e50d57496ea189ae60445c6e46fd1be4"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/StepDelegateMap.h",
+      "sourceSha256": "eb41be7354a490782a14e822fece117c0ed4793e074bd6779bb88a8b2632e116",
+      "copiedSha256": "eb41be7354a490782a14e822fece117c0ed4793e074bd6779bb88a8b2632e116"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/StepDetails.h",
+      "sourceSha256": "d3d3403a514bf16c175a2b4200e5ed9a89a716d2cacd901a13dbbd6b740cac5b",
+      "copiedSha256": "d3d3403a514bf16c175a2b4200e5ed9a89a716d2cacd901a13dbbd6b740cac5b"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/StepOutput.h",
+      "sourceSha256": "c68e6ede8e3bcc9e997c568df6d2566ba5324a261a369a2da9a3d784519d4193",
+      "copiedSha256": "c68e6ede8e3bcc9e997c568df6d2566ba5324a261a369a2da9a3d784519d4193"
+    },
+    {
+      "path": "tp_pipeline/inc/tp_pipeline/StepProfilingData.h",
+      "sourceSha256": "719eb8482cabacd3b992cec4ace29cbb01e36d3292296e7d686d617d8dbbd387",
+      "copiedSha256": "719eb8482cabacd3b992cec4ace29cbb01e36d3292296e7d686d617d8dbbd387"
+    },
+    {
+      "path": "tp_pipeline/LICENSE",
+      "sourceSha256": "8e25bccaea595970239c34bdd31d84eaef8411c924ca4078f23482d89b7f4bf1",
+      "copiedSha256": "8e25bccaea595970239c34bdd31d84eaef8411c924ca4078f23482d89b7f4bf1"
+    },
+    {
+      "path": "tp_pipeline/src/ComplexObject.cpp",
+      "sourceSha256": "9ea3814af0be0e4a9f4ca4792730a4d953ffb64e60b708c7274f3fa41feb16c3",
+      "copiedSha256": "9ea3814af0be0e4a9f4ca4792730a4d953ffb64e60b708c7274f3fa41feb16c3"
+    },
+    {
+      "path": "tp_pipeline/src/ComplexObjectFactory.cpp",
+      "sourceSha256": "fec511d2b8325fce32e2e7c46cb56feff3357e5098c1e43908ad6632065ef937",
+      "copiedSha256": "fec511d2b8325fce32e2e7c46cb56feff3357e5098c1e43908ad6632065ef937"
+    },
+    {
+      "path": "tp_pipeline/src/ComplexObjectManager.cpp",
+      "sourceSha256": "95aa83b95236539a406c8d4659201ceed70b0f5066c4574ec42ef675aff0baaa",
+      "copiedSha256": "95aa83b95236539a406c8d4659201ceed70b0f5066c4574ec42ef675aff0baaa"
+    },
+    {
+      "path": "tp_pipeline/src/Globals.cpp",
+      "sourceSha256": "487cf38846344afe2d01974f28f355c85a1de9bc29e07d7e21b63836e02ac83e",
+      "copiedSha256": "487cf38846344afe2d01974f28f355c85a1de9bc29e07d7e21b63836e02ac83e"
+    },
+    {
+      "path": "tp_pipeline/src/Parameter.cpp",
+      "sourceSha256": "8902ff6fcb8e364946f855233ac464c56685fc7d5cb8e287ffad6e27afd6b846",
+      "copiedSha256": "8902ff6fcb8e364946f855233ac464c56685fc7d5cb8e287ffad6e27afd6b846"
+    },
+    {
+      "path": "tp_pipeline/src/PipelineDetails.cpp",
+      "sourceSha256": "286517fd87bdb9fdd5a9f11d83381be75a1ec73b873d4597f63ca019a7eff2dc",
+      "copiedSha256": "286517fd87bdb9fdd5a9f11d83381be75a1ec73b873d4597f63ca019a7eff2dc"
+    },
+    {
+      "path": "tp_pipeline/src/PipelineManager.cpp",
+      "sourceSha256": "5bc569b6f45a45e5996e3ee6f4d22b83ad601a912e6d80aba7b8c3c2f7b2d202",
+      "copiedSha256": "28fad42b470d64c8bb3828444fb1f78b9b80dae93751a3b6e953b7eb2f441139"
+    },
+    {
+      "path": "tp_pipeline/src/step_delegates/NoneStepDelegate.cpp",
+      "sourceSha256": "177b2473f38cb86e5a08220fd31b485246383ce46de9ce033ff0e91f0943889e",
+      "copiedSha256": "177b2473f38cb86e5a08220fd31b485246383ce46de9ce033ff0e91f0943889e"
+    },
+    {
+      "path": "tp_pipeline/src/StepContext.cpp",
+      "sourceSha256": "1dc0911ba0505a06e4668ff35b6a13e05185a636c0cb91b098cc8e088809151f",
+      "copiedSha256": "1dc0911ba0505a06e4668ff35b6a13e05185a636c0cb91b098cc8e088809151f"
+    },
+    {
+      "path": "tp_pipeline/src/StepDelegate.cpp",
+      "sourceSha256": "917fe75f7101faec5507ed935198aa373b3d950ff8c6577bcd01733c33d0f016",
+      "copiedSha256": "917fe75f7101faec5507ed935198aa373b3d950ff8c6577bcd01733c33d0f016"
+    },
+    {
+      "path": "tp_pipeline/src/StepDelegateMap.cpp",
+      "sourceSha256": "3332289f1e7ad9e04b3f8f67b9cd96184fdb050bc529c725156029bc2bc68161",
+      "copiedSha256": "3332289f1e7ad9e04b3f8f67b9cd96184fdb050bc529c725156029bc2bc68161"
+    },
+    {
+      "path": "tp_pipeline/src/StepDetails.cpp",
+      "sourceSha256": "733c096a9784400e6c4d403e8f8488e15cdcec68e8ebfaa3ae641366df6d791a",
+      "copiedSha256": "733c096a9784400e6c4d403e8f8488e15cdcec68e8ebfaa3ae641366df6d791a"
+    },
+    {
+      "path": "tp_pipeline/src/StepOutput.cpp",
+      "sourceSha256": "0517507f1e03489948384beb3c6bf14318b0dff2f9ecafba498d1f0a75121343",
+      "copiedSha256": "0517507f1e03489948384beb3c6bf14318b0dff2f9ecafba498d1f0a75121343"
+    },
+    {
+      "path": "tp_pipeline/src/StepProfilingData.cpp",
+      "sourceSha256": "168d0df7f3d9540d571912e3094f06034d7db065f7b558153bf7da869d8178ba",
+      "copiedSha256": "168d0df7f3d9540d571912e3094f06034d7db065f7b558153bf7da869d8178ba"
+    },
+    {
+      "path": "tp_task_queue/inc/tp_task_queue/AsyncWorkQueue.h",
+      "sourceSha256": "c52bb949511f0dd41935e9b52d4223b4b1171e8d77846e300833f0338d6dbb08",
+      "copiedSha256": "c52bb949511f0dd41935e9b52d4223b4b1171e8d77846e300833f0338d6dbb08"
+    },
+    {
+      "path": "tp_task_queue/inc/tp_task_queue/Globals.h",
+      "sourceSha256": "f2e5812405a42ee784e883cdbdc45b64101bf73a4846a84e2610c2ba69941bd8",
+      "copiedSha256": "f2e5812405a42ee784e883cdbdc45b64101bf73a4846a84e2610c2ba69941bd8"
+    },
+    {
+      "path": "tp_task_queue/inc/tp_task_queue/SynchronizationPoint.h",
+      "sourceSha256": "b33f02bc1f1eb99d0c4726212c366fd77f7ee62e402ae4642367135ab435de8e",
+      "copiedSha256": "b33f02bc1f1eb99d0c4726212c366fd77f7ee62e402ae4642367135ab435de8e"
+    },
+    {
+      "path": "tp_task_queue/inc/tp_task_queue/Task.h",
+      "sourceSha256": "d92d3183e5a1db211921f0a070c66c21e82c955623e61731623155ec928f0d00",
+      "copiedSha256": "d92d3183e5a1db211921f0a070c66c21e82c955623e61731623155ec928f0d00"
+    },
+    {
+      "path": "tp_task_queue/inc/tp_task_queue/TaskQueue.h",
+      "sourceSha256": "07fd0ee71c8707155e0382484800cf49772f308090b4f573b706437a4b75215e",
+      "copiedSha256": "07fd0ee71c8707155e0382484800cf49772f308090b4f573b706437a4b75215e"
+    },
+    {
+      "path": "tp_task_queue/inc/tp_task_queue/WorkQueue.h",
+      "sourceSha256": "db6cce64cf0952bafeaa5daaf4dc10a0f1056a5c0137965e8fac488158a6f3ce",
+      "copiedSha256": "db6cce64cf0952bafeaa5daaf4dc10a0f1056a5c0137965e8fac488158a6f3ce"
+    },
+    {
+      "path": "tp_task_queue/LICENSE",
+      "sourceSha256": "7394c0554a2b5bdb597f78a7ad14a80f086b3dc69b7b9b781d9301cef41b7e9b",
+      "copiedSha256": "7394c0554a2b5bdb597f78a7ad14a80f086b3dc69b7b9b781d9301cef41b7e9b"
+    },
+    {
+      "path": "tp_task_queue/src/AsyncWorkQueue.cpp",
+      "sourceSha256": "8bcefc9f3c2f8e477e6cbe88d5f0578f44550478995529ccd8888b2b9e76ac77",
+      "copiedSha256": "8bcefc9f3c2f8e477e6cbe88d5f0578f44550478995529ccd8888b2b9e76ac77"
+    },
+    {
+      "path": "tp_task_queue/src/Globals.cpp",
+      "sourceSha256": "91de69a9859f81bb7f6dd19bbe0bb7e41fb7dc06cfd326b0ad79de4575eab87a",
+      "copiedSha256": "91de69a9859f81bb7f6dd19bbe0bb7e41fb7dc06cfd326b0ad79de4575eab87a"
+    },
+    {
+      "path": "tp_task_queue/src/SynchronizationPoint.cpp",
+      "sourceSha256": "e22a3f3f3b83cd9e578491109e79239a24fb0dc8c39b69d6634f6c705b7beb10",
+      "copiedSha256": "e22a3f3f3b83cd9e578491109e79239a24fb0dc8c39b69d6634f6c705b7beb10"
+    },
+    {
+      "path": "tp_task_queue/src/Task.cpp",
+      "sourceSha256": "42de1cb9fe6940db9526a9cf8e8a42ca73564525cb158a66c301bfc48351e42c",
+      "copiedSha256": "42de1cb9fe6940db9526a9cf8e8a42ca73564525cb158a66c301bfc48351e42c"
+    },
+    {
+      "path": "tp_task_queue/src/TaskQueue.cpp",
+      "sourceSha256": "8fe8d2d362f821f191d60ffefd356efa711c0fc39b4df43187a1c632396e30d9",
+      "copiedSha256": "8fe8d2d362f821f191d60ffefd356efa711c0fc39b4df43187a1c632396e30d9"
+    },
+    {
+      "path": "tp_task_queue/src/WorkQueue.cpp",
+      "sourceSha256": "f2b5bddc1603da5de8882e0bb44321f0d1699675953f00adf87d2099b7895f98",
+      "copiedSha256": "f2b5bddc1603da5de8882e0bb44321f0d1699675953f00adf87d2099b7895f98"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/AbstractCrossThreadCallback.h",
+      "sourceSha256": "5824295235911286951ac7a577d6e5bbfad895e0aeb53397c0d3e4816e78df24",
+      "copiedSha256": "5824295235911286951ac7a577d6e5bbfad895e0aeb53397c0d3e4816e78df24"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/AbstractTimerCallback.h",
+      "sourceSha256": "d01e281b1aee4678eba49f71a85d718722d2393b7df2081daf955816a13fbd5e",
+      "copiedSha256": "d01e281b1aee4678eba49f71a85d718722d2393b7df2081daf955816a13fbd5e"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/BinaryUtils.h",
+      "sourceSha256": "f11e9c57f4663372b2af06899f6dd28e15d1875348ea8da88087d77102b9a495",
+      "copiedSha256": "f11e9c57f4663372b2af06899f6dd28e15d1875348ea8da88087d77102b9a495"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/CallbackCollection.h",
+      "sourceSha256": "e105b59758821c9bb4e644d22da4d94f7ddc694f8d64a979f36d3f13fd995d35",
+      "copiedSha256": "e105b59758821c9bb4e644d22da4d94f7ddc694f8d64a979f36d3f13fd995d35"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/CountStackTrace.h",
+      "sourceSha256": "468a780a940d8a3b0a028357cd69a140b274936fb53f1a3c95defb99acd891c7",
+      "copiedSha256": "468a780a940d8a3b0a028357cd69a140b274936fb53f1a3c95defb99acd891c7"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/DebugUtils.h",
+      "sourceSha256": "774ae60f432a1099b89167ed01ec70aa6f63bda6ec7454416d7ba5ec1334bd58",
+      "copiedSha256": "774ae60f432a1099b89167ed01ec70aa6f63bda6ec7454416d7ba5ec1334bd58"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/log_stats/impl.h",
+      "sourceSha256": "ffc361b84f987d82d76e82da9a6c43a130e45f0dd15af94e59219ba90d310861",
+      "copiedSha256": "ffc361b84f987d82d76e82da9a6c43a130e45f0dd15af94e59219ba90d310861"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/log_stats/virtual_memory.h",
+      "sourceSha256": "7757b1954ec54f658e13f3ff0aba2c18322d50f5ca7999548514ba9b5d9fcfa4",
+      "copiedSha256": "7757b1954ec54f658e13f3ff0aba2c18322d50f5ca7999548514ba9b5d9fcfa4"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/AndroidStackTrace.h",
+      "sourceSha256": "0ffcfedc1925869cf59dc9d98436830ff5b940294f7b37f660355f9711906788",
+      "copiedSha256": "0ffcfedc1925869cf59dc9d98436830ff5b940294f7b37f660355f9711906788"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/Common.h",
+      "sourceSha256": "7a9a423af7083694fe0d3b2b6810d4992b004b6bebf1f5ecd93d0aba264a868b",
+      "copiedSha256": "7a9a423af7083694fe0d3b2b6810d4992b004b6bebf1f5ecd93d0aba264a868b"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/EmscriptenStackTrace.h",
+      "sourceSha256": "eeb8dcfe4941d8e38e182f0f1c6f15e729aaae29f4db672a6959160fde72f61a",
+      "copiedSha256": "eeb8dcfe4941d8e38e182f0f1c6f15e729aaae29f4db672a6959160fde72f61a"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/GCCStackTrace.h",
+      "sourceSha256": "cc1a3a1cbd41620390b98b76dc91392f1fff2b7242063532885e157414b43bf9",
+      "copiedSha256": "cc1a3a1cbd41620390b98b76dc91392f1fff2b7242063532885e157414b43bf9"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/OSXStackTrace.h",
+      "sourceSha256": "6f059cf2fc9ab6e79aab11484bb0ab95c9a2274d08293c6d4ac745f8e8ec934a",
+      "copiedSha256": "6f059cf2fc9ab6e79aab11484bb0ab95c9a2274d08293c6d4ac745f8e8ec934a"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/StackTrace_BasicImpl.h",
+      "sourceSha256": "4ccc726a4bbbc6b8a3d23d108659494bec7b3fbb65f8e8d8b5fc79b843f11e0b",
+      "copiedSha256": "4ccc726a4bbbc6b8a3d23d108659494bec7b3fbb65f8e8d8b5fc79b843f11e0b"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/StackTrace_GCC.h",
+      "sourceSha256": "25a7234ae7b051b89b2ffcae72b0731d1d1f335cf821e2ed5f6cbd86e839f336",
+      "copiedSha256": "25a7234ae7b051b89b2ffcae72b0731d1d1f335cf821e2ed5f6cbd86e839f336"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/UnsupportedStackTrace.h",
+      "sourceSha256": "11c1922fbc39e00be4665e4e8893a825221a99fcad1502aebc3193bbe22550f8",
+      "copiedSha256": "11c1922fbc39e00be4665e4e8893a825221a99fcad1502aebc3193bbe22550f8"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/stack_trace/Win32MSVCStackTrace.h",
+      "sourceSha256": "4c4b39e90991a3ea7483239fc67afc9880c12efaf8701b3f8aaab721cd200fb4",
+      "copiedSha256": "4c4b39e90991a3ea7483239fc67afc9880c12efaf8701b3f8aaab721cd200fb4"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/detail/StaticState.h",
+      "sourceSha256": "e80c72e36e80fdf63aa6b91738657966551c9c9b0c4182d3efe8b8046e557d89",
+      "copiedSha256": "e80c72e36e80fdf63aa6b91738657966551c9c9b0c4182d3efe8b8046e557d89"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/FileUtils.h",
+      "sourceSha256": "0608f8c03d3a542e9a1879bb8bfba72df4f9f45073a652d3eb640febf90ef6e5",
+      "copiedSha256": "0608f8c03d3a542e9a1879bb8bfba72df4f9f45073a652d3eb640febf90ef6e5"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/Garbage.h",
+      "sourceSha256": "ddaaca5718b3a31c349170c5589b595d6956f6b2d90a6067ac67ad60f484c6c9",
+      "copiedSha256": "ddaaca5718b3a31c349170c5589b595d6956f6b2d90a6067ac67ad60f484c6c9"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/Globals.h",
+      "sourceSha256": "34256b31bc28212f7411580a0987ff5dc670c490d75331435cc7618dcc837a7b",
+      "copiedSha256": "34256b31bc28212f7411580a0987ff5dc670c490d75331435cc7618dcc837a7b"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/Hash.h",
+      "sourceSha256": "29aff46c07a846c5d508ceb2262dc227b728e307b4bb081ce14a94379046709f",
+      "copiedSha256": "29aff46c07a846c5d508ceb2262dc227b728e307b4bb081ce14a94379046709f"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/JSONUtils.h",
+      "sourceSha256": "04bdd0c22e246fe87841f614c003ccd66aeebad06f9cc9780407dfd10abe7465",
+      "copiedSha256": "04bdd0c22e246fe87841f614c003ccd66aeebad06f9cc9780407dfd10abe7465"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/MutexUtils.h",
+      "sourceSha256": "e927fbaf0f8fd9f6eefe0e6016111acb6b9ca8ed20c9cc6d774ee3a05c9b19f8",
+      "copiedSha256": "e927fbaf0f8fd9f6eefe0e6016111acb6b9ca8ed20c9cc6d774ee3a05c9b19f8"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/Progress.h",
+      "sourceSha256": "4516224eb28b7491063099dd61ac302f4a8e84c844939e68f9fdb8df07eafcc2",
+      "copiedSha256": "4516224eb28b7491063099dd61ac302f4a8e84c844939e68f9fdb8df07eafcc2"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/RefCount.h",
+      "sourceSha256": "0b800fe0745cc43639c1fa3913b85f0b11d1886033dfaaa11209eccfc05a88db",
+      "copiedSha256": "0b800fe0745cc43639c1fa3913b85f0b11d1886033dfaaa11209eccfc05a88db"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/StackTrace.h",
+      "sourceSha256": "06db55db00cb436e9ff5a1274315d9ac1faca774cb982f11936381863b6f8d60",
+      "copiedSha256": "06db55db00cb436e9ff5a1274315d9ac1faca774cb982f11936381863b6f8d60"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/StringID.h",
+      "sourceSha256": "1f0fa1617fb296b392ace85e829786f12d53017a7a2c128eed0be40e7a2faff7",
+      "copiedSha256": "1f0fa1617fb296b392ace85e829786f12d53017a7a2c128eed0be40e7a2faff7"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/TimerThread.h",
+      "sourceSha256": "4b1f3a1603617b0c6fa2fc3a5e253004aac070b4b4a1c485fa368d643ebb841d",
+      "copiedSha256": "4b1f3a1603617b0c6fa2fc3a5e253004aac070b4b4a1c485fa368d643ebb841d"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/TimeUtils.h",
+      "sourceSha256": "7fad1347f636d7cce2bf5a6b42cca0bbcb960617ecb55b494f63e34a85d2d63b",
+      "copiedSha256": "7fad1347f636d7cce2bf5a6b42cca0bbcb960617ecb55b494f63e34a85d2d63b"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/TPCheckMainThread.h",
+      "sourceSha256": "265f9a6f28eb7bd158858ec7615199d0186245dd431e061560d0430b78fbf084",
+      "copiedSha256": "265f9a6f28eb7bd158858ec7615199d0186245dd431e061560d0430b78fbf084"
+    },
+    {
+      "path": "tp_utils/inc/tp_utils/TPPixel.h",
+      "sourceSha256": "58adbdda5eb8339fb4a361623fae008f78ce0d087c0ca89695a3f49380f6486d",
+      "copiedSha256": "58adbdda5eb8339fb4a361623fae008f78ce0d087c0ca89695a3f49380f6486d"
+    },
+    {
+      "path": "tp_utils/LICENSE",
+      "sourceSha256": "c070cb51008605271f7b9c0920238f38869e60656e25cb334e5934433c4febb2",
+      "copiedSha256": "c070cb51008605271f7b9c0920238f38869e60656e25cb334e5934433c4febb2"
+    },
+    {
+      "path": "tp_utils/src/AbstractCrossThreadCallback.cpp",
+      "sourceSha256": "0c23ce8944764791c1916911cc68fc043bbfe9b87df025be920ac8aa2d378cde",
+      "copiedSha256": "0c23ce8944764791c1916911cc68fc043bbfe9b87df025be920ac8aa2d378cde"
+    },
+    {
+      "path": "tp_utils/src/AbstractTimerCallback.cpp",
+      "sourceSha256": "628b9a6de46374e877ccb77a6f66cc40577dea5b68ed5357fbe7d3d09ceec3a8",
+      "copiedSha256": "628b9a6de46374e877ccb77a6f66cc40577dea5b68ed5357fbe7d3d09ceec3a8"
+    },
+    {
+      "path": "tp_utils/src/BinaryUtils.cpp",
+      "sourceSha256": "6d24a57ff5c8ed1476a59fffb1c0425480d140061dfa9183d99163ede4eb0adf",
+      "copiedSha256": "6d24a57ff5c8ed1476a59fffb1c0425480d140061dfa9183d99163ede4eb0adf"
+    },
+    {
+      "path": "tp_utils/src/CountStackTrace.cpp",
+      "sourceSha256": "0d860946e1ec7ece51a850074dd6f03a201004304ae244d46390516831b87c5a",
+      "copiedSha256": "0d860946e1ec7ece51a850074dd6f03a201004304ae244d46390516831b87c5a"
+    },
+    {
+      "path": "tp_utils/src/DebugUtils.cpp",
+      "sourceSha256": "0e88bfbbec70bd05656cf33ba5eeddd1e55c1f074fd2c11b2d49fd3e7609dc67",
+      "copiedSha256": "0e88bfbbec70bd05656cf33ba5eeddd1e55c1f074fd2c11b2d49fd3e7609dc67"
+    },
+    {
+      "path": "tp_utils/src/detail/StaticState.cpp",
+      "sourceSha256": "d20ea31c86ed24bb66530c928338aeacd37f702ed3872ec60767b3d523d6d20f",
+      "copiedSha256": "d20ea31c86ed24bb66530c928338aeacd37f702ed3872ec60767b3d523d6d20f"
+    },
+    {
+      "path": "tp_utils/src/FileUtils.cpp",
+      "sourceSha256": "9b622d745e6108cc67ccd60f0ef1021b5199b9b86143a8271cdcc23643fff479",
+      "copiedSha256": "9b622d745e6108cc67ccd60f0ef1021b5199b9b86143a8271cdcc23643fff479"
+    },
+    {
+      "path": "tp_utils/src/Garbage.cpp",
+      "sourceSha256": "47a74aa9776d3e7c520cdf5c6095231963ef96040fa3170100e1032de1873185",
+      "copiedSha256": "47a74aa9776d3e7c520cdf5c6095231963ef96040fa3170100e1032de1873185"
+    },
+    {
+      "path": "tp_utils/src/Globals.cpp",
+      "sourceSha256": "62a1071eca1e5328de5040f6e6401277fb31052de59069a5b4adbb44e7ae0f1b",
+      "copiedSha256": "62a1071eca1e5328de5040f6e6401277fb31052de59069a5b4adbb44e7ae0f1b"
+    },
+    {
+      "path": "tp_utils/src/JSONUtils.cpp",
+      "sourceSha256": "b46492b001a6b9f532ead68abd0f9f31b86cf646ffc10ca016bf9d5a5d18c1f1",
+      "copiedSha256": "b46492b001a6b9f532ead68abd0f9f31b86cf646ffc10ca016bf9d5a5d18c1f1"
+    },
+    {
+      "path": "tp_utils/src/MutexUtils.cpp",
+      "sourceSha256": "136f0bc290f418326f4192ce2aed879e410ed66752098e0236afe2453a409f31",
+      "copiedSha256": "136f0bc290f418326f4192ce2aed879e410ed66752098e0236afe2453a409f31"
+    },
+    {
+      "path": "tp_utils/src/Progress.cpp",
+      "sourceSha256": "0ab9e666e495e42ed269edab67ce17f87bf715a30f8cf6e48da067aa5bbade75",
+      "copiedSha256": "0ab9e666e495e42ed269edab67ce17f87bf715a30f8cf6e48da067aa5bbade75"
+    },
+    {
+      "path": "tp_utils/src/RefCount.cpp",
+      "sourceSha256": "8333fa0c9b5f3ff0a8d10b602806f20fe9be6ff4607238bf90eb2abd217f0d11",
+      "copiedSha256": "8333fa0c9b5f3ff0a8d10b602806f20fe9be6ff4607238bf90eb2abd217f0d11"
+    },
+    {
+      "path": "tp_utils/src/StackTrace.cpp",
+      "sourceSha256": "cb1683674f9dc393f6a83ca3a85d231ffa1175b024ee3fc94a486cc75c2f2135",
+      "copiedSha256": "cb1683674f9dc393f6a83ca3a85d231ffa1175b024ee3fc94a486cc75c2f2135"
+    },
+    {
+      "path": "tp_utils/src/StringID.cpp",
+      "sourceSha256": "a82fcb9620c6951b4ee4f54adf20b79893c99ab703767a6214db016e2d5d57c1",
+      "copiedSha256": "a82fcb9620c6951b4ee4f54adf20b79893c99ab703767a6214db016e2d5d57c1"
+    },
+    {
+      "path": "tp_utils/src/TimerThread.cpp",
+      "sourceSha256": "1e2146d149f64f43273b2e74332cc1780bba960e4cf04044de4328d5bc681ade",
+      "copiedSha256": "1e2146d149f64f43273b2e74332cc1780bba960e4cf04044de4328d5bc681ade"
+    },
+    {
+      "path": "tp_utils/src/TimeUtils.cpp",
+      "sourceSha256": "b21bb1b1960f818ebf462a9f61545ac91b451b188dd823642f2f4afea59c8393",
+      "copiedSha256": "b21bb1b1960f818ebf462a9f61545ac91b451b188dd823642f2f4afea59c8393"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+--- a/tp_pipeline/src/PipelineManager.cpp
++++ b/tp_pipeline/src/PipelineManager.cpp
+@@ -24,6 +24,7 @@
+   PipelineDetails* pipelineDetails;
+   const tp_pipeline::StepDelegateMap* stepDelegates;
+   const tp_data::CollectionFactory* collectionFactory;
++  bool fixupParameters;
+ 
+   std::string debugRootDir;
+ 
+@@ -42,9 +43,10 @@
+     q(q_),
+     pipelineDetails(pipelineDetails_),
+     stepDelegates(stepDelegates_),
+-    collectionFactory(collectionFactory_)
+-  {
+-    rebuildContexts(fixupParameters);
++    collectionFactory(collectionFactory_),
++    fixupParameters(fixupParameters)
++  {
++    rebuildContexts();
+   }
+ 
+   //################################################################################################
+@@ -87,7 +89,7 @@
+   }
+ 
+   //################################################################################################
+-  void rebuildContexts(bool fixupParameters=true)
++  void rebuildContexts()
+   {
+     ignoreCallbacks=true;
+     TP_CLEANUP([&]{ignoreCallbacks=false;});
+@@ -182,7 +184,8 @@
+       }
+     }
+ 
+-    pipelineDetails->clearDanglingInputs();
++    if(fixupParameters)
++      pipelineDetails->clearDanglingInputs();
+   }
+ 
+   //################################################################################################

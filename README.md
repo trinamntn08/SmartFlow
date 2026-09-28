@@ -5,7 +5,7 @@ An independent, extensible visual workspace for interactive node graphs and thei
 
 ## Current state
 
-SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. The first native checkpoint includes the copied QtNodes canvas and a numeric graph preview. Pipeline and 3D migration are still pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
+SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas and a numeric graph preview. N2 adds a copied pipeline/data/task foundation and a tested background execution adapter. Connecting that adapter to the canvas/inspector and migrating 3D remain pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
 
 ## Start locally
 
@@ -42,18 +42,18 @@ npm run preview
 
 ## Layout
 
-| Path                     | Responsibility                                     | State               |
-| ------------------------ | -------------------------------------------------- | ------------------- |
-| `native/app`             | Native C++/Qt shell and adapters                   | Migration preview   |
-| `native/vendor`          | Copied QtNodes sources and retained license        | Native dependency   |
-| `native/tests`           | Native graph behavior tests                        | Initial tests       |
-| `apps/web`               | Browser interface and application composition      | Development starter |
-| `packages/core`          | Domain-independent project and graph model         | Initial persistence |
-| `packages/extension-sdk` | Public extension contracts                         | Initial contracts   |
-| `packages/runtime`       | Validation, scheduling, execution state            | Reserved            |
-| `extensions/scene-3d`    | Included 3D types, nodes, and viewer               | Reserved            |
-| `extensions/data`        | Independent non-3D validation package              | Reserved            |
-| `docs`                   | Product, decisions, development, and agent context | Available           |
+| Path                     | Responsibility                                        | State               |
+| ------------------------ | ----------------------------------------------------- | ------------------- |
+| `native/app`             | Native C++/Qt shell and adapters                      | Migration preview   |
+| `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses | Native dependencies |
+| `native/tests`           | Canvas and background pipeline behavior tests         | N1/N2 checks        |
+| `apps/web`               | Browser interface and application composition         | Development starter |
+| `packages/core`          | Domain-independent project and graph model            | Initial persistence |
+| `packages/extension-sdk` | Public extension contracts                            | Initial contracts   |
+| `packages/runtime`       | Validation, scheduling, execution state               | Reserved            |
+| `extensions/scene-3d`    | Included 3D types, nodes, and viewer                  | Reserved            |
+| `extensions/data`        | Independent non-3D validation package                 | Reserved            |
+| `docs`                   | Product, decisions, development, and agent context    | Available           |
 
 Reserved folders contain ownership notes, not working libraries. Add their package manifests when implementation starts. The root npm workspace configuration already covers these locations.
 

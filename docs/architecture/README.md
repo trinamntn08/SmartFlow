@@ -4,8 +4,11 @@
 
 Native C++/Qt is primary, per [decision 0003](decisions/0003-native-first.md).
 `native/app` composes the application and links the copied QtNodes library in
-`native/vendor`. The old checkout is not a dependency. Pipeline and 3D modules
-will be copied and adapted incrementally. The TypeScript package diagram below
+`native/vendor`. N2 adds selected pipeline/data/task sources and a separate
+`native/app/pipeline` background execution adapter. It has no QtNodes or scene
+dependency; canvas/inspector integration and 3D migration remain pending. See
+[decision 0004](decisions/0004-native-pipeline-migration.md). The old checkout is
+not a dependency. The TypeScript package diagram below
 describes the preserved future-extension prototype, not the native build.
 
 ## Product invariant
