@@ -52,6 +52,32 @@ StepDetails prototype(const StepDelegate& delegate)
     result.setParametersOrder(order);
     return result;
 }
+
+Document encode(const Parameter& parameter)
+{
+    Document value;
+    if(const auto* number=std::get_if<double>(&parameter.value)) value=*number;
+    else if(const auto* text=std::get_if<std::string>(&parameter.value)) value=*text;
+    else if(const auto* boolean=std::get_if<bool>(&parameter.value)) value=*boolean;
+    else throw FileError("Unsupported default parameter codec: " + parameter.name.toString());
+    auto checked=parameter;
+    if(!decode(checked,value)) throw FileError("Invalid default parameter: " + parameter.name.toString());
+    return value;
+}
+
+Document::const_iterator findId(const Document& items, const std::string& id)
+{
+    return std::find_if(items.begin(),items.end(),[&](const auto& item) { return item["id"]==id; });
+}
+}
+
+DocumentSession DocumentSession::empty(const std::string& projectId, const std::string& graphId,
+    std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates, std::vector<NodePresentation> registrations)
+{
+    auto document=create(projectId);
+    document["project"]["graphs"].push_back({{"id",graphId},{"nodes",Document::array()},
+                                           {"connections",Document::array()}});
+    return DocumentSession(std::move(document),graphId,std::move(delegates),std::move(registrations));
 }
 
 DocumentSession::DocumentSession(Document source, std::string graphId,
@@ -62,12 +88,15 @@ DocumentSession::DocumentSession(Document source, std::string graphId,
     validate(this->source);
     if(!this->delegates) throw FileError("Missing delegate registry");
     std::set<std::tuple<std::string,std::string,int>> identities;
+    std::set<std::string> runtimeTypes;
     for(const auto& entry : this->registrations) {
         if(entry.packageId.trimmed().isEmpty() || entry.typeId.trimmed().isEmpty() || entry.contractVersion < 1 ||
            !this->delegates->stepDelegate(entry.type.toStdString()))
             throw FileError("Invalid native persistence registration");
         if(!identities.emplace(entry.packageId.toStdString(),entry.typeId.toStdString(),entry.contractVersion).second)
             throw FileError("Duplicate native persistence registration");
+        if(!runtimeTypes.insert(entry.type.toStdString()).second)
+            throw FileError("Ambiguous native runtime type registration");
     }
     const auto& graphs=this->source["project"]["graphs"];
     auto found=std::find_if(graphs.begin(),graphs.end(),[&](const auto& graph) { return graph["id"] == graphId; });
@@ -154,11 +183,94 @@ void DocumentSession::setParameter(const std::string& nodeId, const std::string&
     if(!parameter.name.isValid() || !decode(parameter,value)) throw FileError("Unsupported parameter edit: " + name);
     auto replacement=source;
     replacement["project"]["graphs"][graphIndex]["nodes"][size_t(std::distance(nodes.begin(),node))]["parameters"][name]=value;
+    replace(std::move(replacement));
+}
+
+void DocumentSession::replace(Document replacement)
+{
     // Prepare a complete replacement projection first for a strong exception
     // guarantee. Failed edits never change either the retained file or graph.
     DocumentSession candidate(std::move(replacement),source["project"]["graphs"][graphIndex]["id"],delegates,registrations);
     source.swap(candidate.source);
     compiled.swap(candidate.compiled);
     issues.swap(candidate.issues);
+}
+
+void DocumentSession::createNode(const std::string& nodeId, const std::string& registeredType)
+{
+    const auto entry=std::find_if(registrations.begin(),registrations.end(),[&](const auto& item) {
+        return item.type.toStdString()==registeredType;
+    });
+    if(entry==registrations.end()) throw FileError("Unavailable node type: " + registeredType);
+    auto definition=prototype(*delegates->stepDelegate(registeredType));
+    auto parameters=Document::object();
+    for(const auto& [name,parameter] : definition.parameters()) parameters[name.toString()]=encode(parameter);
+    auto replacement=source;
+    replacement["project"]["graphs"][graphIndex]["nodes"].push_back({
+        {"id",nodeId},{"packageId",entry->packageId.toStdString()},
+        {"typeId",entry->typeId.toStdString()},{"version",entry->contractVersion},{"parameters",parameters}});
+    replace(std::move(replacement));
+}
+
+void DocumentSession::removeNode(const std::string& nodeId)
+{
+    auto replacement=source;
+    auto& graph=replacement["project"]["graphs"][graphIndex];
+    auto& nodes=graph["nodes"];
+    const auto node=findId(nodes,nodeId);
+    if(node==nodes.cend()) throw FileError("Node does not exist: " + nodeId);
+    nodes.erase(node);
+    auto& edges=graph["connections"];
+    for(auto edge=edges.begin(); edge!=edges.end(); ) {
+        if((*edge)["source"]["nodeId"]==nodeId || (*edge)["target"]["nodeId"]==nodeId) edge=edges.erase(edge);
+        else ++edge;
+    }
+    replace(std::move(replacement));
+}
+
+void DocumentSession::connect(const std::string& connectionId,
+    const std::string& sourceNode, const std::string& sourcePort,
+    const std::string& targetNode, const std::string& targetPort)
+{
+    const auto& graph=source["project"]["graphs"][graphIndex];
+    const auto& nodes=graph["nodes"];
+    const auto from=findId(nodes,sourceNode), to=findId(nodes,targetNode);
+    if(from==nodes.cend() || to==nodes.cend()) throw FileError("Connection endpoint node does not exist");
+    const auto* fromType=registration(*from,registrations);
+    const auto* toType=registration(*to,registrations);
+    if(!fromType || !toType) throw FileError("Cannot connect an unavailable node type");
+    const auto& outputs=delegates->stepDelegate(fromType->type.toStdString())->outPorts();
+    const auto& inputs=delegates->stepDelegate(toType->type.toStdString())->inPorts();
+    const auto output=std::find_if(outputs.begin(),outputs.end(),[&](const auto& p) { return p.name.toString()==sourcePort; });
+    const auto input=std::find_if(inputs.begin(),inputs.end(),[&](const auto& p) { return p.name.toString()==targetPort; });
+    if(output==outputs.end() || input==inputs.end()) throw FileError("Connection endpoint port does not exist");
+    if(output->type!=input->type) throw FileError("Incompatible connection port types");
+    for(const auto& edge : graph["connections"])
+        if(edge["target"]["nodeId"]==targetNode && edge["target"]["portId"]==targetPort)
+            throw FileError("Connection input already has a producer");
+    auto replacement=source;
+    replacement["project"]["graphs"][graphIndex]["connections"].push_back({
+        {"id",connectionId},{"source",{{"nodeId",sourceNode},{"portId",sourcePort}}},
+        {"target",{{"nodeId",targetNode},{"portId",targetPort}}}});
+    replace(std::move(replacement));
+}
+
+void DocumentSession::disconnect(const std::string& connectionId)
+{
+    auto replacement=source;
+    auto& edges=replacement["project"]["graphs"][graphIndex]["connections"];
+    const auto edge=findId(edges,connectionId);
+    if(edge==edges.cend()) throw FileError("Connection does not exist: " + connectionId);
+    edges.erase(edge);
+    replace(std::move(replacement));
+}
+
+void DocumentSession::setWorkspaceField(const std::string& name, const Document& value)
+{
+    if(QString::fromStdString(name).trimmed().isEmpty()) throw FileError("Workspace field name must not be empty");
+    auto replacement=source;
+    replacement["workspace"][name]=value;
+    validate(replacement);
+    source.swap(replacement);
 }
 } // namespace smartflow::project

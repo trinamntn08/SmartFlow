@@ -99,3 +99,8 @@ unknown node/parameter/connection handling and registration validation.
 Report: `build/native/native/document-session-results.xml`.
 This adapter is not yet wired to application file actions or missing-node visuals.
 Continue from the [N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md).
+
+N5c extends that suite with empty-project creation, structural node/connection
+edits, save/reopen execution, opaque-edge preservation, failed-command isolation,
+type compatibility and workspace-only edits. Continue editor integration from the
+[N5c handoff](agents/handoffs/2026-09-30-native-checkpoint-n5c.md).

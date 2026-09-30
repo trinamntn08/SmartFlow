@@ -25,6 +25,10 @@
   Editor Save/Open, missing-node display and the non-3D extension remain pending.
   See [N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md).
 - Project name and branding: SmartFlow.
+- N5c adds transactional retained-document node/connection commands and isolated
+  workspace edits, with create/save/reopen execution tests. The demo editor still
+  uses its existing in-memory graph; file actions and unknown-node visuals remain
+  pending. See [N5c handoff](agents/handoffs/2026-09-30-native-checkpoint-n5c.md).
 
 - Independent local repository and product proposal.
 - Shared agent instructions and development workflow.
@@ -45,7 +49,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a) and retained-document execution adapter (N5b) completed; next connect editor save/reopen and unknown-node display, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), and structural document commands (N5c) completed; next connect editor save/reopen and unknown-node display, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

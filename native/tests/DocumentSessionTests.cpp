@@ -2,13 +2,20 @@
 #include "workspace/GraphProject.h"
 #include "pipeline/PipelineExecution.h"
 #include <tp_data/members/NumberMember.h>
+#include <tp_pipeline/StepDelegate.h>
 #include <QTemporaryDir>
 #include <QtTest/QtTest>
 #include <chrono>
+#include <limits>
 
 using namespace smartflow;
 using namespace smartflow::project;
 namespace {
+class TextInputDelegate final : public tp_pipeline::StepDelegate {
+public:
+    TextInputDelegate() : StepDelegate("test.text@1",{},{{"in","test.text"}},{}) {}
+    bool executeStep(tp_pipeline::StepContext*) const override { return true; }
+};
 std::vector<NodePresentation> registrations()
 {
     return {{"smartflow.numeric.number@1","Number","Numeric","smartflow.numeric","number",1},
@@ -48,6 +55,123 @@ double execute(const DocumentSession& session, const std::shared_ptr<tp_pipeline
 class DocumentSessionTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void buildSaveReopenAndReconnectFromEmptyDocument()
+    {
+        const auto registry=numericDelegates();
+        auto session=DocumentSession::empty("new-project","graph",registry,registrations());
+        QVERIFY(session.executableGraph().steps().empty());
+        session.createNode("source","smartflow.numeric.number@1");
+        session.createNode("target","smartflow.numeric.add@1");
+        QVERIFY_EXCEPTION_THROWN(session.executableGraph(),FileError);
+        session.setParameter("source","value",41);
+        session.connect("stable-edge","source","out","target","in");
+        QCOMPARE(execute(session,registry),42.0);
+        QTemporaryDir directory;
+        const auto path=directory.filePath("created.smartflow");
+        write(path,session.document());
+        DocumentSession reopened(read(path),"graph",registry,registrations());
+        QVERIFY(reopened.document()==session.document());
+        QCOMPARE(execute(reopened,registry),42.0);
+        reopened.disconnect("stable-edge");
+        QVERIFY_EXCEPTION_THROWN(reopened.executableGraph(),FileError);
+        reopened.connect("stable-edge","source","out","target","in");
+        QVERIFY(reopened.document()==session.document());
+        QCOMPARE(execute(reopened,registry),42.0);
+    }
+    void structuralEditsRetainUnrelatedOpaqueContent()
+    {
+        auto original=fixture();
+        auto& graph=original["project"]["graphs"][0];
+        graph["nodes"].push_back({{"id","opaque"},{"packageId","future"},{"typeId","raw"},
+                                 {"version",99},{"parameters",{{"integer",uint64_t(18446744073709551615ULL)}}}});
+        graph["connections"].push_back({{"id","opaque-edge"},
+            {"source",{{"nodeId","opaque"},{"portId","future"},{"extra",42}}},
+            {"target",{{"nodeId","missing"},{"portId","unknown"}}},{"extra",{1,2,3}}});
+        graph["connections"].push_back({{"id","incident-opaque-edge"},
+            {"source",{{"nodeId","source"},{"portId","future"}}},
+            {"target",{{"nodeId","opaque"},{"portId","unknown"}}}});
+        DocumentSession session(original,"graph",numericDelegates(),registrations());
+        session.createNode("temporary","smartflow.numeric.number@1");
+        session.removeNode("temporary");
+        QVERIFY(session.document()==original);
+        session.removeNode("source");
+        auto expected=original;
+        expected["project"]["graphs"][0]["nodes"].erase(0);
+        auto& expectedEdges=expected["project"]["graphs"][0]["connections"];
+        expectedEdges.erase(2);
+        expectedEdges.erase(0);
+        QVERIFY(session.document()==expected);
+        QVERIFY_EXCEPTION_THROWN(session.executableGraph(),FileError);
+        // Explicit disconnect works even when neither endpoint can be resolved.
+        session.disconnect("opaque-edge");
+        expectedEdges.clear();
+        QVERIFY(session.document()==expected);
+        session.removeNode("opaque");
+        expected["project"]["graphs"][0]["nodes"].erase(1);
+        QVERIFY(session.document()==expected);
+        QVERIFY(parse(serialize(session.document()))==expected);
+    }
+    void rejectedStructuralEditsAreAtomic()
+    {
+        DocumentSession session(fixture(),"graph",numericDelegates(),registrations());
+        const auto before=session.document();
+        QVERIFY_EXCEPTION_THROWN(session.createNode("source","smartflow.numeric.number@1"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.createNode(" ","smartflow.numeric.number@1"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.createNode("new","unavailable"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.removeNode("absent"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.disconnect("absent"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.connect("new","source","out","target","in"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.connect("new","source","absent","target","in"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.connect("new","missing","out","target","in"),FileError);
+        QVERIFY(session.document()==before);
+        QCOMPARE(execute(session,numericDelegates()),42.0);
+        session.createNode("another","smartflow.numeric.add@1");
+        const auto withAnother=session.document();
+        QVERIFY_EXCEPTION_THROWN(session.connect("edge","source","out","another","in"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.connect(" ","source","out","another","in"),FileError);
+        QVERIFY(session.document()==withAnother);
+    }
+    void workspaceEditDoesNotRecompileOrChangeProject()
+    {
+        DocumentSession session(fixture(),"graph",numericDelegates(),registrations());
+        const auto original=session.document();
+        const auto* projection=&session.executableGraph();
+        session.setWorkspaceField("canvas",{{"positions",{{"source",{10,20}}}}});
+        auto expected=original;
+        expected["workspace"]["canvas"]={{"positions",{{"source",{10,20}}}}};
+        QVERIFY(session.document()==expected);
+        QCOMPARE(&session.executableGraph(),projection);
+        QVERIFY_EXCEPTION_THROWN(session.setWorkspaceField("canvas",std::numeric_limits<double>::infinity()),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.setWorkspaceField(" ",0),FileError);
+        QVERIFY(session.document()==expected);
+        QCOMPARE(&session.executableGraph(),projection);
+    }
+    void connectionsCannotOverwriteOpaqueEdgesOrGuessTypes()
+    {
+        auto document=fixture();
+        document["project"]["graphs"][0]["nodes"][0]["packageId"]="unavailable";
+        DocumentSession session(document,"graph",numericDelegates(),registrations());
+        session.createNode("available","smartflow.numeric.number@1");
+        session.createNode("free-target","smartflow.numeric.add@1");
+        const auto before=session.document();
+        QVERIFY_EXCEPTION_THROWN(session.connect("new","available","out","target","in"),FileError);
+        QVERIFY_EXCEPTION_THROWN(session.connect("new","source","out","free-target","in"),FileError);
+        QVERIFY(session.document()==before);
+        session.disconnect("edge");
+        session.connect("new","available","out","target","in");
+        QVERIFY_EXCEPTION_THROWN(session.executableGraph(),FileError);
+
+        auto registry=numericDelegates();
+        registry->addStepDelegate(new TextInputDelegate);
+        auto entries=registrations();
+        entries.push_back({"test.text@1","Text","Tests","test","text",1});
+        auto typed=DocumentSession::empty("project","graph",registry,entries);
+        typed.createNode("number","smartflow.numeric.number@1");
+        typed.createNode("text","test.text@1");
+        const auto unconnected=typed.document();
+        QVERIFY_EXCEPTION_THROWN(typed.connect("edge","number","out","text","in"),FileError);
+        QVERIFY(typed.document()==unconnected);
+    }
     void savedGraphExecutesAndEditsPreserveOtherContent()
     {
         const auto registry=numericDelegates();
@@ -118,6 +242,8 @@ private Q_SLOTS:
         QVERIFY_EXCEPTION_THROWN(DocumentSession(fixture(),"graph",numericDelegates(),entries),FileError);
         QVERIFY_EXCEPTION_THROWN(DocumentSession(fixture(),"absent",numericDelegates(),registrations()),FileError);
         entries=registrations(); entries.front().packageId.clear();
+        QVERIFY_EXCEPTION_THROWN(DocumentSession(fixture(),"graph",numericDelegates(),entries),FileError);
+        entries=registrations(); entries.back().type=entries.front().type;
         QVERIFY_EXCEPTION_THROWN(DocumentSession(fixture(),"graph",numericDelegates(),entries),FileError);
     }
 };

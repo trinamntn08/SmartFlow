@@ -1,6 +1,6 @@
 # 0007: Native project-file foundation
 
-Status: accepted for N5a; extended by N5b, 2026-09-30.
+Status: accepted for N5a; extended by N5b/N5c, 2026-09-30.
 
 ## Decision
 
@@ -70,3 +70,27 @@ the active graph. Do not call legacy fixup/default initialization on loaded node
 or turn the existing trusted undo snapshot loader into an untrusted file parser.
 Explicit package/type/version metadata belongs in the contribution contracts;
 do not infer persisted identities by splitting display labels.
+
+## Structural commands (N5c)
+
+The retained session now creates empty projects with a selected empty graph and
+supports node creation/deletion and connection creation/deletion. Callers supply
+stable IDs once so a later undo command can reuse them. New nodes alone receive
+registered defaults, encoded through the same bounded double/string/bool codecs.
+Unsupported or invalid defaults reject the entire command. A runtime type must
+map to a unique persisted identity, so creation cannot guess between registrations.
+
+Every semantic command prepares a complete candidate before replacing the source
+and projection. Deleting a node deliberately removes all its incident edges,
+including opaque ones; unrelated content remains exact. Disconnect identifies an
+edge by stable ID and can remove unresolved edges. New connections require known
+nodes, named ports, compatible types and a vacant input. An unresolved existing
+edge still occupies its input and is never silently overwritten. Other diagnostics
+may remain during editing; cycles are still checked by the execution adapter.
+
+Workspace commands replace one explicitly named top-level field after validation,
+preserving all other fields and the runtime projection. The caller owns that field
+and must merge nested content when appropriate. Node creation does not invent
+package dependency versions: contributions currently expose node contract versions,
+not resolved package versions. Package dependency management remains future work.
+These commands do not yet provide Qt undo commands or connect the demo canvas.
