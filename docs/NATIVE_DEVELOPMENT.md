@@ -88,3 +88,14 @@ and failed-save preservation. Report: `build/native/native/project-results.xml`.
 The library is not yet connected to application Save/Open actions. Read the
 [N5a handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md) before continuing
 the editor integration.
+
+## N5b retained-document adapter
+
+`smartflow_document_session` compiles a selected graph from the complete retained
+document without dropping unknown content. `native_document_session` checks
+saved numeric graph execution, exact preservation during edits, rejected edits,
+unknown node/parameter/connection handling and registration validation.
+`native_scene` also executes a serialized scene graph through these contracts.
+Report: `build/native/native/document-session-results.xml`.
+This adapter is not yet wired to application file actions or missing-node visuals.
+Continue from the [N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md).

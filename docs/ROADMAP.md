@@ -20,6 +20,10 @@
   preserving unknown JSON content without extension registration. Editor Save/Open,
   missing-node handling and the independent non-3D extension are still pending.
   See [N5a checkpoint and next-session handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md).
+- N5b adds explicit native node identities and a retained-document execution
+  adapter, with transactional parameter edits and unsupported-content diagnostics.
+  Editor Save/Open, missing-node display and the non-3D extension remain pending.
+  See [N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md).
 - Project name and branding: SmartFlow.
 
 - Independent local repository and product proposal.
@@ -41,7 +45,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: native file codec completed as N5a; next connect editor save/reopen and unknown-extension preservation, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a) and retained-document execution adapter (N5b) completed; next connect editor save/reopen and unknown-node display, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

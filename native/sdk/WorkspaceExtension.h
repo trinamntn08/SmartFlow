@@ -15,6 +15,9 @@ struct NodePresentation {
     QString type;
     QString title;
     QString category;
+    QString packageId;
+    QString typeId;
+    int contractVersion = 0;
 };
 
 class OutputViewer : public QWidget {

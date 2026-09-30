@@ -29,8 +29,8 @@ WorkspaceConfiguration numericConfiguration()
     config.factory = std::make_shared<tp_data::CollectionFactory>();
     tp_data::createCollectionFactories(*config.factory);
     config.factory->finalize();
-    config.nodes = {{"smartflow.numeric.number@1", "Number", "Numeric"},
-                    {"smartflow.numeric.add@1", "Add", "Numeric"}};
+    config.nodes = {{"smartflow.numeric.number@1", "Number", "Numeric", "smartflow.numeric", "number", 1},
+                    {"smartflow.numeric.add@1", "Add", "Numeric", "smartflow.numeric", "add", 1}};
     config.preset = {{"smartflow.numeric.number@1", {0,0}, {{"value",41}}},
                      {"smartflow.numeric.add@1", {300,0}, {}}};
     config.connections = {{0,0,1,0}};

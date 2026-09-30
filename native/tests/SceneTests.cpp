@@ -2,6 +2,7 @@
 #include <SceneViewer.h>
 #include "workspace/WorkspaceWindow.h"
 #include "workspace/ProjectCommands.h"
+#include "project/DocumentSession.h"
 #include <tp_math_utils/materials/OpenGLMaterial.h>
 #include <QDoubleSpinBox>
 #include <QPushButton>
@@ -35,6 +36,44 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void persistedSceneGraphExecutesThroughExplicitIdentities()
+    {
+        const auto config=sceneConfiguration();
+        auto file=project::create("scene-project");
+        auto nodes=project::Document::array();
+        GraphProject definitions(config.delegates);
+        for(size_t i=0; i<config.preset.size(); ++i) {
+            const auto& preset=config.preset[i];
+            const auto entry=std::find_if(config.nodes.begin(),config.nodes.end(),[&](const auto& n) { return n.type==preset.type; });
+            QVERIFY(entry!=config.nodes.end());
+            auto* defaults=definitions.create(preset.type.toStdString());
+            auto parameters=project::Document::object();
+            for(const auto& [name,p] : defaults->parameters()) parameters[name.toString()]=std::get<double>(p.value);
+            nodes.push_back({{"id",std::to_string(i)},{"packageId",entry->packageId.toStdString()},
+                {"typeId",entry->typeId.toStdString()},{"version",entry->contractVersion},{"parameters",parameters}});
+        }
+        auto edges=project::Document::array();
+        for(size_t i=0; i<config.connections.size(); ++i) {
+            const auto& edge=config.connections[i];
+            edges.push_back({{"id",std::to_string(i)},{"source",{{"nodeId",std::to_string(edge.source)},{"portId","out"}}},
+                            {"target",{{"nodeId",std::to_string(edge.target)},{"portId","in"}}}});
+        }
+        file["project"]["graphs"]={{{"id","scene"},{"nodes",nodes},{"connections",edges}}};
+        project::DocumentSession session(project::parse(project::serialize(file)),"scene",config.delegates,config.nodes);
+        QVERIFY(session.diagnostics().empty());
+        session.setParameter("0","size",3.0);
+        PipelineExecution executor;
+        auto handle=executor.submit(session.executableGraph(),config.delegates,config.factory);
+        QVERIFY(handle.result.wait_for(std::chrono::seconds(10))==std::future_status::ready);
+        const auto result=handle.result.get();
+        QVERIFY(result.succeeded());
+        const auto& output=result.steps.at("3").output;
+        const auto* scene=dynamic_cast<const SceneMember*>(output->members().front().get());
+        QVERIFY(scene);
+        QCOMPARE(scene->objects.size(),size_t(1));
+        QVERIFY(scene->objects.front().geometry.getMinMax().second.x > 1.5f);
+    }
+
     void primitiveTransformMaterialAndSnapshotIsolation()
     {
         WorkspaceWindow window(sceneConfiguration());

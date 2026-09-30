@@ -145,7 +145,7 @@ void contribute(WorkspaceConfiguration& configuration)
         const auto type = QString("smartflow.scene-3d.%1@1").arg(name);
         QString title(name); title[0] = title[0].toUpper();
         configuration.delegates->addStepDelegate(new SceneDelegate(type.toStdString().c_str(), operation));
-        configuration.nodes.push_back({type, title, "Scene 3D"});
+        configuration.nodes.push_back({type, title, "Scene 3D", "smartflow.scene-3d", name, 1});
     }
     configuration.factory->addMemberFactory(new SceneFactory);
     configuration.createViewer = [] { return new SceneViewer; };

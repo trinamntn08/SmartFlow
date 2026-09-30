@@ -1,6 +1,6 @@
 # 0007: Native project-file foundation
 
-Status: accepted for N5a, the first part of N5, 2026-09-30.
+Status: accepted for N5a; extended by N5b, 2026-09-30.
 
 ## Decision
 
@@ -32,9 +32,37 @@ outside its safe integer range. Shared fixtures test the interoperable subset.
 
 ## Current boundary
 
+N5b adds `DocumentSession`, retaining the entire file while compiling one selected
+graph into an execution snapshot. Native node registrations now explicitly carry
+package ID, type ID and contract version. Matching uses that tuple, never labels
+or parsing a combined delegate name. Ambiguous/incomplete registrations reject.
+
+The adapter reads parameter metadata from a fresh disposable delegate prototype,
+then decodes only supplied parameters. It never injects defaults into the loaded
+document or runs fixup on a loaded node. Initial parameter codecs handle bounded
+double, string and bool values. Unknown/missing/invalid parameters, missing node
+types or versions, unresolved endpoints, unsupported ports, duplicate input
+producers and mismatched port types generate diagnostics. A graph with these
+diagnostics cannot be submitted through `executableGraph`; no partial executable
+graph is exposed. Cycles and remaining runtime rules are still checked by N2.
+
+Explicit parameter edits build a replacement document/session first and swap on
+success. Unedited node/edge fields, graphs, assets and workspace values remain
+intact. Stable node IDs come from the file; output collection IDs are transient
+and regenerated because persisted connections use node IDs and stable port names.
+The legacy step loader receives only a generated ID/delegate envelope, never raw
+file parameters, mappings or binary content.
+
+Package dependency versions are retained but not resolved by N5b. Exact node
+contract versions gate execution. Unknown parameters conservatively block the
+entire selected graph rather than guessing their semantics. Arbitrary extension
+parameter codecs and partial-branch execution are not provided here.
+
 N5a is a file-codec checkpoint, not editor save/open. It does not connect files
 to GraphProject, draw missing nodes, resolve extensions, serialize viewers, or
 provide application actions. The full N5 milestone remains incomplete.
+N5b connects retained documents to execution and explicit parameter edits, but
+does not yet integrate the session with the canvas or application file actions.
 
 The next adapter must retain the source DOM, overlay only intentional edits, and
 keep unavailable content intact. Validate the complete candidate before replacing
