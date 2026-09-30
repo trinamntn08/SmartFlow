@@ -1,0 +1,187 @@
+#include <SceneExtension.h>
+#include <SceneViewer.h>
+#include "workspace/WorkspaceWindow.h"
+#include "workspace/ProjectCommands.h"
+#include <tp_math_utils/materials/OpenGLMaterial.h>
+#include <QDoubleSpinBox>
+#include <QPushButton>
+#include <QUndoStack>
+#include <QtTest/QtTest>
+
+using namespace smartflow;
+using namespace smartflow::scene3d;
+namespace {
+QtNodes::NodeId node(WorkspaceWindow& window, const char* suffix)
+{
+    const auto type = QString("smartflow.scene-3d.%1@1").arg(suffix).toStdString();
+    for(const auto id : window.canvas().allNodeIds())
+        if(window.project().step(window.canvas().projectId(id))->delegateName().toString() == type) return id;
+    return QtNodes::InvalidNodeId;
+}
+const SceneMember& scene(WorkspaceWindow& window, const char* suffix)
+{
+    const auto& output = window.execution().result()->steps.at(window.canvas().projectId(node(window,suffix))).output;
+    return *dynamic_cast<const SceneMember*>(output->members().front().get());
+}
+void edit(WorkspaceWindow& window, const char* suffix, const char* name, double value)
+{
+    const auto id = window.canvas().projectId(node(window,suffix));
+    auto p = window.project().step(id)->parameter(name);
+    p.value = value;
+    window.scene().undoStack().push(new SetParameterCommand(window.project(), id, p));
+}
+}
+
+class SceneTests : public QObject {
+    Q_OBJECT
+private Q_SLOTS:
+    void primitiveTransformMaterialAndSnapshotIsolation()
+    {
+        WorkspaceWindow window(sceneConfiguration());
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        const auto& source = scene(window,"cube").objects.front().geometry;
+        QCOMPARE(source.verts.size(), size_t(36));
+        const auto bounds = source.getMinMax();
+        QVERIFY(bounds.first == glm::vec3(-1));
+        QVERIFY(bounds.second == glm::vec3(1));
+        for(const auto& vertex : source.verts) QVERIFY(std::abs(glm::length(vertex.normal)-1) < 0.0001f);
+        const auto oldResult = *window.execution().result();
+        edit(window,"transform","rotation Y",0);
+        edit(window,"transform","x",3);
+        edit(window,"transform","scale X",2);
+        edit(window,"transform","scale Y",3);
+        edit(window,"transform","scale Z",4);
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        const auto transformed = scene(window,"transform").objects.front().geometry.getMinMax();
+        QVERIFY(transformed.first == glm::vec3(1,-3,-4));
+        QVERIFY(transformed.second == glm::vec3(5,3,4));
+        scene(window,"transform").objects.front().geometry.forEachTriangle(
+            [](const auto& a, const auto& b, const auto& c, int, int, int) {
+                const auto normal = glm::normalize(glm::cross(b.vert-a.vert,c.vert-a.vert));
+                QVERIFY(glm::length(a.normal-normal) < 0.0001f);
+            });
+        QVERIFY(scene(window,"cube").objects.front().geometry.getMinMax().first == glm::vec3(-1));
+        glm::vec3 color;
+        scene(window,"scene").objects.front().geometry.material.viewOpenGL([&](const auto& m) { color=m.albedo; });
+        QVERIFY(glm::length(color-glm::vec3(0.18f,0.58f,0.88f)) < 0.0001f);
+        edit(window,"material","red",0.9);
+        QTRY_VERIFY(window.execution().result().has_value());
+        scene(window,"scene").objects.front().geometry.material.viewOpenGL([&](const auto& m) { color=m.albedo; });
+        QVERIFY(std::abs(color.r-0.9f) < 0.0001f);
+        const auto& old = oldResult.steps.at(window.canvas().projectId(node(window,"scene"))).output;
+        dynamic_cast<const SceneMember*>(old->members().front().get())->objects.front().geometry.material.viewOpenGL(
+            [&](const auto& m) { color=m.albedo; });
+        QVERIFY(std::abs(color.r-0.18f) < 0.0001f);
+    }
+
+    void inspectorEditUpdatesPinnedViewerAndUndo()
+    {
+        WorkspaceWindow window(sceneConfiguration());
+        window.show();
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        auto* viewer = dynamic_cast<SceneViewer*>(window.findChild<QWidget*>("sceneViewer"));
+        QVERIFY(viewer);
+        QCOMPARE(viewer->objectCount(), size_t(1));
+        const auto before = viewer->grab().toImage();
+        QCoreApplication::sendPostedEvents(nullptr,QEvent::DeferredDelete);
+        auto* spin = window.findChild<QDoubleSpinBox*>("parameter_size");
+        QVERIFY(spin);
+        spin->setValue(3);
+        QTest::mouseClick(window.findChild<QPushButton*>("applyParameter"), Qt::LeftButton);
+        QCOMPARE(viewer->objectCount(), size_t(0));
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(scene(window,"scene").objects.front().geometry.getMinMax().second.x > 1.5f);
+        QVERIFY(viewer->grab().toImage() != before);
+        window.scene().undoStack().undo();
+        QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(viewer->grab().toImage(), before);
+        window.scene().undoStack().redo();
+        QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(scene(window,"cube").objects.front().geometry.getMinMax().second.x, 1.5f);
+    }
+
+    void cameraAndSelectionDoNotEditProject()
+    {
+        WorkspaceWindow window(sceneConfiguration());
+        window.show();
+        QTRY_VERIFY(window.execution().result().has_value());
+        auto* viewer = dynamic_cast<SceneViewer*>(window.findChild<QWidget*>("sceneViewer"));
+        QVERIFY(viewer);
+        viewer->grab(); // Populate picking polygons through the paint path.
+        const auto revision = window.project().revision();
+        const auto initial = viewer->cameraAngles();
+        const auto center = viewer->rect().center();
+        QTest::mouseClick(viewer,Qt::LeftButton,Qt::NoModifier,center);
+        QCOMPARE(viewer->selectedObject(),0);
+        QTest::mousePress(viewer,Qt::LeftButton,Qt::NoModifier,center);
+        QMouseEvent move(QEvent::MouseMove,QPointF(center+QPoint(35,20)),QPointF(center+QPoint(35,20)),
+                         Qt::NoButton,Qt::LeftButton,Qt::NoModifier);
+        QApplication::sendEvent(viewer,&move);
+        QTest::mouseRelease(viewer,Qt::LeftButton,Qt::NoModifier,center+QPoint(35,20));
+        QVERIFY(viewer->cameraAngles() != initial);
+        QCOMPARE(window.project().revision(),revision);
+        QCOMPARE(window.scene().undoStack().count(),0);
+        const auto orbited = viewer->cameraAngles();
+        edit(window,"cube","size",3);
+        QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(viewer->cameraAngles(),orbited);
+        const auto afterEdit = window.project().revision();
+        viewer->frameScene();
+        QCOMPARE(window.project().revision(),afterEdit);
+        QVERIFY(afterEdit > revision);
+        QCOMPARE(window.scene().undoStack().count(),1);
+    }
+
+    void mergeAndInvalidInputFeedback()
+    {
+        auto config = sceneConfiguration();
+        config.preset.push_back({"smartflow.scene-3d.merge@1", {750,0}, {}});
+        config.connections.push_back({0,0,4,0});
+        config.connections.push_back({2,0,4,1});
+        WorkspaceWindow window(std::move(config));
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        QCOMPARE(scene(window,"merge").objects.size(),size_t(2));
+        const auto cubeNode = node(window,"cube");
+        const auto transformNode = node(window,"transform");
+        QVERIFY(window.canvas().deleteConnection({cubeNode,0,transformNode,0}));
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(!window.execution().result()->succeeded());
+        auto* viewer = dynamic_cast<SceneViewer*>(window.findChild<QWidget*>("sceneViewer"));
+        QCOMPARE(viewer->objectCount(),size_t(0));
+        window.canvas().addConnection({cubeNode,0,transformNode,0});
+        // Exercise execution validation, independent of the inspector bounds.
+        window.project().step(window.canvas().projectId(cubeNode))->setParameterValue("size", -1.0);
+        window.execution().run();
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(!window.execution().result()->succeeded());
+        const auto& failed = window.execution().result()->steps.at(window.canvas().projectId(cubeNode));
+        QCOMPARE(failed.state,StepState::Failed);
+        QVERIFY(!failed.error.empty());
+    }
+
+    void oversizedSceneIsRejected()
+    {
+        auto config = sceneConfiguration();
+        size_t previous = 0;
+        for(int i=0; i<7; ++i) {
+            const auto next = config.preset.size();
+            config.preset.push_back({"smartflow.scene-3d.merge@1", {double(i*100),200}, {}});
+            config.connections.push_back({previous,0,next,0});
+            config.connections.push_back({previous,0,next,1});
+            previous = next;
+        }
+        WorkspaceWindow window(std::move(config));
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(!window.execution().result()->succeeded());
+        bool foundLimit = false;
+        for(const auto& [id, step] : window.execution().result()->steps)
+            if(step.state == StepState::Failed && step.error.find("64 objects") != std::string::npos) foundLimit = true;
+        QVERIFY(foundLimit);
+    }
+};
+QTEST_MAIN(SceneTests)
+#include "SceneTests.moc"

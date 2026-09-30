@@ -1,4 +1,5 @@
 #include "workspace/WorkspaceWindow.h"
+#include <SceneExtension.h>
 #include <QApplication>
 #include <QElapsedTimer>
 #include <QFontDatabase>
@@ -16,21 +17,25 @@ int main(int argc, char** argv)
         if(id < 0) return 3;
         app.setFont(QFont(QFontDatabase::applicationFontFamilies(id).first(), 10));
     }
-    smartflow::WorkspaceWindow window;
-    window.show();
+    // The composition root selects bundled contributions; the workspace and
+    // executor do not import or require any concrete scene types.
+    auto window = app.arguments().contains("--numeric") ?
+        std::make_unique<smartflow::WorkspaceWindow>() :
+        std::make_unique<smartflow::WorkspaceWindow>(smartflow::scene3d::sceneConfiguration());
+    window->show();
     QTimer smokeTimer;
     QElapsedTimer elapsed;
     if (app.arguments().contains("--smoke-test")) {
         elapsed.start();
         QObject::connect(&smokeTimer, &QTimer::timeout, &app, [&] {
-            if(!window.execution().result()) {
+            if(!window->execution().result()) {
                 if(elapsed.elapsed() > 5000) app.exit(4);
                 return;
             }
-            if(!window.execution().result()->succeeded()) { app.exit(5); return; }
+            if(!window->execution().result()->succeeded()) { app.exit(5); return; }
             const auto index = app.arguments().indexOf("--screenshot");
             if (index >= 0 && (index + 1 >= app.arguments().size() ||
-                !window.grab().save(app.arguments().at(index + 1)))) {
+                !window->grab().save(app.arguments().at(index + 1)))) {
                 app.exit(2);
                 return;
             }

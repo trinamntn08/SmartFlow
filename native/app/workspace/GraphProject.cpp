@@ -58,8 +58,23 @@ QString nodeTitle(const StringID& type)
     return QString::fromStdString(type.toString());
 }
 
-GraphProject::GraphProject(std::shared_ptr<const StepDelegateMap> delegates)
-    : delegates(std::move(delegates)) {}
+GraphProject::GraphProject(std::shared_ptr<const StepDelegateMap> delegates,
+                           std::vector<NodePresentation> presentations)
+    : delegates(std::move(delegates)), presentations(std::move(presentations)) {}
+
+QString GraphProject::title(const StringID& type) const
+{
+    for(const auto& item : presentations)
+        if(item.type.toStdString() == type.toString()) return item.title;
+    return nodeTitle(type);
+}
+
+QString GraphProject::category(const StringID& type) const
+{
+    for(const auto& item : presentations)
+        if(item.type.toStdString() == type.toString()) return item.category;
+    return "Nodes";
+}
 
 StepDetails* GraphProject::step(const StringID& id) const
 {

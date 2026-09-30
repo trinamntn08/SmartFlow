@@ -11,7 +11,10 @@
 - N3: canvas/inspector integration with parameter commands, undo/redo,
   background execution, live/manual runs, cancellation, and current-result
   inspection. See [checkpoint N3](agents/handoffs/2026-09-30-native-checkpoint-n3.md).
-- Required 3D modules and native persistence remain pending. The native work is
+- N4: included native scene-3d extension with copied geometry/material math,
+  Cube/Transform/Material/Scene/Merge nodes, and orbit/zoom/selection preview.
+  See [checkpoint N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md).
+- Native persistence and production 3D rendering remain pending. The native work is
   a migration foundation, not a production runtime or plugin loader.
 - Project name and branding: SmartFlow.
 
@@ -33,8 +36,8 @@ implementation by this native migration sequence:
 1. Completed N1: copied QtNodes canvas and native shell, with build/tests.
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
-4. Next, N4: copy the required 3D modules and their audited dependencies; test primitive/transform/material/viewer behavior; record N4.
-5. Establish native project persistence, unknown-extension preservation and a non-3D workflow; record N5.
+4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
+5. Next, N5: establish native project persistence, unknown-extension preservation and a separate non-3D extension workflow; record N5.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

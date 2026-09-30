@@ -7,9 +7,14 @@ Native C++/Qt is primary, per [decision 0003](decisions/0003-native-first.md).
 `native/vendor`. N2 adds selected pipeline/data/task sources and a separate
 `native/app/pipeline` background execution adapter. It has no QtNodes or scene
 dependency. N3 adds the project/canvas adapter, command-based inspector and
-revision-aware execution controller; 3D migration remains pending. See
+revision-aware execution controller. N4 adds source-level native contribution
+contracts in `native/sdk` and the bundled extension in `extensions/scene-3d/native`.
+The application composition root links it; workspace and execution code do not.
+The extension reuses audited geometry/material math with a bounded primitive
+preview. Broader scene and production renderer migration remain pending. See
 [decision 0004](decisions/0004-native-pipeline-migration.md) and
-[decision 0005](decisions/0005-native-workspace.md). The old checkout is
+[decision 0005](decisions/0005-native-workspace.md) and
+[decision 0006](decisions/0006-native-scene-extension.md). The old checkout is
 not a dependency. The TypeScript package diagram below
 describes the preserved future-extension prototype, not the native build.
 
@@ -32,7 +37,7 @@ packages/runtime -> packages/core + packages/extension-sdk
 extensions/* -> packages/core + packages/extension-sdk
 ```
 
-The application will explicitly compose bundled extensions. Core, SDK, and runtime never import concrete extensions. Rendering integrations belong in viewer contributions, not the graph model. Core now implements document persistence and the SDK provides initial contracts; runtime and extensions remain planned.
+The native application explicitly composes the included scene extension. Core, SDK, and runtime never import concrete extensions. Rendering integrations belong in viewer contributions, not the graph model. The TypeScript core implements document persistence and its SDK provides initial contracts; its runtime and domain implementations remain planned.
 
 ## Separate kinds of state
 

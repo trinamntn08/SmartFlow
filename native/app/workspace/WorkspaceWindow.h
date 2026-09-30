@@ -14,6 +14,7 @@ class WorkspaceWindow : public QMainWindow {
     Q_OBJECT
 public:
     WorkspaceWindow();
+    explicit WorkspaceWindow(WorkspaceConfiguration configuration);
     ~WorkspaceWindow() override;
     GraphProject& project() { return document; }
     PipelineCanvas& canvas() { return canvasModel; }
@@ -33,6 +34,8 @@ private:
     QLabel* outputLabel = nullptr;
     QTreeWidget* results = nullptr;
     QPushButton* cancelButton = nullptr;
+    OutputViewer* viewer = nullptr;
+    tp_utils::StringID pinned;
     tp_utils::StringID selected;
 };
 } // namespace smartflow

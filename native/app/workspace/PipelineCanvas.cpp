@@ -6,11 +6,13 @@ namespace smartflow {
 namespace {
 class CanvasNode final : public tp_qt_pipeline_widgets::StepDelegateNodeDelegateModel {
 public:
-    explicit CanvasNode(const tp_pipeline::StepDelegate* definition)
-        : StepDelegateNodeDelegateModel(definition) {}
-    QString caption() const override { return nodeTitle(stepDelegate()->name()); }
+    CanvasNode(const tp_pipeline::StepDelegate* definition, QString title)
+        : StepDelegateNodeDelegateModel(definition), title(std::move(title)) {}
+    QString caption() const override { return title; }
     // Routing points belong exclusively to the canvas workspace state.
     void setConnectionAnchors(QtNodes::PortType, QtNodes::PortIndex, const std::vector<QPointF>&) override {}
+private:
+    QString title;
 };
 
 auto canvasRegistry(const GraphProject& project)
@@ -18,7 +20,8 @@ auto canvasRegistry(const GraphProject& project)
     auto registry = std::make_shared<QtNodes::NodeDelegateModelRegistry>();
     for(const auto& entry : project.registry()->stepDelegates()) {
         const auto* definition = entry.second;
-        registry->registerModel<CanvasNode>([definition] { return std::make_unique<CanvasNode>(definition); }, "Numeric");
+        const auto title = project.title(definition->name());
+        registry->registerModel<CanvasNode>([definition, title] { return std::make_unique<CanvasNode>(definition, title); }, project.category(definition->name()));
     }
     return registry;
 }

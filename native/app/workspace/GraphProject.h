@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QJsonObject>
 #include <memory>
+#include <WorkspaceExtension.h>
 
 namespace smartflow {
 
@@ -12,7 +13,10 @@ namespace smartflow {
 class GraphProject : public QObject {
     Q_OBJECT
 public:
-    explicit GraphProject(std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates);
+    explicit GraphProject(std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates,
+                          std::vector<NodePresentation> presentations = {});
+    QString title(const tp_utils::StringID& type) const;
+    QString category(const tp_utils::StringID& type) const;
     const tp_pipeline::PipelineDetails& graph() const { return document; }
     auto registry() const { return delegates; }
     quint64 revision() const { return currentRevision; }
@@ -32,6 +36,7 @@ private:
     std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates;
     tp_pipeline::PipelineDetails document;
     quint64 currentRevision = 0;
+    std::vector<NodePresentation> presentations;
 };
 
 std::shared_ptr<tp_pipeline::StepDelegateMap> numericDelegates();

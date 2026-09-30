@@ -18,15 +18,23 @@
 #include <QTreeWidget>
 #include <QUndoStack>
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 namespace smartflow {
 namespace {
-auto dataFactory()
+WorkspaceConfiguration numericConfiguration()
 {
-    auto factory = std::make_shared<tp_data::CollectionFactory>();
-    tp_data::createCollectionFactories(*factory);
-    factory->finalize();
-    return factory;
+    WorkspaceConfiguration config;
+    config.delegates = numericDelegates();
+    config.factory = std::make_shared<tp_data::CollectionFactory>();
+    tp_data::createCollectionFactories(*config.factory);
+    config.factory->finalize();
+    config.nodes = {{"smartflow.numeric.number@1", "Number", "Numeric"},
+                    {"smartflow.numeric.add@1", "Add", "Numeric"}};
+    config.preset = {{"smartflow.numeric.number@1", {0,0}, {{"value",41}}},
+                     {"smartflow.numeric.add@1", {300,0}, {}}};
+    config.connections = {{0,0,1,0}};
+    return config;
 }
 
 QString outputText(const StepResult& result)
@@ -43,8 +51,11 @@ QString outputText(const StepResult& result)
 }
 
 WorkspaceWindow::WorkspaceWindow()
-    : delegates(numericDelegates()), document(delegates), canvasModel(document),
-      canvasScene(canvasModel), runner(document, dataFactory())
+    : WorkspaceWindow(numericConfiguration()) {}
+
+WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
+    : delegates(configuration.delegates), document(delegates, configuration.nodes), canvasModel(document),
+      canvasScene(canvasModel), runner(document, configuration.factory)
 {
     setWindowTitle("SmartFlow - Graph workspace");
     resize(1180, 760);
@@ -68,8 +79,7 @@ WorkspaceWindow::WorkspaceWindow()
     toolbar->addWidget(live);
     toolbar->addSeparator();
     auto* library = new QComboBox;
-    library->addItem("Number", "smartflow.numeric.number@1");
-    library->addItem("Add", "smartflow.numeric.add@1");
+    for(const auto& item : configuration.nodes) library->addItem(item.title, item.type);
     toolbar->addWidget(library);
     auto* add = new QPushButton("Add node");
     toolbar->addWidget(add);
@@ -88,7 +98,20 @@ WorkspaceWindow::WorkspaceWindow()
             view->removeAction(action);
         }
     }
-    split->addWidget(view);
+    auto* views = new QSplitter(Qt::Vertical);
+    views->addWidget(view);
+    if(configuration.createViewer) {
+        viewer = configuration.createViewer();
+        views->addWidget(viewer);
+        views->setSizes({300, 430});
+        auto* pin = toolbar->addAction("Pin output");
+        connect(pin, &QAction::triggered, this, [this] {
+            pinned = selected;
+            refreshResults();
+        });
+        pin->setToolTip("Keep the selected node's output in the viewer while editing other nodes");
+    }
+    split->addWidget(views);
     auto* panel = new QWidget;
     panel->setMinimumWidth(290);
     panel->setMaximumWidth(410);
@@ -103,10 +126,14 @@ WorkspaceWindow::WorkspaceWindow()
     results->setRootIsDecorated(false);
     inspectorLayout->addWidget(outputLabel);
     inspectorLayout->addWidget(results, 1);
-    auto* hint = new QLabel("Drag ports to connect. Right-click the canvas to add nodes.\n\n3D viewing and project saving are not available in this preview.");
+    auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nProject saving is not available in this preview.");
     hint->setWordWrap(true);
     inspectorLayout->addWidget(hint);
-    split->addWidget(panel);
+    auto* scroll = new QScrollArea;
+    scroll->setWidgetResizable(true);
+    scroll->setWidget(panel);
+    scroll->setMinimumWidth(315);
+    split->addWidget(scroll);
     split->setStretchFactor(0, 1);
     setCentralWidget(split);
 
@@ -132,15 +159,24 @@ WorkspaceWindow::WorkspaceWindow()
             if(canvasModel.projectId(canvasId).toString() == id) { selectNode(canvasId); break; }
     });
 
-    const auto source = canvasModel.addNode("smartflow.numeric.number@1");
-    const auto target = canvasModel.addNode("smartflow.numeric.add@1");
-    auto initial = document.step(canvasModel.projectId(source))->parameter("value");
-    initial.value = 41.0;
-    document.setParameter(canvasModel.projectId(source), initial);
-    canvasModel.setNodeData(source, QtNodes::NodeRole::Position, QPointF(0, 0));
-    canvasModel.setNodeData(target, QtNodes::NodeRole::Position, QPointF(300, 0));
-    canvasModel.addConnection({source, 0, target, 0});
-    selectNode(source);
+    std::vector<QtNodes::NodeId> initialNodes;
+    for(const auto& preset : configuration.preset) {
+        const auto id = canvasModel.addNode(preset.type);
+        initialNodes.push_back(id);
+        canvasModel.setNodeData(id, QtNodes::NodeRole::Position, preset.position);
+        for(const auto& [name, value] : preset.parameters) {
+            auto parameter = document.step(canvasModel.projectId(id))->parameter(name);
+            parameter.value = value;
+            document.setParameter(canvasModel.projectId(id), parameter);
+        }
+    }
+    for(const auto& edge : configuration.connections)
+        canvasModel.addConnection({initialNodes.at(edge.source), QtNodes::PortIndex(edge.output),
+                                   initialNodes.at(edge.target), QtNodes::PortIndex(edge.input)});
+    if(!initialNodes.empty()) {
+        pinned = canvasModel.projectId(initialNodes.back());
+        selectNode(initialNodes.front());
+    }
     runner.run();
 }
 
@@ -173,7 +209,7 @@ void WorkspaceWindow::refreshInspector()
     layout->setContentsMargins(0, 0, 0, 12);
     auto* step = document.step(selected);
     if(!step) { layout->addWidget(new QLabel("Select one node to edit its parameters.")); return; }
-    auto* title = new QLabel(nodeTitle(step->delegateName()));
+    auto* title = new QLabel(document.title(step->delegateName()));
     auto font = title->font();
     font.setBold(true);
     font.setPointSize(15);
@@ -190,6 +226,7 @@ void WorkspaceWindow::refreshInspector()
         auto* spin = editor->findChild<QDoubleSpinBox*>();
         spin->setObjectName("parameter_" + QString::fromStdString(parameter.name.toString()));
         spin->setKeyboardTracking(false);
+        spin->setSingleStep(tpGetVariantValue<double>(parameter.step, 1.0));
         auto* apply = new QPushButton("Apply");
         apply->setObjectName("applyParameter");
         layout->addWidget(editor);
@@ -212,6 +249,15 @@ void WorkspaceWindow::refreshResults()
     results->clear();
     outputLabel->setText("Output: " + runner.status());
     const auto& result = runner.result();
+    if(viewer) {
+        std::shared_ptr<const tp_data::Collection> output;
+        if(result) {
+            const auto found = result->steps.find(pinned.isValid() ? pinned : selected);
+            if(found != result->steps.end() && found->second.state == StepState::Succeeded)
+                output = found->second.output;
+        }
+        viewer->present(std::move(output));
+    }
     if(!result) return;
     if(!result->diagnostics.empty()) {
         QStringList errors;
@@ -222,12 +268,15 @@ void WorkspaceWindow::refreshResults()
         const auto found = result->steps.find(step->id());
         if(found == result->steps.end()) continue;
         const auto& value = found->second;
+        QString description;
+        if(viewer && value.output) description = viewer->describe(*value.output);
+        if(description.isEmpty()) description = outputText(value);
         const QString state = value.state == StepState::Succeeded ? "Complete" :
                               value.state == StepState::Failed ? "Failed" : "Skipped";
-        auto* item = new QTreeWidgetItem(results, {nodeTitle(step->delegateName()), state, outputText(value)});
+        auto* item = new QTreeWidgetItem(results, {document.title(step->delegateName()), state, description});
         item->setData(0, Qt::UserRole, QString::fromStdString(step->id().toString()));
-        item->setToolTip(2, outputText(value));
-        if(step->id() == selected) outputLabel->setText("Output: " + outputText(value));
+        item->setToolTip(2, description);
+        if(step->id() == selected) outputLabel->setText("Output: " + description);
     }
     for(int column = 0; column < 3; ++column) results->resizeColumnToContents(column);
 }

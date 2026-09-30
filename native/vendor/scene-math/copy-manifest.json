@@ -1,0 +1,1960 @@
+{
+    "sourceCommit":  "d6f457e8415445d00eaf7e9fbf9e5047768ea637",
+    "files":  [
+                  {
+                      "path":  "tp_math_utils/LICENSE",
+                      "copiedSha256":  "cab25d45f5e39d7b788dcbcb073496d0d585410937b16d48876fdfba4e3877fe",
+                      "sourceSha256":  "cab25d45f5e39d7b788dcbcb073496d0d585410937b16d48876fdfba4e3877fe"
+                  },
+                  {
+                      "path":  "lib_glm/LICENSE",
+                      "copiedSha256":  "4f9bcf4822fc4bd6839070006ff73a37d86b356361f79b4ae50f68534f09549b",
+                      "sourceSha256":  "4f9bcf4822fc4bd6839070006ff73a37d86b356361f79b4ae50f68534f09549b"
+                  },
+                  {
+                      "path":  "lib_nanoflann/LICENSE",
+                      "copiedSha256":  "f8efea042b89cc7534abf51888747f87595e1616c63f0b42a2ead81da34e0237",
+                      "sourceSha256":  "f8efea042b89cc7534abf51888747f87595e1616c63f0b42a2ead81da34e0237"
+                  },
+                  {
+                      "path":  "lib_nanoflann/inc/nanoflann.hpp",
+                      "copiedSha256":  "ec21afa85cffb498f2b7f17a635f9b9a08b46b3c12f2e04a7b7f04a3682b7cd4",
+                      "sourceSha256":  "ec21afa85cffb498f2b7f17a635f9b9a08b46b3c12f2e04a7b7f04a3682b7cd4"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/Geometry3D.cpp",
+                      "copiedSha256":  "591c2b4aaf97e48fd25c47da79b91abcdc57a789de83fc6fb5178c7de1e7d621",
+                      "sourceSha256":  "591c2b4aaf97e48fd25c47da79b91abcdc57a789de83fc6fb5178c7de1e7d621"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/Geometry3D.h",
+                      "copiedSha256":  "2081653e146be70c923ac2f35d52723929ad21cf050d16c507638af2a1987428",
+                      "sourceSha256":  "2081653e146be70c923ac2f35d52723929ad21cf050d16c507638af2a1987428"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/Material.cpp",
+                      "copiedSha256":  "aaba8e25af7b87423e304c6ab2dbc53bc51cf04eaeb738e1ffa46dd7d82e1a3b",
+                      "sourceSha256":  "aaba8e25af7b87423e304c6ab2dbc53bc51cf04eaeb738e1ffa46dd7d82e1a3b"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/Material.h",
+                      "copiedSha256":  "3e539039272e690d33199d3d4b3cf2495de6bad627a3c3526a988a3f683acc98",
+                      "sourceSha256":  "3e539039272e690d33199d3d4b3cf2495de6bad627a3c3526a988a3f683acc98"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/MeshKeyFrame.cpp",
+                      "copiedSha256":  "107be52e0aa16d1014bb315f36a92f854be145587e6b59e213f4eda3bb1b3bc4",
+                      "sourceSha256":  "107be52e0aa16d1014bb315f36a92f854be145587e6b59e213f4eda3bb1b3bc4"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/MeshKeyFrame.h",
+                      "copiedSha256":  "16aef12db83233f563f1930d69b77d48a4e925c88a07dc4d6460c69bd6e42c77",
+                      "sourceSha256":  "16aef12db83233f563f1930d69b77d48a4e925c88a07dc4d6460c69bd6e42c77"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/Globals.h",
+                      "copiedSha256":  "2f748827d9262c43f29c3f496d960c0e11d7a676f03c1437b690e6aa867f66b6",
+                      "sourceSha256":  "2f748827d9262c43f29c3f496d960c0e11d7a676f03c1437b690e6aa867f66b6"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/JSONUtils.h",
+                      "copiedSha256":  "7ab8ad4dfa7d583dfa8903ffe919574310f52aee9a3cc9cc22e60d4d24ba7e66",
+                      "sourceSha256":  "7ab8ad4dfa7d583dfa8903ffe919574310f52aee9a3cc9cc22e60d4d24ba7e66"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/materials/OpenGLMaterial.cpp",
+                      "copiedSha256":  "9be3c0ad65cc83752bd01d95d2b4e9b91650e50b292f2345351c25e419063a2c",
+                      "sourceSha256":  "9be3c0ad65cc83752bd01d95d2b4e9b91650e50b292f2345351c25e419063a2c"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/materials/OpenGLMaterial.h",
+                      "copiedSha256":  "8b1743a62387bc2930059c93bae3deb72b5a65e69d51ce479d154f15f3deef7d",
+                      "sourceSha256":  "8b1743a62387bc2930059c93bae3deb72b5a65e69d51ce479d154f15f3deef7d"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/materials/LegacyMaterial.cpp",
+                      "copiedSha256":  "09926da7d122b5329b4e1b381bf4c739d4e55d5bafc63c33bfd60b543e008b88",
+                      "sourceSha256":  "09926da7d122b5329b4e1b381bf4c739d4e55d5bafc63c33bfd60b543e008b88"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/materials/LegacyMaterial.h",
+                      "copiedSha256":  "1b38f2ad436aaa9fe3a80b880d3bde95420a8b7706ef0d440bca16ab8684dbd0",
+                      "sourceSha256":  "1b38f2ad436aaa9fe3a80b880d3bde95420a8b7706ef0d440bca16ab8684dbd0"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/materials/Blender4Material.cpp",
+                      "copiedSha256":  "7c7f71b578e404de8e947b0215a8da68f4cac9dc47a4bf9f4f9d7867d83e7566",
+                      "sourceSha256":  "7c7f71b578e404de8e947b0215a8da68f4cac9dc47a4bf9f4f9d7867d83e7566"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/materials/Blender4Material.h",
+                      "copiedSha256":  "c7b718385d8da99e0c113cb26fd66563459b5d73775911e9e1e656f453d1859d",
+                      "sourceSha256":  "c7b718385d8da99e0c113cb26fd66563459b5d73775911e9e1e656f453d1859d"
+                  },
+                  {
+                      "path":  "tp_math_utils/src/materials/ExternalMaterial.cpp",
+                      "copiedSha256":  "38a4fc5d0d5befbd1347ab0c07da702e3396be21fb93fb50f4e16e25288d3fd3",
+                      "sourceSha256":  "38a4fc5d0d5befbd1347ab0c07da702e3396be21fb93fb50f4e16e25288d3fd3"
+                  },
+                  {
+                      "path":  "tp_math_utils/inc/tp_math_utils/materials/ExternalMaterial.h",
+                      "copiedSha256":  "50dc0dbb09b0b131ae774b1cb54474af678dd04a5eee47bc246a0383984e1044",
+                      "sourceSha256":  "50dc0dbb09b0b131ae774b1cb54474af678dd04a5eee47bc246a0383984e1044"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/common.hpp",
+                      "copiedSha256":  "52789888dfd31f965fd804e752e0e2a54ac64496e76aa5997bc4ecfc63d72252",
+                      "sourceSha256":  "52789888dfd31f965fd804e752e0e2a54ac64496e76aa5997bc4ecfc63d72252"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/exponential.hpp",
+                      "copiedSha256":  "124955d8e89ab7e30fd51561f20a09848348d80d77044057aca07774fa06719b",
+                      "sourceSha256":  "124955d8e89ab7e30fd51561f20a09848348d80d77044057aca07774fa06719b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext.hpp",
+                      "copiedSha256":  "7bfddb4693d42b8f17005268f4b50f17d9da9eefcce17b95cc891abacb2478e4",
+                      "sourceSha256":  "7bfddb4693d42b8f17005268f4b50f17d9da9eefcce17b95cc891abacb2478e4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/fwd.hpp",
+                      "copiedSha256":  "e673f168ea6cc17961d8d1f9ff41ba660e4a3df8e6b1ff5ca7e20772fbda3e56",
+                      "sourceSha256":  "e673f168ea6cc17961d8d1f9ff41ba660e4a3df8e6b1ff5ca7e20772fbda3e56"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/geometric.hpp",
+                      "copiedSha256":  "9721362b403b952cf79c8ecfc7eeab02678673fa443e65c40541656134a615be",
+                      "sourceSha256":  "9721362b403b952cf79c8ecfc7eeab02678673fa443e65c40541656134a615be"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/glm.hpp",
+                      "copiedSha256":  "f33328c280966acaed01b002215a19a4c2f6ac907706f6e84ed8c2b7dfa0ee14",
+                      "sourceSha256":  "f33328c280966acaed01b002215a19a4c2f6ac907706f6e84ed8c2b7dfa0ee14"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/integer.hpp",
+                      "copiedSha256":  "cfaa556eeaa984a445a4c52687a8f8f9096a438b577521f95ff12527cccddf76",
+                      "sourceSha256":  "cfaa556eeaa984a445a4c52687a8f8f9096a438b577521f95ff12527cccddf76"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat2x2.hpp",
+                      "copiedSha256":  "1d72184e12db839cde03efd6301a33ae3dfe002930c382324ee4b53e89a775b8",
+                      "sourceSha256":  "1d72184e12db839cde03efd6301a33ae3dfe002930c382324ee4b53e89a775b8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat2x3.hpp",
+                      "copiedSha256":  "c4ab6c4610acbf6a2338fc8757fd50c0ae8837bda5119d8cb11a9f4aff48ab70",
+                      "sourceSha256":  "c4ab6c4610acbf6a2338fc8757fd50c0ae8837bda5119d8cb11a9f4aff48ab70"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat2x4.hpp",
+                      "copiedSha256":  "2fe1239791b39696fd11569cb3fcb0b6a2e980be451587322287db854e774abb",
+                      "sourceSha256":  "2fe1239791b39696fd11569cb3fcb0b6a2e980be451587322287db854e774abb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat3x2.hpp",
+                      "copiedSha256":  "f1f768b8ccf282c755a2d2ab4bd5529726de202b038813468752d00d8ca1c4bf",
+                      "sourceSha256":  "f1f768b8ccf282c755a2d2ab4bd5529726de202b038813468752d00d8ca1c4bf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat3x3.hpp",
+                      "copiedSha256":  "11feaa133f2164a0e1f68beb23d94ff774734dcd71ca4c1a1f41bc47f8c4e625",
+                      "sourceSha256":  "11feaa133f2164a0e1f68beb23d94ff774734dcd71ca4c1a1f41bc47f8c4e625"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat3x4.hpp",
+                      "copiedSha256":  "e2dacd780eabf7f38c4e1f2ec37ff6df37cdb5c14c25a07a695ab5e9952f080d",
+                      "sourceSha256":  "e2dacd780eabf7f38c4e1f2ec37ff6df37cdb5c14c25a07a695ab5e9952f080d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat4x2.hpp",
+                      "copiedSha256":  "1aa01695b0cdcf5bed33a7d02011449e5b6a2f2bccc5fea34a380175dedd5144",
+                      "sourceSha256":  "1aa01695b0cdcf5bed33a7d02011449e5b6a2f2bccc5fea34a380175dedd5144"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat4x3.hpp",
+                      "copiedSha256":  "4037fa966d5bb14ef1fd078c3419b1f1b4b904e4c702c1318c071ac7cd615083",
+                      "sourceSha256":  "4037fa966d5bb14ef1fd078c3419b1f1b4b904e4c702c1318c071ac7cd615083"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/mat4x4.hpp",
+                      "copiedSha256":  "367342aa2234872e97b18a7aa17d33aadcb09b2e92f83721cf2556e21567e697",
+                      "sourceSha256":  "367342aa2234872e97b18a7aa17d33aadcb09b2e92f83721cf2556e21567e697"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/matrix.hpp",
+                      "copiedSha256":  "9c68e3878b8366a272769013a3a1fd42d1aa8a60c4a9fe85119fbb1624c33492",
+                      "sourceSha256":  "9c68e3878b8366a272769013a3a1fd42d1aa8a60c4a9fe85119fbb1624c33492"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/packing.hpp",
+                      "copiedSha256":  "beb3cec06933970594a957a9bc15f6a09883f113778ff5c648b701bf729d5b0e",
+                      "sourceSha256":  "beb3cec06933970594a957a9bc15f6a09883f113778ff5c648b701bf729d5b0e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/trigonometric.hpp",
+                      "copiedSha256":  "cb1c70dc29e437f1abf5e3e55738e88ade925fe0de0e95edac404a752e2d6e0a",
+                      "sourceSha256":  "cb1c70dc29e437f1abf5e3e55738e88ade925fe0de0e95edac404a752e2d6e0a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/vec2.hpp",
+                      "copiedSha256":  "ad9741aa85525d942a0d510987a87f637faa6b1216e149a004268950e8081467",
+                      "sourceSha256":  "ad9741aa85525d942a0d510987a87f637faa6b1216e149a004268950e8081467"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/vec3.hpp",
+                      "copiedSha256":  "6b6f940edd76cdc02fa84dc58fc4983fe2bc952d820821ec51c2c49710495629",
+                      "sourceSha256":  "6b6f940edd76cdc02fa84dc58fc4983fe2bc952d820821ec51c2c49710495629"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/vec4.hpp",
+                      "copiedSha256":  "6c30614e1a422185899259cc1e4987b2249d4d63d6a0b3a48ad61979f0bf055a",
+                      "sourceSha256":  "6c30614e1a422185899259cc1e4987b2249d4d63d6a0b3a48ad61979f0bf055a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/vector_relational.hpp",
+                      "copiedSha256":  "5c461ca06d43006ab7d236be00e25bad24614fe4cdfbc76d10f7d8c1e73900b8",
+                      "sourceSha256":  "5c461ca06d43006ab7d236be00e25bad24614fe4cdfbc76d10f7d8c1e73900b8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/compute_common.hpp",
+                      "copiedSha256":  "a9ab3f044664b596da81f081d1fa3690997011305b8b8654f0462b6e90245b8f",
+                      "sourceSha256":  "a9ab3f044664b596da81f081d1fa3690997011305b8b8654f0462b6e90245b8f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/compute_vector_relational.hpp",
+                      "copiedSha256":  "f4b44de6254936cd4f35756f93469934d60859f0062e821733bed79441f66abf",
+                      "sourceSha256":  "f4b44de6254936cd4f35756f93469934d60859f0062e821733bed79441f66abf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_common.inl",
+                      "copiedSha256":  "e5a022151c1d969e9ccb3f85e4e91ea1c9e182755f2dd8f493434a82cfb92d0c",
+                      "sourceSha256":  "e5a022151c1d969e9ccb3f85e4e91ea1c9e182755f2dd8f493434a82cfb92d0c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_common_simd.inl",
+                      "copiedSha256":  "2becb18e20aec82c938ad3ce7418be0feae5f6657534a6ab4306e3a279ae6152",
+                      "sourceSha256":  "2becb18e20aec82c938ad3ce7418be0feae5f6657534a6ab4306e3a279ae6152"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_exponential.inl",
+                      "copiedSha256":  "2e5d6796e3e1b7c3c0e550a26cfc5781494e7bf1bf1aa0f4f3b7f0e40a04420d",
+                      "sourceSha256":  "2e5d6796e3e1b7c3c0e550a26cfc5781494e7bf1bf1aa0f4f3b7f0e40a04420d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_exponential_simd.inl",
+                      "copiedSha256":  "3452b1cc5709ff9d74bc606e48a3f735f6ada3d343eac88e017ce77f01ebb984",
+                      "sourceSha256":  "3452b1cc5709ff9d74bc606e48a3f735f6ada3d343eac88e017ce77f01ebb984"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_geometric.inl",
+                      "copiedSha256":  "0aa17be2667d5447613a01c7db7d283fd3ec43e4d54331d6a73dfe6844d32edd",
+                      "sourceSha256":  "0aa17be2667d5447613a01c7db7d283fd3ec43e4d54331d6a73dfe6844d32edd"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_geometric_simd.inl",
+                      "copiedSha256":  "60ee4eb2888590012dcf54514b34207f8cb41014f1825cbd0e8acb0e0012b55e",
+                      "sourceSha256":  "60ee4eb2888590012dcf54514b34207f8cb41014f1825cbd0e8acb0e0012b55e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_integer.inl",
+                      "copiedSha256":  "a328278b0b1bbf1b2a1e9aa6eb743d525d8a2f2133dac916580c26dc05928abf",
+                      "sourceSha256":  "a328278b0b1bbf1b2a1e9aa6eb743d525d8a2f2133dac916580c26dc05928abf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_integer_simd.inl",
+                      "copiedSha256":  "8d01e2a7cc25be4f2d00ac1a109a656133a5608614cf315252e6c8976bd27b0c",
+                      "sourceSha256":  "8d01e2a7cc25be4f2d00ac1a109a656133a5608614cf315252e6c8976bd27b0c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_matrix.inl",
+                      "copiedSha256":  "a1f24be353bf8c0c3ddc846444cf9be3403ebb455ec3c7f173074e99107cea5b",
+                      "sourceSha256":  "a1f24be353bf8c0c3ddc846444cf9be3403ebb455ec3c7f173074e99107cea5b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_matrix_simd.inl",
+                      "copiedSha256":  "3e1a09b45f1639c0e8c13853d8db1f4208bd841d6250f7c949464b3b2c347250",
+                      "sourceSha256":  "3e1a09b45f1639c0e8c13853d8db1f4208bd841d6250f7c949464b3b2c347250"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_packing.inl",
+                      "copiedSha256":  "60b1773a2531970a3112f774fb045122e7016cb51c9bc104a9a66160261910ec",
+                      "sourceSha256":  "60b1773a2531970a3112f774fb045122e7016cb51c9bc104a9a66160261910ec"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_packing_simd.inl",
+                      "copiedSha256":  "554eed2592a8c80fe0021a29ab546865edd250bb9e2620818670474ac0d9a1d2",
+                      "sourceSha256":  "554eed2592a8c80fe0021a29ab546865edd250bb9e2620818670474ac0d9a1d2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_trigonometric.inl",
+                      "copiedSha256":  "12452e0ba259301ece977d5339303437671e9c5939072d804d8ec5b3dc12e1cb",
+                      "sourceSha256":  "12452e0ba259301ece977d5339303437671e9c5939072d804d8ec5b3dc12e1cb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_trigonometric_simd.inl",
+                      "copiedSha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "sourceSha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_vector_relational.inl",
+                      "copiedSha256":  "98481b9150953869dde39fb823f0a3eba606cfe6cd2ae1f6b3936e92c377a689",
+                      "sourceSha256":  "98481b9150953869dde39fb823f0a3eba606cfe6cd2ae1f6b3936e92c377a689"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/func_vector_relational_simd.inl",
+                      "copiedSha256":  "554eed2592a8c80fe0021a29ab546865edd250bb9e2620818670474ac0d9a1d2",
+                      "sourceSha256":  "554eed2592a8c80fe0021a29ab546865edd250bb9e2620818670474ac0d9a1d2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/qualifier.hpp",
+                      "copiedSha256":  "dd3484b3ba916b2c8b90635392d255440b32ea3600f6e93abd6c547b468f104e",
+                      "sourceSha256":  "dd3484b3ba916b2c8b90635392d255440b32ea3600f6e93abd6c547b468f104e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/setup.hpp",
+                      "copiedSha256":  "a3b24191b466bbbfa849789ddeeca80a8f2d1592d01805ac56ca0075961bd856",
+                      "sourceSha256":  "a3b24191b466bbbfa849789ddeeca80a8f2d1592d01805ac56ca0075961bd856"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_float.hpp",
+                      "copiedSha256":  "5077ba5d04555ff4e119271b3fa3c09c1a02a4a2eb16c2823935ee69761f2132",
+                      "sourceSha256":  "5077ba5d04555ff4e119271b3fa3c09c1a02a4a2eb16c2823935ee69761f2132"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_half.hpp",
+                      "copiedSha256":  "9f98c3e42ebf1ad0ca6a1f0d2211bf6d3c226c99555c8852b02ddc4d5c3fa1c5",
+                      "sourceSha256":  "9f98c3e42ebf1ad0ca6a1f0d2211bf6d3c226c99555c8852b02ddc4d5c3fa1c5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_half.inl",
+                      "copiedSha256":  "48a254c9c55797317f647863fc15accb4fcc7ebe342b7ff16358c98fd05e91d8",
+                      "sourceSha256":  "48a254c9c55797317f647863fc15accb4fcc7ebe342b7ff16358c98fd05e91d8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat2x2.hpp",
+                      "copiedSha256":  "426e7dbf96f7be9f1766e1e538ac95098c9bcb8cb60dd0d939bd2dd0254cc0ec",
+                      "sourceSha256":  "426e7dbf96f7be9f1766e1e538ac95098c9bcb8cb60dd0d939bd2dd0254cc0ec"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat2x2.inl",
+                      "copiedSha256":  "db0e905014561780161d3f34b7540504aab5acfa665c327b4ca986e928415e39",
+                      "sourceSha256":  "db0e905014561780161d3f34b7540504aab5acfa665c327b4ca986e928415e39"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat2x3.hpp",
+                      "copiedSha256":  "41318f30cb64c4f866d86e9a20ac06ec5af4f16898492f2f4807af6ee760603f",
+                      "sourceSha256":  "41318f30cb64c4f866d86e9a20ac06ec5af4f16898492f2f4807af6ee760603f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat2x3.inl",
+                      "copiedSha256":  "ed932ca6b41684f658b7841d28184abc7553f597e9009599aa74b85fd764c47b",
+                      "sourceSha256":  "ed932ca6b41684f658b7841d28184abc7553f597e9009599aa74b85fd764c47b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat2x4.hpp",
+                      "copiedSha256":  "a5dee50d014b41aea2fc88cd938bcee494bd082b0df59bbb0510644008dfeb60",
+                      "sourceSha256":  "a5dee50d014b41aea2fc88cd938bcee494bd082b0df59bbb0510644008dfeb60"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat2x4.inl",
+                      "copiedSha256":  "7dbaca0bad683a01b0a7466cd942fb5e5207e0e12d1f840a87f01f4dd12d9bb3",
+                      "sourceSha256":  "7dbaca0bad683a01b0a7466cd942fb5e5207e0e12d1f840a87f01f4dd12d9bb3"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat3x2.hpp",
+                      "copiedSha256":  "cedbf24e96b79830e3591634b38723511e934a8a1067b24c6c46d29c9e70497e",
+                      "sourceSha256":  "cedbf24e96b79830e3591634b38723511e934a8a1067b24c6c46d29c9e70497e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat3x2.inl",
+                      "copiedSha256":  "80365a6b0d6ff85dbbb7cfb1ad28a8abc405dc6395f3d267d4dd09bd1f7e69af",
+                      "sourceSha256":  "80365a6b0d6ff85dbbb7cfb1ad28a8abc405dc6395f3d267d4dd09bd1f7e69af"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat3x3.hpp",
+                      "copiedSha256":  "384d977fa78a375d592e9641013482531830221e431f3e0948c5d0941b270c14",
+                      "sourceSha256":  "384d977fa78a375d592e9641013482531830221e431f3e0948c5d0941b270c14"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat3x3.inl",
+                      "copiedSha256":  "a2101b4e7a376f0f9b527d765ffb43c4a61d61ba81757f8a4ae7fcb02a42704b",
+                      "sourceSha256":  "a2101b4e7a376f0f9b527d765ffb43c4a61d61ba81757f8a4ae7fcb02a42704b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat3x4.hpp",
+                      "copiedSha256":  "97a609c7230ae8d7ad62efd44eaa160a98c3dc48751fd3f3c6e33c7da2842226",
+                      "sourceSha256":  "97a609c7230ae8d7ad62efd44eaa160a98c3dc48751fd3f3c6e33c7da2842226"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat3x4.inl",
+                      "copiedSha256":  "4dd2ad0a2812867f30128e40526fdc0bc0ec45b3dd09816cc5a768144fd3bc71",
+                      "sourceSha256":  "4dd2ad0a2812867f30128e40526fdc0bc0ec45b3dd09816cc5a768144fd3bc71"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x2.hpp",
+                      "copiedSha256":  "0187cae8727bf6b29957f5c19c9c6557622fc9f9820080fb17b37e39ca69e0f5",
+                      "sourceSha256":  "0187cae8727bf6b29957f5c19c9c6557622fc9f9820080fb17b37e39ca69e0f5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x2.inl",
+                      "copiedSha256":  "1b329c559f103a331fd13a9beecf70821bacf88ee786e6e2ff8d2a995f347176",
+                      "sourceSha256":  "1b329c559f103a331fd13a9beecf70821bacf88ee786e6e2ff8d2a995f347176"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x3.hpp",
+                      "copiedSha256":  "a142bf286335dff576e06f4f40bfe5dabc3ea1862049097ef84a4d07f5e90738",
+                      "sourceSha256":  "a142bf286335dff576e06f4f40bfe5dabc3ea1862049097ef84a4d07f5e90738"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x3.inl",
+                      "copiedSha256":  "9d62332adf785abb264938ea8e419b1901c2807deb4bf5d395012712eb6896b6",
+                      "sourceSha256":  "9d62332adf785abb264938ea8e419b1901c2807deb4bf5d395012712eb6896b6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x4.hpp",
+                      "copiedSha256":  "ba26ebbdc28f38037fccb5607c795b95aacb682fded359c5165316343d1a69f6",
+                      "sourceSha256":  "ba26ebbdc28f38037fccb5607c795b95aacb682fded359c5165316343d1a69f6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x4.inl",
+                      "copiedSha256":  "de270132656453051c2d70a80a57ba0eb682f9bd1031531f1be09243ca57e486",
+                      "sourceSha256":  "de270132656453051c2d70a80a57ba0eb682f9bd1031531f1be09243ca57e486"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_mat4x4_simd.inl",
+                      "copiedSha256":  "48578deda435ea4f7157496dfee6b7bf4b7e0ab4eefa355473f10020f0fad422",
+                      "sourceSha256":  "48578deda435ea4f7157496dfee6b7bf4b7e0ab4eefa355473f10020f0fad422"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_quat.hpp",
+                      "copiedSha256":  "4a3fa7f6b9dad0b17d982e0399f7a8545875e2735bda11951a7c6698972a74af",
+                      "sourceSha256":  "4a3fa7f6b9dad0b17d982e0399f7a8545875e2735bda11951a7c6698972a74af"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_quat.inl",
+                      "copiedSha256":  "405fc83990481c47813266df9edd778cf4f69b77f6d91e892d8190714ec9a0a8",
+                      "sourceSha256":  "405fc83990481c47813266df9edd778cf4f69b77f6d91e892d8190714ec9a0a8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_quat_simd.inl",
+                      "copiedSha256":  "44755cf742525f8bb710d9fafb606499b45dae78ff4f6062855435e3ff38f75e",
+                      "sourceSha256":  "44755cf742525f8bb710d9fafb606499b45dae78ff4f6062855435e3ff38f75e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec1.hpp",
+                      "copiedSha256":  "1008d28b34a974c67d688a1006712ffdbf6221f3e7732fd0b9b2479bfada22c0",
+                      "sourceSha256":  "1008d28b34a974c67d688a1006712ffdbf6221f3e7732fd0b9b2479bfada22c0"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec1.inl",
+                      "copiedSha256":  "71377c4d93c18531e8e31bd55f00caff9b6b24540ec0b95b5ab764de6df945ff",
+                      "sourceSha256":  "71377c4d93c18531e8e31bd55f00caff9b6b24540ec0b95b5ab764de6df945ff"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec2.hpp",
+                      "copiedSha256":  "59b39affd4178d9186bb41abd79259126931ae339896b63b4a62e4abebc6a90c",
+                      "sourceSha256":  "59b39affd4178d9186bb41abd79259126931ae339896b63b4a62e4abebc6a90c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec2.inl",
+                      "copiedSha256":  "0a8061732ffabe5d715b1476c95e296fb757fd3766dadef722374772912d983c",
+                      "sourceSha256":  "0a8061732ffabe5d715b1476c95e296fb757fd3766dadef722374772912d983c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec3.hpp",
+                      "copiedSha256":  "3779d1a2e4c702501e4b172e9001a775501748c89190fc56c9cbd397e1edead8",
+                      "sourceSha256":  "3779d1a2e4c702501e4b172e9001a775501748c89190fc56c9cbd397e1edead8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec3.inl",
+                      "copiedSha256":  "fc85fc012d4cc025e13ab7027d4355f832f16eff246e7c12911bba41cf31beee",
+                      "sourceSha256":  "fc85fc012d4cc025e13ab7027d4355f832f16eff246e7c12911bba41cf31beee"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec4.hpp",
+                      "copiedSha256":  "8a4c153793732b097f844d12270d383eeec9cec9b53afed408e595985af3a6b3",
+                      "sourceSha256":  "8a4c153793732b097f844d12270d383eeec9cec9b53afed408e595985af3a6b3"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec4.inl",
+                      "copiedSha256":  "2f7b2ea5bf3d2cd5e5407f92af0d8b63bb67cf311210e2ee20556d80c1698342",
+                      "sourceSha256":  "2f7b2ea5bf3d2cd5e5407f92af0d8b63bb67cf311210e2ee20556d80c1698342"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/type_vec4_simd.inl",
+                      "copiedSha256":  "f4f57102d129a7c8ef04838805667d5e81f802512769a86ecbefd23040330f89",
+                      "sourceSha256":  "f4f57102d129a7c8ef04838805667d5e81f802512769a86ecbefd23040330f89"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/_features.hpp",
+                      "copiedSha256":  "c7822908b5129b74e108246b3baaa6e2154abc9cf65f3f789d2a0f6bf0656f06",
+                      "sourceSha256":  "c7822908b5129b74e108246b3baaa6e2154abc9cf65f3f789d2a0f6bf0656f06"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/_fixes.hpp",
+                      "copiedSha256":  "fa972e30228133d4a67cbdb1a05f0edfb32de4149c95c253650cf1ff1cf35ad1",
+                      "sourceSha256":  "fa972e30228133d4a67cbdb1a05f0edfb32de4149c95c253650cf1ff1cf35ad1"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/_noise.hpp",
+                      "copiedSha256":  "9d7485ab7131fd9a0a8cc8031453a37271eeb79f2ce146f5db576786ec4dac6e",
+                      "sourceSha256":  "9d7485ab7131fd9a0a8cc8031453a37271eeb79f2ce146f5db576786ec4dac6e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/_swizzle.hpp",
+                      "copiedSha256":  "033dd882b85b9c8e3126aa8420cab615d016195218e4e1810f71de09e6480dd4",
+                      "sourceSha256":  "033dd882b85b9c8e3126aa8420cab615d016195218e4e1810f71de09e6480dd4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/_swizzle_func.hpp",
+                      "copiedSha256":  "db3c5a2d99d0a726de2a11d8b5e84db84b54538d78dd970b3cf579f01434bc52",
+                      "sourceSha256":  "db3c5a2d99d0a726de2a11d8b5e84db84b54538d78dd970b3cf579f01434bc52"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/detail/_vectorize.hpp",
+                      "copiedSha256":  "197e303cc6338b2625795ab85ecd8d8bd332fd1faff118685b173c9bf9257ce2",
+                      "sourceSha256":  "197e303cc6338b2625795ab85ecd8d8bd332fd1faff118685b173c9bf9257ce2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_clip_space.hpp",
+                      "copiedSha256":  "c68b12854284c6b28fa87f1b51e92a4f905107bbd2b0100170665ef420479345",
+                      "sourceSha256":  "c68b12854284c6b28fa87f1b51e92a4f905107bbd2b0100170665ef420479345"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_clip_space.inl",
+                      "copiedSha256":  "f44bd9d92d52f080512fd2aec360035ecebca098e710c996748895cd88190e3d",
+                      "sourceSha256":  "f44bd9d92d52f080512fd2aec360035ecebca098e710c996748895cd88190e3d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double2x2.hpp",
+                      "copiedSha256":  "f162435d27c44b2123fb6aeabf6a1ad303038bc23ce2c4ce7c8d65059b4ff18d",
+                      "sourceSha256":  "f162435d27c44b2123fb6aeabf6a1ad303038bc23ce2c4ce7c8d65059b4ff18d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double2x2_precision.hpp",
+                      "copiedSha256":  "870a26e88d5606eb59afd4dfeeaae03e4627fe3b2ac2412ef9909fde4a69c380",
+                      "sourceSha256":  "870a26e88d5606eb59afd4dfeeaae03e4627fe3b2ac2412ef9909fde4a69c380"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double2x3.hpp",
+                      "copiedSha256":  "293555b0ed97a43a8943245ad856ae5dd7db047205cd518f3a6626475a3854f6",
+                      "sourceSha256":  "293555b0ed97a43a8943245ad856ae5dd7db047205cd518f3a6626475a3854f6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double2x3_precision.hpp",
+                      "copiedSha256":  "5b0ebe9a915f87f396870eb4897253e60fa0bea6044435ce7a28ee3a1920d71c",
+                      "sourceSha256":  "5b0ebe9a915f87f396870eb4897253e60fa0bea6044435ce7a28ee3a1920d71c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double2x4.hpp",
+                      "copiedSha256":  "8a220b383965f0457b2e60cee0e01328a8e0ddce266e9e101f98e5471fff47bd",
+                      "sourceSha256":  "8a220b383965f0457b2e60cee0e01328a8e0ddce266e9e101f98e5471fff47bd"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double2x4_precision.hpp",
+                      "copiedSha256":  "1fd885f6484d863f6e43c8276ab2e3548e8789a584eb895a45dfb2479a032c02",
+                      "sourceSha256":  "1fd885f6484d863f6e43c8276ab2e3548e8789a584eb895a45dfb2479a032c02"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double3x2.hpp",
+                      "copiedSha256":  "21189033fd6644d820eb597cc1afa6c7ee4cc60e8f6d90d5a0d50b7e56f47e81",
+                      "sourceSha256":  "21189033fd6644d820eb597cc1afa6c7ee4cc60e8f6d90d5a0d50b7e56f47e81"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double3x2_precision.hpp",
+                      "copiedSha256":  "b8bfeb2bc4ad1e9a27673de6c6bf2a547a8db2c8766ee02a7324170b678ae60f",
+                      "sourceSha256":  "b8bfeb2bc4ad1e9a27673de6c6bf2a547a8db2c8766ee02a7324170b678ae60f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double3x3.hpp",
+                      "copiedSha256":  "ce0212b641e65eddba35e02df72b6343056309af06b0e26464a908d19eece282",
+                      "sourceSha256":  "ce0212b641e65eddba35e02df72b6343056309af06b0e26464a908d19eece282"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double3x3_precision.hpp",
+                      "copiedSha256":  "bf7ea325238b15767ae810e556bfdfdeaf3898aa248b75f374b2284e8afa9ef4",
+                      "sourceSha256":  "bf7ea325238b15767ae810e556bfdfdeaf3898aa248b75f374b2284e8afa9ef4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double3x4.hpp",
+                      "copiedSha256":  "5751fac2e7d8955c1a67a558ae6cf53168c279a8dab43a915e14292b130b242c",
+                      "sourceSha256":  "5751fac2e7d8955c1a67a558ae6cf53168c279a8dab43a915e14292b130b242c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double3x4_precision.hpp",
+                      "copiedSha256":  "271e3c054da08e16732398f7d9b24cd0af6ab40f862260404b42999d457c0b19",
+                      "sourceSha256":  "271e3c054da08e16732398f7d9b24cd0af6ab40f862260404b42999d457c0b19"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double4x2.hpp",
+                      "copiedSha256":  "b0c0155ff665e99994487a4750f703b2018e7bfb6010d3fbd756c5e5d25f4685",
+                      "sourceSha256":  "b0c0155ff665e99994487a4750f703b2018e7bfb6010d3fbd756c5e5d25f4685"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double4x2_precision.hpp",
+                      "copiedSha256":  "660f21b84ed78dd631c00d25442d807074bc7fbeb5e9001f925f1a3d9e4ad04f",
+                      "sourceSha256":  "660f21b84ed78dd631c00d25442d807074bc7fbeb5e9001f925f1a3d9e4ad04f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double4x3.hpp",
+                      "copiedSha256":  "6f5202c9dd2a3a97901220d018f728a9dafb56c9895f3b3cf99ced0304be3095",
+                      "sourceSha256":  "6f5202c9dd2a3a97901220d018f728a9dafb56c9895f3b3cf99ced0304be3095"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double4x3_precision.hpp",
+                      "copiedSha256":  "131fe335a681ffb23348f043cee30e2427a9e1f45be9f1c71df1ecb5c7589f6b",
+                      "sourceSha256":  "131fe335a681ffb23348f043cee30e2427a9e1f45be9f1c71df1ecb5c7589f6b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double4x4.hpp",
+                      "copiedSha256":  "2cfc993535a19a8b52a5f6a6d71a0eb3ab646cbf9da0d3cf50f5f3248d3c2e35",
+                      "sourceSha256":  "2cfc993535a19a8b52a5f6a6d71a0eb3ab646cbf9da0d3cf50f5f3248d3c2e35"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_double4x4_precision.hpp",
+                      "copiedSha256":  "1e906578cda07f564ff7c5b5bf31b4749c686fb6e4052da2bbbd46c9dd6abe00",
+                      "sourceSha256":  "1e906578cda07f564ff7c5b5bf31b4749c686fb6e4052da2bbbd46c9dd6abe00"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float2x2.hpp",
+                      "copiedSha256":  "ecf72a0f02fec9cf6747a4e5b3d62c9a6f07bbc35b4bbf949250a8100500c8ea",
+                      "sourceSha256":  "ecf72a0f02fec9cf6747a4e5b3d62c9a6f07bbc35b4bbf949250a8100500c8ea"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float2x2_precision.hpp",
+                      "copiedSha256":  "955c6d5c0b661dafdcd0169a0e104784deb5dd7862a8fb132720dafb22f4a780",
+                      "sourceSha256":  "955c6d5c0b661dafdcd0169a0e104784deb5dd7862a8fb132720dafb22f4a780"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float2x3.hpp",
+                      "copiedSha256":  "d731b656ddded3ca7b9eb26b52849445a1d438457e4fad02d1fe94fa349b39a0",
+                      "sourceSha256":  "d731b656ddded3ca7b9eb26b52849445a1d438457e4fad02d1fe94fa349b39a0"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float2x3_precision.hpp",
+                      "copiedSha256":  "f8bd301e8a43b15e92c9935edb71c455b9ecd922c5f0a2e6d1b32783819cb28c",
+                      "sourceSha256":  "f8bd301e8a43b15e92c9935edb71c455b9ecd922c5f0a2e6d1b32783819cb28c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float2x4.hpp",
+                      "copiedSha256":  "f0be584885cc45b25708a181d859d69886d6919839f399f831ea727682c88a05",
+                      "sourceSha256":  "f0be584885cc45b25708a181d859d69886d6919839f399f831ea727682c88a05"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float2x4_precision.hpp",
+                      "copiedSha256":  "15d8d7f61beeaacd077ef44296a5ed369a0c6aab5ec8481db9bd60f3290013dc",
+                      "sourceSha256":  "15d8d7f61beeaacd077ef44296a5ed369a0c6aab5ec8481db9bd60f3290013dc"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float3x2.hpp",
+                      "copiedSha256":  "bf9480997a190bf5eec0c6f248c67b32bc1d64e438228d7057c72606805ebc6c",
+                      "sourceSha256":  "bf9480997a190bf5eec0c6f248c67b32bc1d64e438228d7057c72606805ebc6c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float3x2_precision.hpp",
+                      "copiedSha256":  "ac403a7bf1ee8ad2799a4c8a9630d679156bd82f411696a4c9eba1de5f6dc8cb",
+                      "sourceSha256":  "ac403a7bf1ee8ad2799a4c8a9630d679156bd82f411696a4c9eba1de5f6dc8cb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float3x3.hpp",
+                      "copiedSha256":  "13afb5c9a76cd00924bfd90338861bc7ba85097cc8a2c93a747862d9aef95737",
+                      "sourceSha256":  "13afb5c9a76cd00924bfd90338861bc7ba85097cc8a2c93a747862d9aef95737"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float3x3_precision.hpp",
+                      "copiedSha256":  "7dabb577886c2d26c752462118e55e67f03d7119a46877980991bc87b6bce4fa",
+                      "sourceSha256":  "7dabb577886c2d26c752462118e55e67f03d7119a46877980991bc87b6bce4fa"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float3x4.hpp",
+                      "copiedSha256":  "5a964ddc2ffed1f1a8f5f8d392f34aa4f870a0c985eda0c92c29ac6cd5679543",
+                      "sourceSha256":  "5a964ddc2ffed1f1a8f5f8d392f34aa4f870a0c985eda0c92c29ac6cd5679543"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float3x4_precision.hpp",
+                      "copiedSha256":  "096f630c612e71c525269940cfccea7f76dac9a5f282127a0bf89d3b08527830",
+                      "sourceSha256":  "096f630c612e71c525269940cfccea7f76dac9a5f282127a0bf89d3b08527830"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float4x2.hpp",
+                      "copiedSha256":  "c911e033c9268da984c9c2254cb92604060525d55220a333daf1688bf4575f6d",
+                      "sourceSha256":  "c911e033c9268da984c9c2254cb92604060525d55220a333daf1688bf4575f6d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float4x2_precision.hpp",
+                      "copiedSha256":  "dbf3daf91ede9b5987c57c4e4ea609eae089ad241b936aa4ffa604ca89e0346f",
+                      "sourceSha256":  "dbf3daf91ede9b5987c57c4e4ea609eae089ad241b936aa4ffa604ca89e0346f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float4x3.hpp",
+                      "copiedSha256":  "c8d6bff74c2a51cff7573afcd9541f044d5da519694f4b344ec4bdebc1b6a213",
+                      "sourceSha256":  "c8d6bff74c2a51cff7573afcd9541f044d5da519694f4b344ec4bdebc1b6a213"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float4x3_precision.hpp",
+                      "copiedSha256":  "e178488c0bd2d95c8d1e907e83e7b7f14bad2c9f6012c10514837b814fdeb9b8",
+                      "sourceSha256":  "e178488c0bd2d95c8d1e907e83e7b7f14bad2c9f6012c10514837b814fdeb9b8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float4x4.hpp",
+                      "copiedSha256":  "66dbcdd06c50852fa77660429f618ef9d35131b8a8097821247a869014366c15",
+                      "sourceSha256":  "66dbcdd06c50852fa77660429f618ef9d35131b8a8097821247a869014366c15"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_float4x4_precision.hpp",
+                      "copiedSha256":  "e8688aa7c58fa5ad167a79075788b9685096202569e6d2186e0433c93647c5bf",
+                      "sourceSha256":  "e8688aa7c58fa5ad167a79075788b9685096202569e6d2186e0433c93647c5bf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_projection.hpp",
+                      "copiedSha256":  "ab39c93d62ba24d631521c2020567a22d8bbfd0e61f8063b5f109acc39fa355b",
+                      "sourceSha256":  "ab39c93d62ba24d631521c2020567a22d8bbfd0e61f8063b5f109acc39fa355b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_projection.inl",
+                      "copiedSha256":  "cc7f121abd9609ebabaafbb64f030e91eb9ae99bb35c7ee0d099b4670abe3d54",
+                      "sourceSha256":  "cc7f121abd9609ebabaafbb64f030e91eb9ae99bb35c7ee0d099b4670abe3d54"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_relational.hpp",
+                      "copiedSha256":  "2402a31b974b125937ae6fb3bd61cbeef1e7dc937c15c8ba476272d1c2533e05",
+                      "sourceSha256":  "2402a31b974b125937ae6fb3bd61cbeef1e7dc937c15c8ba476272d1c2533e05"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_relational.inl",
+                      "copiedSha256":  "d672e0fd8e9becbac856b8303868d669a07c8cf3db39ea717a4ae6adb6f1d790",
+                      "sourceSha256":  "d672e0fd8e9becbac856b8303868d669a07c8cf3db39ea717a4ae6adb6f1d790"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_transform.hpp",
+                      "copiedSha256":  "b2350c8b0f566f006475a28f87aee817661d6ddbaea1610073af9d10beb8b40b",
+                      "sourceSha256":  "b2350c8b0f566f006475a28f87aee817661d6ddbaea1610073af9d10beb8b40b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/matrix_transform.inl",
+                      "copiedSha256":  "aceb4946d8639652f57768f3d3a2bf4af2ab8bac2779afa28128ec70bcfe92f2",
+                      "sourceSha256":  "aceb4946d8639652f57768f3d3a2bf4af2ab8bac2779afa28128ec70bcfe92f2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_common.hpp",
+                      "copiedSha256":  "5c342c8839dec574794c1457340769d6dd9392c2656a95ff5a57718471e69830",
+                      "sourceSha256":  "5c342c8839dec574794c1457340769d6dd9392c2656a95ff5a57718471e69830"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_common.inl",
+                      "copiedSha256":  "02003805bfceabe16e50e9bba799529dc9080adeabe46ced3f1fa7b85790f348",
+                      "sourceSha256":  "02003805bfceabe16e50e9bba799529dc9080adeabe46ced3f1fa7b85790f348"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_common_simd.inl",
+                      "copiedSha256":  "0523f9574c853339956779054b85daafb1ba2947b0e8f7ba702b240311982e03",
+                      "sourceSha256":  "0523f9574c853339956779054b85daafb1ba2947b0e8f7ba702b240311982e03"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_double.hpp",
+                      "copiedSha256":  "11607f4efb4a478df1c7701fa42a157ae47ffe3a5a6c9fc397fd7842fe68fdff",
+                      "sourceSha256":  "11607f4efb4a478df1c7701fa42a157ae47ffe3a5a6c9fc397fd7842fe68fdff"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_double_precision.hpp",
+                      "copiedSha256":  "0e71b9f30dfbe962731b7fe48a639723d0bd0b9cd09f0ac138a75387c2ef28b2",
+                      "sourceSha256":  "0e71b9f30dfbe962731b7fe48a639723d0bd0b9cd09f0ac138a75387c2ef28b2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_exponential.hpp",
+                      "copiedSha256":  "d745ba174a9aa0b1f997da61fab3d2bda25799d2907101856f60df8b164c03c5",
+                      "sourceSha256":  "d745ba174a9aa0b1f997da61fab3d2bda25799d2907101856f60df8b164c03c5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_exponential.inl",
+                      "copiedSha256":  "f02a800d2197b411e2398e4f37928db29810b5070577625a19fd2b88f2b6b81d",
+                      "sourceSha256":  "f02a800d2197b411e2398e4f37928db29810b5070577625a19fd2b88f2b6b81d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_float.hpp",
+                      "copiedSha256":  "c7d3c561dde9b3ae7f431c48580e60fe6e07518fd48c9c097153f74620880b81",
+                      "sourceSha256":  "c7d3c561dde9b3ae7f431c48580e60fe6e07518fd48c9c097153f74620880b81"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_float_precision.hpp",
+                      "copiedSha256":  "eabb202f37e77ea6ee3dee1efe902dd45d1818ae2639bc1611d1e31784bcd209",
+                      "sourceSha256":  "eabb202f37e77ea6ee3dee1efe902dd45d1818ae2639bc1611d1e31784bcd209"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_geometric.hpp",
+                      "copiedSha256":  "1cc09fb6584d4ad35b7be8b479637eb5cb5db560db6178ba1af28579ebe20d91",
+                      "sourceSha256":  "1cc09fb6584d4ad35b7be8b479637eb5cb5db560db6178ba1af28579ebe20d91"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_geometric.inl",
+                      "copiedSha256":  "bffde93ff7e2e809bc696d8a20fc74c3f05137512284426c586f5916e6e6a9fb",
+                      "sourceSha256":  "bffde93ff7e2e809bc696d8a20fc74c3f05137512284426c586f5916e6e6a9fb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_relational.hpp",
+                      "copiedSha256":  "51d1fe010ce64cfdf7b70601d584e2db743ea6279430547a406aed003e25ffff",
+                      "sourceSha256":  "51d1fe010ce64cfdf7b70601d584e2db743ea6279430547a406aed003e25ffff"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_relational.inl",
+                      "copiedSha256":  "0c4bd5dc106b0eb45140aadb5e082444d9aa736ba0324764d4c18573184e7440",
+                      "sourceSha256":  "0c4bd5dc106b0eb45140aadb5e082444d9aa736ba0324764d4c18573184e7440"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_transform.hpp",
+                      "copiedSha256":  "e0e26975dab377c5d324d791f83b64a07adebfc72f98dcb48c65d5ee3e014321",
+                      "sourceSha256":  "e0e26975dab377c5d324d791f83b64a07adebfc72f98dcb48c65d5ee3e014321"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_transform.inl",
+                      "copiedSha256":  "883fee5eef3137f46265691b5dc08105dfddef0fd9e2a13142db780a3d4e1c2c",
+                      "sourceSha256":  "883fee5eef3137f46265691b5dc08105dfddef0fd9e2a13142db780a3d4e1c2c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_trigonometric.hpp",
+                      "copiedSha256":  "747114a51e5e4be49c0e788ee685ff24764611ac1966de297bde10a0f55baf18",
+                      "sourceSha256":  "747114a51e5e4be49c0e788ee685ff24764611ac1966de297bde10a0f55baf18"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/quaternion_trigonometric.inl",
+                      "copiedSha256":  "9d2d0a4c82d4a6f8b4adc1ef1ea35652d9d60169d42f84d598326b4f73974ec0",
+                      "sourceSha256":  "9d2d0a4c82d4a6f8b4adc1ef1ea35652d9d60169d42f84d598326b4f73974ec0"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_common.hpp",
+                      "copiedSha256":  "b2e85936128c98c63320b273f24addf38e589ab60b95c6577fb7d0c0ff201079",
+                      "sourceSha256":  "b2e85936128c98c63320b273f24addf38e589ab60b95c6577fb7d0c0ff201079"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_common.inl",
+                      "copiedSha256":  "c4a5d2f95ebfe53a1ff9b2a0326c308e98e0436b2c3ee503faadabb73c15b7f7",
+                      "sourceSha256":  "c4a5d2f95ebfe53a1ff9b2a0326c308e98e0436b2c3ee503faadabb73c15b7f7"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_constants.hpp",
+                      "copiedSha256":  "08d46452203708be97c56d4d43154eee39c6b2f0f197e9f9c78acd12e5d82026",
+                      "sourceSha256":  "08d46452203708be97c56d4d43154eee39c6b2f0f197e9f9c78acd12e5d82026"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_constants.inl",
+                      "copiedSha256":  "03ca9f3fa08f7953d7ea7e5f910faee46caabab19fd040903eac68f3c876bc4a",
+                      "sourceSha256":  "03ca9f3fa08f7953d7ea7e5f910faee46caabab19fd040903eac68f3c876bc4a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_int_sized.hpp",
+                      "copiedSha256":  "552ceafe4260bb2a821a808073b79f034625ba12084ee42b0a31f79f63a893a9",
+                      "sourceSha256":  "552ceafe4260bb2a821a808073b79f034625ba12084ee42b0a31f79f63a893a9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_relational.hpp",
+                      "copiedSha256":  "795042e472f57a61613b77321a534d12072f190aef4467f480bde2b5f6fdfbf3",
+                      "sourceSha256":  "795042e472f57a61613b77321a534d12072f190aef4467f480bde2b5f6fdfbf3"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_relational.inl",
+                      "copiedSha256":  "2012aa81b63bd5db82c02043fbbf054e088d342f1c1355f824654f7f6e2b7e37",
+                      "sourceSha256":  "2012aa81b63bd5db82c02043fbbf054e088d342f1c1355f824654f7f6e2b7e37"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_uint_sized.hpp",
+                      "copiedSha256":  "88ba07e9947d52cd5c33409ab6ce52af42c6f25839f615e4b10d17753c1d1eca",
+                      "sourceSha256":  "88ba07e9947d52cd5c33409ab6ce52af42c6f25839f615e4b10d17753c1d1eca"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_ulp.hpp",
+                      "copiedSha256":  "7cb456cba97a730772c7558a1fc68c9e3d9949835674d71ad39902a718c1e8e1",
+                      "sourceSha256":  "7cb456cba97a730772c7558a1fc68c9e3d9949835674d71ad39902a718c1e8e1"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/scalar_ulp.inl",
+                      "copiedSha256":  "f89118a1766626032a086375a2de4ef8c914a903c15352763728076c5e485948",
+                      "sourceSha256":  "f89118a1766626032a086375a2de4ef8c914a903c15352763728076c5e485948"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool1.hpp",
+                      "copiedSha256":  "50f4a314e5e58d4d9905d21c5e7f61a93fea6c904e3715c40363d7483f4dc881",
+                      "sourceSha256":  "50f4a314e5e58d4d9905d21c5e7f61a93fea6c904e3715c40363d7483f4dc881"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool1_precision.hpp",
+                      "copiedSha256":  "1df14479afc2901b98e0be2086b6d588042646f17d5cd644dbfade37429b685a",
+                      "sourceSha256":  "1df14479afc2901b98e0be2086b6d588042646f17d5cd644dbfade37429b685a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool2.hpp",
+                      "copiedSha256":  "14dfb7baa6114b10d428991e1f998ad9fa8a3157ae45a245ba13321cf6c87043",
+                      "sourceSha256":  "14dfb7baa6114b10d428991e1f998ad9fa8a3157ae45a245ba13321cf6c87043"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool2_precision.hpp",
+                      "copiedSha256":  "a84467a8f9aeeb8de3b76df1aa5f8085503b5f4050bd5c808a60b2527736b72c",
+                      "sourceSha256":  "a84467a8f9aeeb8de3b76df1aa5f8085503b5f4050bd5c808a60b2527736b72c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool3.hpp",
+                      "copiedSha256":  "8444556f70e1fa055558f8478ba741df295a734f142e287fc0786ffed9284a47",
+                      "sourceSha256":  "8444556f70e1fa055558f8478ba741df295a734f142e287fc0786ffed9284a47"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool3_precision.hpp",
+                      "copiedSha256":  "764e4523aa8c416e0e3cf90f164332166eac1878a8784c232a8872fee5677f2b",
+                      "sourceSha256":  "764e4523aa8c416e0e3cf90f164332166eac1878a8784c232a8872fee5677f2b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool4.hpp",
+                      "copiedSha256":  "b9106d7154ed6df900ed9ed5919bed0b625d08058f761df8e783e14686daef39",
+                      "sourceSha256":  "b9106d7154ed6df900ed9ed5919bed0b625d08058f761df8e783e14686daef39"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_bool4_precision.hpp",
+                      "copiedSha256":  "2df19112b8540023df6130ab9b72f150e5e7081fafa02c77bdb7e9abe9ebd0ef",
+                      "sourceSha256":  "2df19112b8540023df6130ab9b72f150e5e7081fafa02c77bdb7e9abe9ebd0ef"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_common.hpp",
+                      "copiedSha256":  "1d81234934d31c6e19d017d89471e1d52deeb9c848cfbb298710f53c406a01e2",
+                      "sourceSha256":  "1d81234934d31c6e19d017d89471e1d52deeb9c848cfbb298710f53c406a01e2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_common.inl",
+                      "copiedSha256":  "65db7a4a1ccd7f4bc5a2b8039971cdaaae2bb7d62165a8cfef68b919f642d06a",
+                      "sourceSha256":  "65db7a4a1ccd7f4bc5a2b8039971cdaaae2bb7d62165a8cfef68b919f642d06a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double1.hpp",
+                      "copiedSha256":  "5e0512b5d9665eee97b651fd317c08cf38c44606fe6a89bf8189d89f85775658",
+                      "sourceSha256":  "5e0512b5d9665eee97b651fd317c08cf38c44606fe6a89bf8189d89f85775658"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double1_precision.hpp",
+                      "copiedSha256":  "0a31897d68da3461dd898c680985d68d7caee4b87c6a3608d015e58d9fe68e28",
+                      "sourceSha256":  "0a31897d68da3461dd898c680985d68d7caee4b87c6a3608d015e58d9fe68e28"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double2.hpp",
+                      "copiedSha256":  "da0b99d0c93f97bc072c2714fccd5e7215577482b28de408e3b7e3b30c4fc27f",
+                      "sourceSha256":  "da0b99d0c93f97bc072c2714fccd5e7215577482b28de408e3b7e3b30c4fc27f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double2_precision.hpp",
+                      "copiedSha256":  "4fa7175b87630322d224aef6f050549120eb6119f78628d0bf002484bc2325bd",
+                      "sourceSha256":  "4fa7175b87630322d224aef6f050549120eb6119f78628d0bf002484bc2325bd"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double3.hpp",
+                      "copiedSha256":  "899740010c39bbe4e22b51daad27f6b4fa00da9bc4a4b70866036bd888afa984",
+                      "sourceSha256":  "899740010c39bbe4e22b51daad27f6b4fa00da9bc4a4b70866036bd888afa984"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double3_precision.hpp",
+                      "copiedSha256":  "936f965a1b879c915e970364b5baebc17bab7d649e879f6e0d96880e347f0621",
+                      "sourceSha256":  "936f965a1b879c915e970364b5baebc17bab7d649e879f6e0d96880e347f0621"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double4.hpp",
+                      "copiedSha256":  "272762761a35813caaa8647db255606e5fa356595a052ea94ed87e612c458957",
+                      "sourceSha256":  "272762761a35813caaa8647db255606e5fa356595a052ea94ed87e612c458957"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_double4_precision.hpp",
+                      "copiedSha256":  "8102adb66c260325ad13df339843de450894bb45eafedaa05753c479b830a934",
+                      "sourceSha256":  "8102adb66c260325ad13df339843de450894bb45eafedaa05753c479b830a934"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float1.hpp",
+                      "copiedSha256":  "37f00240a6daec9a6bb66657412148018cceb04b9a16865e7f0e1bb6b5c4ed10",
+                      "sourceSha256":  "37f00240a6daec9a6bb66657412148018cceb04b9a16865e7f0e1bb6b5c4ed10"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float1_precision.hpp",
+                      "copiedSha256":  "2ce1f1dc915c35bc6325bc52c87f2b2d25456b37841573036edfe797eca4d94c",
+                      "sourceSha256":  "2ce1f1dc915c35bc6325bc52c87f2b2d25456b37841573036edfe797eca4d94c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float2.hpp",
+                      "copiedSha256":  "e04a566abf197f138dc8fb3156833cd2ba7fc4a92405f840b096b317fcc46961",
+                      "sourceSha256":  "e04a566abf197f138dc8fb3156833cd2ba7fc4a92405f840b096b317fcc46961"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float2_precision.hpp",
+                      "copiedSha256":  "a98bcd3d22935a48c693496dd13bd6020e98072079b94c45bc608b7b6d7a106d",
+                      "sourceSha256":  "a98bcd3d22935a48c693496dd13bd6020e98072079b94c45bc608b7b6d7a106d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float3.hpp",
+                      "copiedSha256":  "03d186b2344d390c32a512a9b7736707b6399f0c3f77b80ab0d49a7d0b983751",
+                      "sourceSha256":  "03d186b2344d390c32a512a9b7736707b6399f0c3f77b80ab0d49a7d0b983751"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float3_precision.hpp",
+                      "copiedSha256":  "217037d131b93e061aec1cff60642f856c84e99056acac5788425763728ff6cc",
+                      "sourceSha256":  "217037d131b93e061aec1cff60642f856c84e99056acac5788425763728ff6cc"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float4.hpp",
+                      "copiedSha256":  "b09270e5e76688f9093c055d4f92cf82d612cbc2f3d3d69e2343bbfd3acb8b13",
+                      "sourceSha256":  "b09270e5e76688f9093c055d4f92cf82d612cbc2f3d3d69e2343bbfd3acb8b13"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_float4_precision.hpp",
+                      "copiedSha256":  "9ab8578f82608014191f97a27413617faf029b9bf64311756de7a15fc47442ff",
+                      "sourceSha256":  "9ab8578f82608014191f97a27413617faf029b9bf64311756de7a15fc47442ff"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int1.hpp",
+                      "copiedSha256":  "5665ac10cfd3b491367aa5baa201446648aad3311c89dededd79180522bd75a3",
+                      "sourceSha256":  "5665ac10cfd3b491367aa5baa201446648aad3311c89dededd79180522bd75a3"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int1_precision.hpp",
+                      "copiedSha256":  "e6fc2ed716c995e9aa41e8e51f05ff4a6a9a500ffacba10be6aa4b586b6750ef",
+                      "sourceSha256":  "e6fc2ed716c995e9aa41e8e51f05ff4a6a9a500ffacba10be6aa4b586b6750ef"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int2.hpp",
+                      "copiedSha256":  "3f19cc4e45dca03b9f3a88608c942b9cf9d167c80e2766b83d6ab134284ad25c",
+                      "sourceSha256":  "3f19cc4e45dca03b9f3a88608c942b9cf9d167c80e2766b83d6ab134284ad25c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int2_precision.hpp",
+                      "copiedSha256":  "5aa66485ffc1fa86aa1c6ecde52b2235d3033e64b28cb4fa04ca1c82ac7d1b23",
+                      "sourceSha256":  "5aa66485ffc1fa86aa1c6ecde52b2235d3033e64b28cb4fa04ca1c82ac7d1b23"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int3.hpp",
+                      "copiedSha256":  "1296aa5290c52bf8331b54e24af32fbb7769d089f6f0146b6f3cdfee89a7aed6",
+                      "sourceSha256":  "1296aa5290c52bf8331b54e24af32fbb7769d089f6f0146b6f3cdfee89a7aed6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int3_precision.hpp",
+                      "copiedSha256":  "5574443fa19fc8b8b0c54cf9b1f4962f5a29b6ec669e447461c07dd4d6c22227",
+                      "sourceSha256":  "5574443fa19fc8b8b0c54cf9b1f4962f5a29b6ec669e447461c07dd4d6c22227"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int4.hpp",
+                      "copiedSha256":  "6115283d489e1d990ca4d88001f63c494ea4959cf216d44ef9e28dbf3d9b4620",
+                      "sourceSha256":  "6115283d489e1d990ca4d88001f63c494ea4959cf216d44ef9e28dbf3d9b4620"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_int4_precision.hpp",
+                      "copiedSha256":  "e4898e2d7ea3ce16bd9f9f5528cea734c06a031a94b78c9939281195454fc35d",
+                      "sourceSha256":  "e4898e2d7ea3ce16bd9f9f5528cea734c06a031a94b78c9939281195454fc35d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_relational.hpp",
+                      "copiedSha256":  "6cfd20315d50335ba7dcb307a9a199f5629a919bcb19dde3c9aebdc90d11a0c3",
+                      "sourceSha256":  "6cfd20315d50335ba7dcb307a9a199f5629a919bcb19dde3c9aebdc90d11a0c3"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_relational.inl",
+                      "copiedSha256":  "deab66a22d8187a086f473208f51841ed156166407a8aae5b5c30135430b73af",
+                      "sourceSha256":  "deab66a22d8187a086f473208f51841ed156166407a8aae5b5c30135430b73af"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint1.hpp",
+                      "copiedSha256":  "936046e1e48adf16a2daa297a69e3318537c55f39572a05efbae9aca1479cf89",
+                      "sourceSha256":  "936046e1e48adf16a2daa297a69e3318537c55f39572a05efbae9aca1479cf89"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint1_precision.hpp",
+                      "copiedSha256":  "b4f8fcd99e2d0b01bc00ee45a7b2bdfe9374c9fc7fbfa8a19a483356239457be",
+                      "sourceSha256":  "b4f8fcd99e2d0b01bc00ee45a7b2bdfe9374c9fc7fbfa8a19a483356239457be"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint2.hpp",
+                      "copiedSha256":  "3d03953933445d262f9e838144218343dcbd92f01ddcafcba368e68712affecf",
+                      "sourceSha256":  "3d03953933445d262f9e838144218343dcbd92f01ddcafcba368e68712affecf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint2_precision.hpp",
+                      "copiedSha256":  "dddf1c4328ae8bcb57479b89505a4bd94ddbf923a0b2a767cea1d6923257e0c9",
+                      "sourceSha256":  "dddf1c4328ae8bcb57479b89505a4bd94ddbf923a0b2a767cea1d6923257e0c9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint3.hpp",
+                      "copiedSha256":  "48c423931390622043e17545a0308776dc4a322ba0d2e36e8ff7927d5e0b66fe",
+                      "sourceSha256":  "48c423931390622043e17545a0308776dc4a322ba0d2e36e8ff7927d5e0b66fe"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint3_precision.hpp",
+                      "copiedSha256":  "fbf093f349f756f47f639edece091c9384db8db982b60a699f15841770162a47",
+                      "sourceSha256":  "fbf093f349f756f47f639edece091c9384db8db982b60a699f15841770162a47"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint4.hpp",
+                      "copiedSha256":  "1afbf32485cf310fb8abd8f9610be2c7fef1fd71a5c4495cad4b942c74832b16",
+                      "sourceSha256":  "1afbf32485cf310fb8abd8f9610be2c7fef1fd71a5c4495cad4b942c74832b16"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_uint4_precision.hpp",
+                      "copiedSha256":  "65187ee13367a2af4008f618d9e0b9e4db0d61ff792299bf7530129c4739288e",
+                      "sourceSha256":  "65187ee13367a2af4008f618d9e0b9e4db0d61ff792299bf7530129c4739288e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_ulp.hpp",
+                      "copiedSha256":  "d6ba67ceed27838b5a493bab9c9b0103b7387ae9f1dbed02851afa99194dda7a",
+                      "sourceSha256":  "d6ba67ceed27838b5a493bab9c9b0103b7387ae9f1dbed02851afa99194dda7a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/ext/vector_ulp.inl",
+                      "copiedSha256":  "a3cc71b2532b8db890634cbe40091a2753dd122b9536e8244f7c106f85020cbf",
+                      "sourceSha256":  "a3cc71b2532b8db890634cbe40091a2753dd122b9536e8244f7c106f85020cbf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/bitfield.hpp",
+                      "copiedSha256":  "0125e0baeb2405f7f6a626cbf4d511068810d62e5a8b79f4e4586cdca983aff5",
+                      "sourceSha256":  "0125e0baeb2405f7f6a626cbf4d511068810d62e5a8b79f4e4586cdca983aff5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/bitfield.inl",
+                      "copiedSha256":  "5253479d3017be609152999640ae13e70faee3017217eff793d96838585258fd",
+                      "sourceSha256":  "5253479d3017be609152999640ae13e70faee3017217eff793d96838585258fd"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/color_space.hpp",
+                      "copiedSha256":  "c336332fb9447cb99988098b79fb6c6e549081f3dabdcb7c96989be91ee8a7da",
+                      "sourceSha256":  "c336332fb9447cb99988098b79fb6c6e549081f3dabdcb7c96989be91ee8a7da"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/color_space.inl",
+                      "copiedSha256":  "4322a7a9a4be68f43cb2da2160e3017109b56e48a1fe12e10cfbde19b9b01d39",
+                      "sourceSha256":  "4322a7a9a4be68f43cb2da2160e3017109b56e48a1fe12e10cfbde19b9b01d39"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/constants.hpp",
+                      "copiedSha256":  "36cd438eac8a68a89413cb69168507459bd397645aeb8816ff4c1d0273b95199",
+                      "sourceSha256":  "36cd438eac8a68a89413cb69168507459bd397645aeb8816ff4c1d0273b95199"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/constants.inl",
+                      "copiedSha256":  "a2b56a8a533642955b530ac2fc77add06f2e7b7f8f36ffa48f53d7a828d19938",
+                      "sourceSha256":  "a2b56a8a533642955b530ac2fc77add06f2e7b7f8f36ffa48f53d7a828d19938"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/epsilon.hpp",
+                      "copiedSha256":  "84c82325f738c5f6e89813a1e8648a83a7389fdede12db3259246f48d66a56b4",
+                      "sourceSha256":  "84c82325f738c5f6e89813a1e8648a83a7389fdede12db3259246f48d66a56b4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/epsilon.inl",
+                      "copiedSha256":  "eed5e828e4ba760ffb06bbcda46fa20b96e58160698283bf545783d048abb1e7",
+                      "sourceSha256":  "eed5e828e4ba760ffb06bbcda46fa20b96e58160698283bf545783d048abb1e7"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/integer.hpp",
+                      "copiedSha256":  "37909801366a453700d56116714e28a22646b1d2dc71cb1693e3febb52308a70",
+                      "sourceSha256":  "37909801366a453700d56116714e28a22646b1d2dc71cb1693e3febb52308a70"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/integer.inl",
+                      "copiedSha256":  "212b20435c872341b35ad54e849561d1662600ef935da1a90c64b557bef33407",
+                      "sourceSha256":  "212b20435c872341b35ad54e849561d1662600ef935da1a90c64b557bef33407"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_access.hpp",
+                      "copiedSha256":  "a6ddb5469ac80b13778d263d04e1e2694bbc4f809bd320407fefb29bde62ab88",
+                      "sourceSha256":  "a6ddb5469ac80b13778d263d04e1e2694bbc4f809bd320407fefb29bde62ab88"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_access.inl",
+                      "copiedSha256":  "d39a4dfef97015f5e3b99cfa6a6a14fa4c6b0f56e567c19298fb7d46133e2ada",
+                      "sourceSha256":  "d39a4dfef97015f5e3b99cfa6a6a14fa4c6b0f56e567c19298fb7d46133e2ada"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_integer.hpp",
+                      "copiedSha256":  "4f24d9c57f3104777b6ead04aeafd3311e2075470748a17ff06150171bc84fe9",
+                      "sourceSha256":  "4f24d9c57f3104777b6ead04aeafd3311e2075470748a17ff06150171bc84fe9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_inverse.hpp",
+                      "copiedSha256":  "2ce63f0b743e809b3b3e72698b1e7529854b8e949a3282ece4fb28cd5453af7a",
+                      "sourceSha256":  "2ce63f0b743e809b3b3e72698b1e7529854b8e949a3282ece4fb28cd5453af7a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_inverse.inl",
+                      "copiedSha256":  "5d2e90cde54ee895b91cb0e2cc31488066164e55c57bbdc510430e99a6d526f7",
+                      "sourceSha256":  "5d2e90cde54ee895b91cb0e2cc31488066164e55c57bbdc510430e99a6d526f7"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_transform.hpp",
+                      "copiedSha256":  "346e56e5cfba3f5b370d36533088c54852b182c12a53f66e42a3072b81a1c639",
+                      "sourceSha256":  "346e56e5cfba3f5b370d36533088c54852b182c12a53f66e42a3072b81a1c639"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/matrix_transform.inl",
+                      "copiedSha256":  "8c70386bd89f2a25fcacafe8ea7332ac9a7719714187e521fc36353e1e930a93",
+                      "sourceSha256":  "8c70386bd89f2a25fcacafe8ea7332ac9a7719714187e521fc36353e1e930a93"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/noise.hpp",
+                      "copiedSha256":  "ab1c26271a368ff5454ef51fde1305f4d067e98452cd7e592a5f22f33475c10f",
+                      "sourceSha256":  "ab1c26271a368ff5454ef51fde1305f4d067e98452cd7e592a5f22f33475c10f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/noise.inl",
+                      "copiedSha256":  "79ef160764e6bc879b94dd1ff6cc4d428fb26eee1bf977bbd93f18ff470e2330",
+                      "sourceSha256":  "79ef160764e6bc879b94dd1ff6cc4d428fb26eee1bf977bbd93f18ff470e2330"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/packing.hpp",
+                      "copiedSha256":  "cebe671b33dc69b1452b6d79dc028c0ce87b0385faeed101bc30ebd6d8d6594a",
+                      "sourceSha256":  "cebe671b33dc69b1452b6d79dc028c0ce87b0385faeed101bc30ebd6d8d6594a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/packing.inl",
+                      "copiedSha256":  "90452f3726309b2d27c1fb89fb0c54982ce3d33c154c8f45d053a2d0db04f6d0",
+                      "sourceSha256":  "90452f3726309b2d27c1fb89fb0c54982ce3d33c154c8f45d053a2d0db04f6d0"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/quaternion.hpp",
+                      "copiedSha256":  "9f289c70bc7d81c13d115f95c9c4a4d167c2ecad1b3819a57a61664350a2c2a5",
+                      "sourceSha256":  "9f289c70bc7d81c13d115f95c9c4a4d167c2ecad1b3819a57a61664350a2c2a5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/quaternion.inl",
+                      "copiedSha256":  "5dce8cdb42c21f5e3444a90863026e1baaf443d16e18d2f67b723b0560184157",
+                      "sourceSha256":  "5dce8cdb42c21f5e3444a90863026e1baaf443d16e18d2f67b723b0560184157"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/quaternion_simd.inl",
+                      "copiedSha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "sourceSha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/random.hpp",
+                      "copiedSha256":  "b34f304ad5459d9f7d92010479da952a58d6c31b2f792931b8bd7b9ad6bcc58d",
+                      "sourceSha256":  "b34f304ad5459d9f7d92010479da952a58d6c31b2f792931b8bd7b9ad6bcc58d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/random.inl",
+                      "copiedSha256":  "3f2db12970c09c8dfc3b5cb77352203d06b23ad4012874f77d63f30fd4746e74",
+                      "sourceSha256":  "3f2db12970c09c8dfc3b5cb77352203d06b23ad4012874f77d63f30fd4746e74"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/reciprocal.hpp",
+                      "copiedSha256":  "d19f19fc56564c3ce19823f2fb8a67545048e6a912e967924a271cfd4f07c24f",
+                      "sourceSha256":  "d19f19fc56564c3ce19823f2fb8a67545048e6a912e967924a271cfd4f07c24f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/reciprocal.inl",
+                      "copiedSha256":  "067fd0293298de0f9ada02624ed17274c42d8a6d239b3d3fab5711d9b590cd57",
+                      "sourceSha256":  "067fd0293298de0f9ada02624ed17274c42d8a6d239b3d3fab5711d9b590cd57"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/round.hpp",
+                      "copiedSha256":  "f8e47ac25ae9c1ae60a46260774f1fdd0a20c0ae318d66b27d4e6a5d6218d161",
+                      "sourceSha256":  "f8e47ac25ae9c1ae60a46260774f1fdd0a20c0ae318d66b27d4e6a5d6218d161"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/round.inl",
+                      "copiedSha256":  "c297824c3871c4619269b40274fb09a4cd2f1130c29fa0f6fa99d3ed30df1123",
+                      "sourceSha256":  "c297824c3871c4619269b40274fb09a4cd2f1130c29fa0f6fa99d3ed30df1123"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/type_aligned.hpp",
+                      "copiedSha256":  "157ee16743830d007c8d537d9652439ec07fbdda5df2c933791926b708f67924",
+                      "sourceSha256":  "157ee16743830d007c8d537d9652439ec07fbdda5df2c933791926b708f67924"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/type_precision.hpp",
+                      "copiedSha256":  "eabf3a2aa09d03d85bbaf2a72b6767d86f32d924fd0c3a71ac02afeedcb626cc",
+                      "sourceSha256":  "eabf3a2aa09d03d85bbaf2a72b6767d86f32d924fd0c3a71ac02afeedcb626cc"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/type_precision.inl",
+                      "copiedSha256":  "2bf18b9ea6406da9a17c62aa88f4799287b87a46353708d72cd4f1a8151638ec",
+                      "sourceSha256":  "2bf18b9ea6406da9a17c62aa88f4799287b87a46353708d72cd4f1a8151638ec"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/type_ptr.hpp",
+                      "copiedSha256":  "0a3e75b3c788391865b5421f19d855f83a32690db7c6f175ca94741d530a2d5e",
+                      "sourceSha256":  "0a3e75b3c788391865b5421f19d855f83a32690db7c6f175ca94741d530a2d5e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/type_ptr.inl",
+                      "copiedSha256":  "dc73bc22aaabc85fed04f868a8df2b4c98e34fcf80bff6eb908cd7fa744e3ccb",
+                      "sourceSha256":  "dc73bc22aaabc85fed04f868a8df2b4c98e34fcf80bff6eb908cd7fa744e3ccb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/ulp.hpp",
+                      "copiedSha256":  "e67757576ce9b7e8b1f6ce0ea7f1324e54cad717b2d0e4a18535e8cb4a0b2997",
+                      "sourceSha256":  "e67757576ce9b7e8b1f6ce0ea7f1324e54cad717b2d0e4a18535e8cb4a0b2997"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/ulp.inl",
+                      "copiedSha256":  "76d2a8697481e5fb8919d20d67d4fd930fc3e3f18a89f84e06ad30767cf2c850",
+                      "sourceSha256":  "76d2a8697481e5fb8919d20d67d4fd930fc3e3f18a89f84e06ad30767cf2c850"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtc/vec1.hpp",
+                      "copiedSha256":  "ce099e8a46f1148cfdbb83f51e5bdbada0d7e8177ddba8d42eb65f91f78deddf",
+                      "sourceSha256":  "ce099e8a46f1148cfdbb83f51e5bdbada0d7e8177ddba8d42eb65f91f78deddf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/associated_min_max.hpp",
+                      "copiedSha256":  "27f0e81d7357626bfddfe704542b558a1a9ba10952ac31f935b94075b892115b",
+                      "sourceSha256":  "27f0e81d7357626bfddfe704542b558a1a9ba10952ac31f935b94075b892115b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/associated_min_max.inl",
+                      "copiedSha256":  "ad950c94ffad1a1b1c3405c096c84d7c5c9780980e2a45f756c12ad22c837320",
+                      "sourceSha256":  "ad950c94ffad1a1b1c3405c096c84d7c5c9780980e2a45f756c12ad22c837320"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/bit.hpp",
+                      "copiedSha256":  "1520fe4d627a6b94a9edff4e89d19bad6495b36f644c82d02b456f779ef4689d",
+                      "sourceSha256":  "1520fe4d627a6b94a9edff4e89d19bad6495b36f644c82d02b456f779ef4689d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/bit.inl",
+                      "copiedSha256":  "eef04c30b7b533bf3cfdf145db58fd7282727091589aeafb45bd97f41340372e",
+                      "sourceSha256":  "eef04c30b7b533bf3cfdf145db58fd7282727091589aeafb45bd97f41340372e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/closest_point.hpp",
+                      "copiedSha256":  "b22cdee28710df84fd080af34a92d9d6f26a67cf38679635b3916e577db1ae2e",
+                      "sourceSha256":  "b22cdee28710df84fd080af34a92d9d6f26a67cf38679635b3916e577db1ae2e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/closest_point.inl",
+                      "copiedSha256":  "2151be80f3dd9c2466530411e7efce567c546f6cecc18d82383e96122b630c09",
+                      "sourceSha256":  "2151be80f3dd9c2466530411e7efce567c546f6cecc18d82383e96122b630c09"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/color_encoding.hpp",
+                      "copiedSha256":  "b5663798b95d8de66ce17dae67300583ae2db26974af8ffa93c35a5d7a22fff6",
+                      "sourceSha256":  "b5663798b95d8de66ce17dae67300583ae2db26974af8ffa93c35a5d7a22fff6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/color_encoding.inl",
+                      "copiedSha256":  "aa8467551ae61caa272e6e04361f85775bf1fccea3f89933228c75d3709d49d8",
+                      "sourceSha256":  "aa8467551ae61caa272e6e04361f85775bf1fccea3f89933228c75d3709d49d8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/color_space.hpp",
+                      "copiedSha256":  "133aeb091ba8c3208cd3d985ed47212f215c388370bc8a55852df7a0f8445c92",
+                      "sourceSha256":  "133aeb091ba8c3208cd3d985ed47212f215c388370bc8a55852df7a0f8445c92"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/color_space.inl",
+                      "copiedSha256":  "e48bdd750173c51f9c68d62fa2e5137a667b94588cef385175f3b0b6f8c85715",
+                      "sourceSha256":  "e48bdd750173c51f9c68d62fa2e5137a667b94588cef385175f3b0b6f8c85715"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/color_space_YCoCg.hpp",
+                      "copiedSha256":  "f47b99e09cf6e8077aa1d4f736bafa0ad7f0be120ce45261d65f90a7cfb7f91f",
+                      "sourceSha256":  "f47b99e09cf6e8077aa1d4f736bafa0ad7f0be120ce45261d65f90a7cfb7f91f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/color_space_YCoCg.inl",
+                      "copiedSha256":  "fe7558f9fe00b62691d901675a474ec3714a84227b11accb8f4368f29d63981a",
+                      "sourceSha256":  "fe7558f9fe00b62691d901675a474ec3714a84227b11accb8f4368f29d63981a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/common.hpp",
+                      "copiedSha256":  "f15fe6dcac21e19138bbccb7c0fe4ee8ba5ca49d74bd3cc5d5fed270c94bfc64",
+                      "sourceSha256":  "f15fe6dcac21e19138bbccb7c0fe4ee8ba5ca49d74bd3cc5d5fed270c94bfc64"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/common.inl",
+                      "copiedSha256":  "efef343f54d340dd52b2713def894837395219e80cb879e636aaade8b681b690",
+                      "sourceSha256":  "efef343f54d340dd52b2713def894837395219e80cb879e636aaade8b681b690"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/compatibility.hpp",
+                      "copiedSha256":  "a0b3489a28e6648bc02c381dd63c2b94f5bffec79a7bce166bb54d1ab5d880c7",
+                      "sourceSha256":  "a0b3489a28e6648bc02c381dd63c2b94f5bffec79a7bce166bb54d1ab5d880c7"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/compatibility.inl",
+                      "copiedSha256":  "4efd4c062e0c9ed20f09c4cdedc4c8f570f94ac13d56ccd0adb1deaf0ad0b631",
+                      "sourceSha256":  "4efd4c062e0c9ed20f09c4cdedc4c8f570f94ac13d56ccd0adb1deaf0ad0b631"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/component_wise.hpp",
+                      "copiedSha256":  "8142610dd2e4e18ca848cfe5c1215e1d4d1319ece4deec431ceddf16720cdfee",
+                      "sourceSha256":  "8142610dd2e4e18ca848cfe5c1215e1d4d1319ece4deec431ceddf16720cdfee"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/component_wise.inl",
+                      "copiedSha256":  "fb6a82c86c0a3ed12cb29b4506aa7509231ceb71112fef06ef3b57c53a70b661",
+                      "sourceSha256":  "fb6a82c86c0a3ed12cb29b4506aa7509231ceb71112fef06ef3b57c53a70b661"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/dual_quaternion.hpp",
+                      "copiedSha256":  "557cfbf86bce996e729ab98a5b0014fcd41048f8020583071ad6d8faee5b7dbf",
+                      "sourceSha256":  "557cfbf86bce996e729ab98a5b0014fcd41048f8020583071ad6d8faee5b7dbf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/dual_quaternion.inl",
+                      "copiedSha256":  "c0f1b1cc7f38abbbc3f1b80eafb63dbcae61738ebd021b57b83172b28abb8014",
+                      "sourceSha256":  "c0f1b1cc7f38abbbc3f1b80eafb63dbcae61738ebd021b57b83172b28abb8014"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/easing.hpp",
+                      "copiedSha256":  "b181c1aa734f0599d78e342a3f0bdb3b8c6a8abc97db671b2ce433b50e375dc4",
+                      "sourceSha256":  "b181c1aa734f0599d78e342a3f0bdb3b8c6a8abc97db671b2ce433b50e375dc4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/easing.inl",
+                      "copiedSha256":  "932f6dacfebcc4b3ec95fa2b3d336227470c3d2fbc6574914d6ade69f6145cb5",
+                      "sourceSha256":  "932f6dacfebcc4b3ec95fa2b3d336227470c3d2fbc6574914d6ade69f6145cb5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/euler_angles.hpp",
+                      "copiedSha256":  "b8815b9d214c0273924a0119a05568f199af8b1e09a559fa5bb869b1e01a1511",
+                      "sourceSha256":  "b8815b9d214c0273924a0119a05568f199af8b1e09a559fa5bb869b1e01a1511"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/euler_angles.inl",
+                      "copiedSha256":  "027360330a8e6a8671b6f579392ea0916841b6cfc760b55c9f0d911db16dd2e5",
+                      "sourceSha256":  "027360330a8e6a8671b6f579392ea0916841b6cfc760b55c9f0d911db16dd2e5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/extend.hpp",
+                      "copiedSha256":  "79f55e2cc6f482a7cfc44e6a9d1ff3f559d3513dc935556e9ce911d09235c1c3",
+                      "sourceSha256":  "79f55e2cc6f482a7cfc44e6a9d1ff3f559d3513dc935556e9ce911d09235c1c3"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/extend.inl",
+                      "copiedSha256":  "1a3f37288fde064c4b46b4e8def1b397e3b2c8b6e80ec6a50ff8d9b58fb3c56f",
+                      "sourceSha256":  "1a3f37288fde064c4b46b4e8def1b397e3b2c8b6e80ec6a50ff8d9b58fb3c56f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/extended_min_max.hpp",
+                      "copiedSha256":  "15f00e20fd13d7c14b90703b4849eab386afe3521f8b09e998d495912a5ac889",
+                      "sourceSha256":  "15f00e20fd13d7c14b90703b4849eab386afe3521f8b09e998d495912a5ac889"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/extended_min_max.inl",
+                      "copiedSha256":  "85f99c59443f39137175641bb4367859452b80f3c4c410bb12683d8c71bf9ff8",
+                      "sourceSha256":  "85f99c59443f39137175641bb4367859452b80f3c4c410bb12683d8c71bf9ff8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/exterior_product.hpp",
+                      "copiedSha256":  "872b5b3e384ac864e617ab38e9cf5a3eabc09fe401a3e6d56ee1567f20f74104",
+                      "sourceSha256":  "872b5b3e384ac864e617ab38e9cf5a3eabc09fe401a3e6d56ee1567f20f74104"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/exterior_product.inl",
+                      "copiedSha256":  "e0f26f55873c2b8c2744e657fdd734aa3bbeb308f2bd02d15f6799e46dea7751",
+                      "sourceSha256":  "e0f26f55873c2b8c2744e657fdd734aa3bbeb308f2bd02d15f6799e46dea7751"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/fast_exponential.hpp",
+                      "copiedSha256":  "80d40d93ba8fa6f0046c3a74f2c72de8fb7089ea1467103681248e83356b5807",
+                      "sourceSha256":  "80d40d93ba8fa6f0046c3a74f2c72de8fb7089ea1467103681248e83356b5807"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/fast_exponential.inl",
+                      "copiedSha256":  "7b7f1d99b04e39f3202519d7135c5c62fb9f1316777a409a9a5155b253916a1f",
+                      "sourceSha256":  "7b7f1d99b04e39f3202519d7135c5c62fb9f1316777a409a9a5155b253916a1f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/fast_square_root.hpp",
+                      "copiedSha256":  "a27b4f798a7f15f4f70f004744f8d25f3b677bfcb1d7b7de807543646e29f3c5",
+                      "sourceSha256":  "a27b4f798a7f15f4f70f004744f8d25f3b677bfcb1d7b7de807543646e29f3c5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/fast_square_root.inl",
+                      "copiedSha256":  "51e10b9a2db2971b2a91dd60a0b49b605224b722c477a0f418c2a5c86120af31",
+                      "sourceSha256":  "51e10b9a2db2971b2a91dd60a0b49b605224b722c477a0f418c2a5c86120af31"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/fast_trigonometry.hpp",
+                      "copiedSha256":  "2e9f3ee7363f3262cd1b949b9ff4604699e877f507102be600d543d2361cf6f0",
+                      "sourceSha256":  "2e9f3ee7363f3262cd1b949b9ff4604699e877f507102be600d543d2361cf6f0"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/fast_trigonometry.inl",
+                      "copiedSha256":  "cd67d53e35d8559987c347ab8bb9eb788bfeaaf63b7114c034e6e99597f0af5b",
+                      "sourceSha256":  "cd67d53e35d8559987c347ab8bb9eb788bfeaaf63b7114c034e6e99597f0af5b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/float_notmalize.inl",
+                      "copiedSha256":  "273c5cfa349bd23d8991bb557f3a68fb000e0c81ede9e406f20cd772e71a6305",
+                      "sourceSha256":  "273c5cfa349bd23d8991bb557f3a68fb000e0c81ede9e406f20cd772e71a6305"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/functions.hpp",
+                      "copiedSha256":  "594073e231584404c7bd3bd89e72ff38ba00a2bfab348726c168e4e326c85be5",
+                      "sourceSha256":  "594073e231584404c7bd3bd89e72ff38ba00a2bfab348726c168e4e326c85be5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/functions.inl",
+                      "copiedSha256":  "3e35e0d59c17b4a2d4fd91ef7b90fd100160c972f571a458101b297f75d37a95",
+                      "sourceSha256":  "3e35e0d59c17b4a2d4fd91ef7b90fd100160c972f571a458101b297f75d37a95"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/gradient_paint.hpp",
+                      "copiedSha256":  "2df77a2f1c323a99819d3e7d4694f5b79490e15c19fc1f45bcd0710b79757c2d",
+                      "sourceSha256":  "2df77a2f1c323a99819d3e7d4694f5b79490e15c19fc1f45bcd0710b79757c2d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/gradient_paint.inl",
+                      "copiedSha256":  "bf4845caf4932d1af225bd775a32dcaf0e42e83412d10600955d6bff2f536c9f",
+                      "sourceSha256":  "bf4845caf4932d1af225bd775a32dcaf0e42e83412d10600955d6bff2f536c9f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/handed_coordinate_space.hpp",
+                      "copiedSha256":  "808cb47ea7daaebbbcb95ae3bdc5fb7c74b3cdf3c3aa4ca0e143cfd2b303a078",
+                      "sourceSha256":  "808cb47ea7daaebbbcb95ae3bdc5fb7c74b3cdf3c3aa4ca0e143cfd2b303a078"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/handed_coordinate_space.inl",
+                      "copiedSha256":  "3074cf650891bac94284317b8ffa768554f808a78fe392f23760885d888d23cb",
+                      "sourceSha256":  "3074cf650891bac94284317b8ffa768554f808a78fe392f23760885d888d23cb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/hash.hpp",
+                      "copiedSha256":  "a1fa0981fa27747d93b02ca4f4a398770c9f0edefeab0e6575e5e28f89e3f50d",
+                      "sourceSha256":  "a1fa0981fa27747d93b02ca4f4a398770c9f0edefeab0e6575e5e28f89e3f50d"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/hash.inl",
+                      "copiedSha256":  "c3aadea82bbc2dbc53f75b848ceeb13759ac4a55f145e35285aa402d9b618480",
+                      "sourceSha256":  "c3aadea82bbc2dbc53f75b848ceeb13759ac4a55f145e35285aa402d9b618480"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/integer.hpp",
+                      "copiedSha256":  "43b5056f359224115780a9e4089b30e273d8eb25ee25ff95352c84e90a6f2994",
+                      "sourceSha256":  "43b5056f359224115780a9e4089b30e273d8eb25ee25ff95352c84e90a6f2994"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/integer.inl",
+                      "copiedSha256":  "8a91336ed30ae2e74ed8656728755c7c579b367556c808bd51c2f298be6348b8",
+                      "sourceSha256":  "8a91336ed30ae2e74ed8656728755c7c579b367556c808bd51c2f298be6348b8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/intersect.hpp",
+                      "copiedSha256":  "db794331e8b77d6a147b47dab0e5b04bcfc0ba712fabb52c56215ed7555a85e9",
+                      "sourceSha256":  "db794331e8b77d6a147b47dab0e5b04bcfc0ba712fabb52c56215ed7555a85e9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/intersect.inl",
+                      "copiedSha256":  "63cdb6a1d5ddf29b8ddd6e0d1dbe02cdf269109076159c35510255e2b74273cf",
+                      "sourceSha256":  "63cdb6a1d5ddf29b8ddd6e0d1dbe02cdf269109076159c35510255e2b74273cf"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/io.hpp",
+                      "copiedSha256":  "39eedbfb54c07dec1d920a19a788f7a407c0fedc7c7e1768eddbc8690fd1d13f",
+                      "sourceSha256":  "39eedbfb54c07dec1d920a19a788f7a407c0fedc7c7e1768eddbc8690fd1d13f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/io.inl",
+                      "copiedSha256":  "0ccbe3ac306e07cc921a30b312281a958d0839c4dbcb51d9c7a2a49afaa42934",
+                      "sourceSha256":  "0ccbe3ac306e07cc921a30b312281a958d0839c4dbcb51d9c7a2a49afaa42934"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/log_base.hpp",
+                      "copiedSha256":  "f7113dbe8c5e77e3e7309d4a4591b61e3c620b175c7d7c9f22d2413280318574",
+                      "sourceSha256":  "f7113dbe8c5e77e3e7309d4a4591b61e3c620b175c7d7c9f22d2413280318574"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/log_base.inl",
+                      "copiedSha256":  "d808dbcee0074cf3a276d1d762e89da6a3ee1ab9f85f024f2359e7f3b070904a",
+                      "sourceSha256":  "d808dbcee0074cf3a276d1d762e89da6a3ee1ab9f85f024f2359e7f3b070904a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_cross_product.hpp",
+                      "copiedSha256":  "7c3f673a70b10af3d2688d8bc25886d3b58fb8476422f2d00dcb8e80ff2c97b9",
+                      "sourceSha256":  "7c3f673a70b10af3d2688d8bc25886d3b58fb8476422f2d00dcb8e80ff2c97b9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_cross_product.inl",
+                      "copiedSha256":  "5ed3f62aa8e1a186f89e85f8ba6cbf86e3fd9e7a584de5bde8e569c873aed9f8",
+                      "sourceSha256":  "5ed3f62aa8e1a186f89e85f8ba6cbf86e3fd9e7a584de5bde8e569c873aed9f8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_decompose.hpp",
+                      "copiedSha256":  "a025bd570f8eff880691ec3c4ed8002423af8306dc5511a69aeed3ef73355206",
+                      "sourceSha256":  "a025bd570f8eff880691ec3c4ed8002423af8306dc5511a69aeed3ef73355206"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_decompose.inl",
+                      "copiedSha256":  "89ff93629703837abac274631a5a7403353d758762f657afb37c029bbb0d785e",
+                      "sourceSha256":  "89ff93629703837abac274631a5a7403353d758762f657afb37c029bbb0d785e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_factorisation.hpp",
+                      "copiedSha256":  "7a91a4addce034d536ab451fe37d57bb099080e09ac4b960ea40c1cd3c1a5825",
+                      "sourceSha256":  "7a91a4addce034d536ab451fe37d57bb099080e09ac4b960ea40c1cd3c1a5825"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_factorisation.inl",
+                      "copiedSha256":  "4bfe36f99965b221c3eded1b6a027e401e0ac68ca62ce2bb0ecd990afaf7f160",
+                      "sourceSha256":  "4bfe36f99965b221c3eded1b6a027e401e0ac68ca62ce2bb0ecd990afaf7f160"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_interpolation.hpp",
+                      "copiedSha256":  "11c8957cb8cb2bc8f624e413ec1bae919120622b3caf85a326ff6991e776e461",
+                      "sourceSha256":  "11c8957cb8cb2bc8f624e413ec1bae919120622b3caf85a326ff6991e776e461"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_interpolation.inl",
+                      "copiedSha256":  "c82d582d7c097b0989b14ac6c28e33f6de15cbf4267f423e0cbed956a558d1bc",
+                      "sourceSha256":  "c82d582d7c097b0989b14ac6c28e33f6de15cbf4267f423e0cbed956a558d1bc"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_major_storage.hpp",
+                      "copiedSha256":  "19b73ac59de56a19a48e59cb3992cd9930fd92724664f6aed1e61a858a225528",
+                      "sourceSha256":  "19b73ac59de56a19a48e59cb3992cd9930fd92724664f6aed1e61a858a225528"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_major_storage.inl",
+                      "copiedSha256":  "7ea721314fb1c78e1f9a458c043bae363c99536fbbb5f56132c059b23817a644",
+                      "sourceSha256":  "7ea721314fb1c78e1f9a458c043bae363c99536fbbb5f56132c059b23817a644"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_operation.hpp",
+                      "copiedSha256":  "08b844c2b820e5fa8d0a934f360c3055bb678b24409b7ed3a4b47386b5161311",
+                      "sourceSha256":  "08b844c2b820e5fa8d0a934f360c3055bb678b24409b7ed3a4b47386b5161311"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_operation.inl",
+                      "copiedSha256":  "a78b94900c03a8b2f94cd7e8b96af1727f248bdf35ae0eb01da6f38df22ef0fa",
+                      "sourceSha256":  "a78b94900c03a8b2f94cd7e8b96af1727f248bdf35ae0eb01da6f38df22ef0fa"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_query.hpp",
+                      "copiedSha256":  "5c1d36705af4ca273b7da991589e688044607902a5895154e8c1d216fe7720d8",
+                      "sourceSha256":  "5c1d36705af4ca273b7da991589e688044607902a5895154e8c1d216fe7720d8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_query.inl",
+                      "copiedSha256":  "443738bfe4573126630904a87553d4b2aa504a69dada36a32cf98fdcbd786e64",
+                      "sourceSha256":  "443738bfe4573126630904a87553d4b2aa504a69dada36a32cf98fdcbd786e64"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_transform_2d.hpp",
+                      "copiedSha256":  "cc43c60a8d82855bcac6a8ad3a8561fd905a5c69dd7619d48a75521cebb983c2",
+                      "sourceSha256":  "cc43c60a8d82855bcac6a8ad3a8561fd905a5c69dd7619d48a75521cebb983c2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/matrix_transform_2d.inl",
+                      "copiedSha256":  "3e33f4d81775bbbf58f4c2fcd42dba0a16366fe2c0bce68b830d2d2c09b9f07c",
+                      "sourceSha256":  "3e33f4d81775bbbf58f4c2fcd42dba0a16366fe2c0bce68b830d2d2c09b9f07c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/mixed_product.hpp",
+                      "copiedSha256":  "9f88936973f98cc82c846af0de84fef9c1fa32c43669c5237261f14f19d5e3b9",
+                      "sourceSha256":  "9f88936973f98cc82c846af0de84fef9c1fa32c43669c5237261f14f19d5e3b9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/mixed_product.inl",
+                      "copiedSha256":  "233c95faa3a4c791deed9d4fc416d6b24309c4a878d1079cc7d64ce577ce6b33",
+                      "sourceSha256":  "233c95faa3a4c791deed9d4fc416d6b24309c4a878d1079cc7d64ce577ce6b33"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/norm.hpp",
+                      "copiedSha256":  "b8a56d32b84fa5f023236e486967449b49bc5d47d794ad581e1432a44937a82a",
+                      "sourceSha256":  "b8a56d32b84fa5f023236e486967449b49bc5d47d794ad581e1432a44937a82a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/norm.inl",
+                      "copiedSha256":  "3420b93bd8d099fd7d11766b40682058babdd8d4f9710a77bbc780e18553a0dc",
+                      "sourceSha256":  "3420b93bd8d099fd7d11766b40682058babdd8d4f9710a77bbc780e18553a0dc"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/normal.hpp",
+                      "copiedSha256":  "8bedf8b614804d518d54d41fac13843d77777788bab29be5a1da1d6624bff3fb",
+                      "sourceSha256":  "8bedf8b614804d518d54d41fac13843d77777788bab29be5a1da1d6624bff3fb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/normal.inl",
+                      "copiedSha256":  "36160ffe00cf19d8dfa877c29815a3c00ec9ac6c9fbffcb8088bc9f758690dc6",
+                      "sourceSha256":  "36160ffe00cf19d8dfa877c29815a3c00ec9ac6c9fbffcb8088bc9f758690dc6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/normalize_dot.hpp",
+                      "copiedSha256":  "69ae7ff6e5e40ad0aee327bd9f31a86d1b296a373a4009e5ebdde445c3675936",
+                      "sourceSha256":  "69ae7ff6e5e40ad0aee327bd9f31a86d1b296a373a4009e5ebdde445c3675936"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/normalize_dot.inl",
+                      "copiedSha256":  "a734d133d971da57afd5a9c449b934a054bf7a8d947e1dcf72458931bb440f1b",
+                      "sourceSha256":  "a734d133d971da57afd5a9c449b934a054bf7a8d947e1dcf72458931bb440f1b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/number_precision.hpp",
+                      "copiedSha256":  "89200990e121ba9d444b4c0fe07541eae136bb48b96854cec9bd129fd9dea24a",
+                      "sourceSha256":  "89200990e121ba9d444b4c0fe07541eae136bb48b96854cec9bd129fd9dea24a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/number_precision.inl",
+                      "copiedSha256":  "91396281388e5ea8bea23e6221fcd2b8ceb0f29276ef420a64704a91fbcf072a",
+                      "sourceSha256":  "91396281388e5ea8bea23e6221fcd2b8ceb0f29276ef420a64704a91fbcf072a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/optimum_pow.hpp",
+                      "copiedSha256":  "3379e43c2b0048fa14368774967af6945d078bce638dc0ce77b420f2dfdc10b9",
+                      "sourceSha256":  "3379e43c2b0048fa14368774967af6945d078bce638dc0ce77b420f2dfdc10b9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/optimum_pow.inl",
+                      "copiedSha256":  "9884fd95daf2985a30a0ba8bc6962ddaad0715cb0aaa9b68fd9b06d70179a385",
+                      "sourceSha256":  "9884fd95daf2985a30a0ba8bc6962ddaad0715cb0aaa9b68fd9b06d70179a385"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/orthonormalize.hpp",
+                      "copiedSha256":  "8a47c91d820f8bb30e7e3aa522d4891c14c457373cbe8b6f0ed2d51140b06770",
+                      "sourceSha256":  "8a47c91d820f8bb30e7e3aa522d4891c14c457373cbe8b6f0ed2d51140b06770"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/orthonormalize.inl",
+                      "copiedSha256":  "0426f720e19b329b772ad51719167f5d7b795b4fa88045c3fedc39853404789f",
+                      "sourceSha256":  "0426f720e19b329b772ad51719167f5d7b795b4fa88045c3fedc39853404789f"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/perpendicular.hpp",
+                      "copiedSha256":  "1cfd673460c6fd9a63f5b046a24fb873e501a96749d4c5f00d6c506923e896a9",
+                      "sourceSha256":  "1cfd673460c6fd9a63f5b046a24fb873e501a96749d4c5f00d6c506923e896a9"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/perpendicular.inl",
+                      "copiedSha256":  "6a6a3e8e3b8ee80851350e32283da68066cc0967d5dc24025a196266ebfb3dd5",
+                      "sourceSha256":  "6a6a3e8e3b8ee80851350e32283da68066cc0967d5dc24025a196266ebfb3dd5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/polar_coordinates.hpp",
+                      "copiedSha256":  "e4abc0576f8039160675cca46aa080e4010d62553e02ad8af5317c81a7ab2625",
+                      "sourceSha256":  "e4abc0576f8039160675cca46aa080e4010d62553e02ad8af5317c81a7ab2625"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/polar_coordinates.inl",
+                      "copiedSha256":  "25ef6a08562cfe7c085004adbcc8842b0e02ccaf8cfd05ec63718e629c15f5c7",
+                      "sourceSha256":  "25ef6a08562cfe7c085004adbcc8842b0e02ccaf8cfd05ec63718e629c15f5c7"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/projection.hpp",
+                      "copiedSha256":  "583f9ba75366240b3f2c9cbe400e6eba315d6b0999bd7e6abb0ee6f60f2ecd40",
+                      "sourceSha256":  "583f9ba75366240b3f2c9cbe400e6eba315d6b0999bd7e6abb0ee6f60f2ecd40"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/projection.inl",
+                      "copiedSha256":  "dd9403e3650478e8042a1ac7d876221a400eaad65663ffd8409a288ba1be67bb",
+                      "sourceSha256":  "dd9403e3650478e8042a1ac7d876221a400eaad65663ffd8409a288ba1be67bb"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/quaternion.hpp",
+                      "copiedSha256":  "c6563e7be63618d77c6b0985f32d5207e2b38c31a408cb25a777f975a20cc5c8",
+                      "sourceSha256":  "c6563e7be63618d77c6b0985f32d5207e2b38c31a408cb25a777f975a20cc5c8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/quaternion.inl",
+                      "copiedSha256":  "8ea1a21ce75ed7c59f703b18ff3f345eb742d95e38dce0f7fcc40eb45011fd19",
+                      "sourceSha256":  "8ea1a21ce75ed7c59f703b18ff3f345eb742d95e38dce0f7fcc40eb45011fd19"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/range.hpp",
+                      "copiedSha256":  "15bc0e2d46df50128320e00af56a8b105890e193afd4f6461cf5d083f97303af",
+                      "sourceSha256":  "15bc0e2d46df50128320e00af56a8b105890e193afd4f6461cf5d083f97303af"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/raw_data.hpp",
+                      "copiedSha256":  "7803cea9485227a52815032c9f6eac2fe42388dd6f110c2cc191cb89c2d4cb04",
+                      "sourceSha256":  "7803cea9485227a52815032c9f6eac2fe42388dd6f110c2cc191cb89c2d4cb04"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/raw_data.inl",
+                      "copiedSha256":  "846ae5c5de3929ccb9c3d64c1226121f1478f97a309989618182176679fbde52",
+                      "sourceSha256":  "846ae5c5de3929ccb9c3d64c1226121f1478f97a309989618182176679fbde52"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/rotate_normalized_axis.hpp",
+                      "copiedSha256":  "71f860d08e79d2eb16c2e060ca94243d5dde9853c3826da797a1fba91e5ec0c6",
+                      "sourceSha256":  "71f860d08e79d2eb16c2e060ca94243d5dde9853c3826da797a1fba91e5ec0c6"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/rotate_normalized_axis.inl",
+                      "copiedSha256":  "96b109f14e496b25a3f31d8ccd1eb6c27be5e3c2b0d2c85077072e473098ee42",
+                      "sourceSha256":  "96b109f14e496b25a3f31d8ccd1eb6c27be5e3c2b0d2c85077072e473098ee42"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/rotate_vector.hpp",
+                      "copiedSha256":  "ebfebcc17c86b8c7a9670403ba44d49063b67d9a5728fc4d2ff896335feb9966",
+                      "sourceSha256":  "ebfebcc17c86b8c7a9670403ba44d49063b67d9a5728fc4d2ff896335feb9966"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/rotate_vector.inl",
+                      "copiedSha256":  "6e590331123a2b61bd06068be020b52259de78c5becbcc787b38d87441f23eb1",
+                      "sourceSha256":  "6e590331123a2b61bd06068be020b52259de78c5becbcc787b38d87441f23eb1"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/scalar_multiplication.hpp",
+                      "copiedSha256":  "44a462707cf594bd58cd96b3e12dbdacc3a48016568d7706a16b59a643fc0531",
+                      "sourceSha256":  "44a462707cf594bd58cd96b3e12dbdacc3a48016568d7706a16b59a643fc0531"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/scalar_relational.hpp",
+                      "copiedSha256":  "09db40f727df1323e759532589b1f0aa2bff4ebbeeeed70a1d6ae75b73e05b47",
+                      "sourceSha256":  "09db40f727df1323e759532589b1f0aa2bff4ebbeeeed70a1d6ae75b73e05b47"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/scalar_relational.inl",
+                      "copiedSha256":  "2f8bda6ea95ee107bd59ae26fc96de02680e003b6aa91dd785337444ce60763c",
+                      "sourceSha256":  "2f8bda6ea95ee107bd59ae26fc96de02680e003b6aa91dd785337444ce60763c"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/spline.hpp",
+                      "copiedSha256":  "55e879e2ba5c1e7f22e8aa4e996861283472733cf793b7365828456a35f29ae4",
+                      "sourceSha256":  "55e879e2ba5c1e7f22e8aa4e996861283472733cf793b7365828456a35f29ae4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/spline.inl",
+                      "copiedSha256":  "dd585b419e6429731613dd8c824cd1cfef835ae8208a5188f1bbec772e38b153",
+                      "sourceSha256":  "dd585b419e6429731613dd8c824cd1cfef835ae8208a5188f1bbec772e38b153"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/std_based_type.hpp",
+                      "copiedSha256":  "ad0ac8a35b80f8c441c9f8680f6f109232169c2963cb33df3b2ffcf5bd72b6b4",
+                      "sourceSha256":  "ad0ac8a35b80f8c441c9f8680f6f109232169c2963cb33df3b2ffcf5bd72b6b4"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/std_based_type.inl",
+                      "copiedSha256":  "968cb9df091cb7ccf7eef423aa239492a8ba44cdea0046d59df0eb3ee969b302",
+                      "sourceSha256":  "968cb9df091cb7ccf7eef423aa239492a8ba44cdea0046d59df0eb3ee969b302"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/string_cast.hpp",
+                      "copiedSha256":  "0231f1ff7995467c63fb789e8d3b85412059c81611769bcd64115a4e66b27d5e",
+                      "sourceSha256":  "0231f1ff7995467c63fb789e8d3b85412059c81611769bcd64115a4e66b27d5e"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/string_cast.inl",
+                      "copiedSha256":  "8e8616b504b8de5b96bfe12c03b71725d7e9e87969d8a1570924fca3e485524b",
+                      "sourceSha256":  "8e8616b504b8de5b96bfe12c03b71725d7e9e87969d8a1570924fca3e485524b"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/texture.hpp",
+                      "copiedSha256":  "620f4373b4105631f8fceed4ec484457a0fcaf4ce1a31d05cc85a68c2dd54ced",
+                      "sourceSha256":  "620f4373b4105631f8fceed4ec484457a0fcaf4ce1a31d05cc85a68c2dd54ced"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/texture.inl",
+                      "copiedSha256":  "4d51eabc2274f45c8815185e9e2cb02c18793516f3a5153da7d27434d28ebec7",
+                      "sourceSha256":  "4d51eabc2274f45c8815185e9e2cb02c18793516f3a5153da7d27434d28ebec7"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/transform.hpp",
+                      "copiedSha256":  "5609af3e3adf6fde17cd29c329161ac27bd66fa23847b841b132a0ebd4e0e232",
+                      "sourceSha256":  "5609af3e3adf6fde17cd29c329161ac27bd66fa23847b841b132a0ebd4e0e232"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/transform.inl",
+                      "copiedSha256":  "48b3eee4c41e95851c92c8ea1302f9ca4b9574e303c08fa503e6101304a88856",
+                      "sourceSha256":  "48b3eee4c41e95851c92c8ea1302f9ca4b9574e303c08fa503e6101304a88856"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/transform2.hpp",
+                      "copiedSha256":  "7ede332b90b642914dae5eeeed60aa2e0f8432bad31ca548f7a20ba0287adc27",
+                      "sourceSha256":  "7ede332b90b642914dae5eeeed60aa2e0f8432bad31ca548f7a20ba0287adc27"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/transform2.inl",
+                      "copiedSha256":  "5b63e17f458bd79bdc19e9567df57c0de47eeda821ca4625e90b9bd189c5e836",
+                      "sourceSha256":  "5b63e17f458bd79bdc19e9567df57c0de47eeda821ca4625e90b9bd189c5e836"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/type_aligned.hpp",
+                      "copiedSha256":  "5cdf08119a45b96d269ff8ae5587cf3e9c11813e5d4944a66e020cc5d5752a59",
+                      "sourceSha256":  "5cdf08119a45b96d269ff8ae5587cf3e9c11813e5d4944a66e020cc5d5752a59"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/type_aligned.inl",
+                      "copiedSha256":  "015fea016b3957fb6c1edfaa833914222f7172f5508212cc2cacf1dd5aed21cc",
+                      "sourceSha256":  "015fea016b3957fb6c1edfaa833914222f7172f5508212cc2cacf1dd5aed21cc"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/type_trait.hpp",
+                      "copiedSha256":  "3a82c1a232e0a83d5428d3c592b90d9575a3722456cf2002373855086cde9523",
+                      "sourceSha256":  "3a82c1a232e0a83d5428d3c592b90d9575a3722456cf2002373855086cde9523"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/type_trait.inl",
+                      "copiedSha256":  "8de8038aaa334553b473254d3db12d77e0aa0745e2a0ad21054f140303151837",
+                      "sourceSha256":  "8de8038aaa334553b473254d3db12d77e0aa0745e2a0ad21054f140303151837"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/vector_angle.hpp",
+                      "copiedSha256":  "e70b6ed974f5cfa5885857c1414767a9cd3d02eb35cdcb2f501feb05336a76ac",
+                      "sourceSha256":  "e70b6ed974f5cfa5885857c1414767a9cd3d02eb35cdcb2f501feb05336a76ac"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/vector_angle.inl",
+                      "copiedSha256":  "237212ab2bd1e80ab79c9e6907e25ac80d22c73ea0bfe236e2e8b1f2b86b3124",
+                      "sourceSha256":  "237212ab2bd1e80ab79c9e6907e25ac80d22c73ea0bfe236e2e8b1f2b86b3124"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/vector_query.hpp",
+                      "copiedSha256":  "70989facee429dc6fa325b853b4ff1984f52fbc2e83bce3818441b5a2cafd21a",
+                      "sourceSha256":  "70989facee429dc6fa325b853b4ff1984f52fbc2e83bce3818441b5a2cafd21a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/vector_query.inl",
+                      "copiedSha256":  "3faab0e342d022eed2cd9a990c2d7d363436078d77cc9d6429a4246d7a4eefe8",
+                      "sourceSha256":  "3faab0e342d022eed2cd9a990c2d7d363436078d77cc9d6429a4246d7a4eefe8"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/vec_swizzle.hpp",
+                      "copiedSha256":  "356c6f1f5ca5a8aae4d7c04e2b3aff8a39cff40509eade790136ff14f4053b1a",
+                      "sourceSha256":  "356c6f1f5ca5a8aae4d7c04e2b3aff8a39cff40509eade790136ff14f4053b1a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/wrap.hpp",
+                      "copiedSha256":  "8f836622c4458d58681aab5271be24310eaac73925eb69e04d2f0194e45f3bc5",
+                      "sourceSha256":  "8f836622c4458d58681aab5271be24310eaac73925eb69e04d2f0194e45f3bc5"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/gtx/wrap.inl",
+                      "copiedSha256":  "8d149e4051f4330a6b6735d5f604b48c13d836413ab3268b2de3112da3b91b42",
+                      "sourceSha256":  "8d149e4051f4330a6b6735d5f604b48c13d836413ab3268b2de3112da3b91b42"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/common.h",
+                      "copiedSha256":  "862267b8e70eb8af7ab325c87216dd1cb516567096fc2fe2190c3f1c6454b7ed",
+                      "sourceSha256":  "862267b8e70eb8af7ab325c87216dd1cb516567096fc2fe2190c3f1c6454b7ed"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/exponential.h",
+                      "copiedSha256":  "e712431ac31ee2006032dd823f45fe7d2f69e6c617830304ffb0d45598a9b349",
+                      "sourceSha256":  "e712431ac31ee2006032dd823f45fe7d2f69e6c617830304ffb0d45598a9b349"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/geometric.h",
+                      "copiedSha256":  "b3bfad1960c1663f9a4bf202373140e2f2342ae572843e35b01c032c52592f4a",
+                      "sourceSha256":  "b3bfad1960c1663f9a4bf202373140e2f2342ae572843e35b01c032c52592f4a"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/integer.h",
+                      "copiedSha256":  "15e75f9839bc88590f57179c4a9dc375d8ebb6b0588829f65b686e00f471f3be",
+                      "sourceSha256":  "15e75f9839bc88590f57179c4a9dc375d8ebb6b0588829f65b686e00f471f3be"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/matrix.h",
+                      "copiedSha256":  "de72b2ee8363f2786d74b4b64bc05efb7e06d492b7e90ba96e4b82ec3c5f46c2",
+                      "sourceSha256":  "de72b2ee8363f2786d74b4b64bc05efb7e06d492b7e90ba96e4b82ec3c5f46c2"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/packing.h",
+                      "copiedSha256":  "8445dd14a6bf6793f4e4cf24225fcab80e4058f8e8637ad5294f2b06ef7f4f04",
+                      "sourceSha256":  "8445dd14a6bf6793f4e4cf24225fcab80e4058f8e8637ad5294f2b06ef7f4f04"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/platform.h",
+                      "copiedSha256":  "809c53fb4405b168bed160884f8167d915a29b29d4e3cdc71b6e2679fd3b12ce",
+                      "sourceSha256":  "809c53fb4405b168bed160884f8167d915a29b29d4e3cdc71b6e2679fd3b12ce"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/trigonometric.h",
+                      "copiedSha256":  "d913a8e77523146df0afc5128079693a56b207647f2d8bcd7376721585e38eef",
+                      "sourceSha256":  "d913a8e77523146df0afc5128079693a56b207647f2d8bcd7376721585e38eef"
+                  },
+                  {
+                      "path":  "lib_glm/inc/glm/simd/vector_relational.h",
+                      "copiedSha256":  "c2487e32dcde079ccb5717776e5e0d4bfb056844ab89bfa49e3c031d09371c27",
+                      "sourceSha256":  "c2487e32dcde079ccb5717776e5e0d4bfb056844ab89bfa49e3c031d09371c27"
+                  }
+              ]
+}

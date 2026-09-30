@@ -5,7 +5,7 @@ An independent, extensible visual workspace for interactive node graphs and thei
 
 ## Current state
 
-SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds a copied pipeline/data/task foundation and a tested background execution adapter. N3 connects the canvas and parameter inspector to background execution, with undo/redo, live or manual runs, cancellation, and result inspection. Required 3D and native project persistence remain pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
+SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds the pipeline foundation and background execution adapter. N3 connects the workspace, inspector and undo/redo. N4 adds the included scene-3d extension: Cube, Transform, Material, Scene and Merge nodes with an interactive primitive preview. Native project persistence remains pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
 
 ## Start locally
 
@@ -46,12 +46,12 @@ npm run preview
 | ------------------------ | ----------------------------------------------------- | ------------------- |
 | `native/app`             | Native C++/Qt shell and adapters                      | Migration preview   |
 | `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses | Native dependencies |
-| `native/tests`           | Canvas, pipeline, and workspace behavior tests        | N1/N2/N3 checks     |
+| `native/tests`           | Canvas, pipeline, workspace and scene behavior tests  | N1–N4 checks        |
 | `apps/web`               | Browser interface and application composition         | Development starter |
 | `packages/core`          | Domain-independent project and graph model            | Initial persistence |
 | `packages/extension-sdk` | Public extension contracts                            | Initial contracts   |
 | `packages/runtime`       | Validation, scheduling, execution state               | Reserved            |
-| `extensions/scene-3d`    | Included 3D types, nodes, and viewer                  | Reserved            |
+| `extensions/scene-3d`    | Included native 3D types, nodes, and viewer           | Primitive preview   |
 | `extensions/data`        | Independent non-3D validation package                 | Reserved            |
 | `docs`                   | Product, decisions, development, and agent context    | Available           |
 

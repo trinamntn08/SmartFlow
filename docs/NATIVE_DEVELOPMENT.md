@@ -16,12 +16,16 @@ build/native/native/Release/smartflow.exe
 
 `smartflow.exe --smoke-test -platform offscreen` starts the application and
 exits automatically. It does not validate real display/GPU interaction.
-The preview starts with Number (41) connected to Add (1), yielding 42.
+The default preview starts with Cube → Transform → Material → Scene, with the
+final Scene output pinned in the viewer. `smartflow.exe --numeric` instead starts
+Number (41) connected to Add (1), yielding 42, without a scene registry or viewer.
 Right-click or use Add node, then drag matching ports to connect. Select a node,
 edit its inspector value, and click Apply. Undo/redo covers parameter edits,
 creation, deletion, connections, and movement. Live updates recompute after edits;
 disable them to use Run explicitly. Cancel discards the active result. Select
-nodes or result rows to inspect outputs. There is no 3D viewer or stable project
+nodes or result rows to inspect outputs. Pin output keeps one result in the viewer
+while inspecting another node. Drag the 3D preview to orbit, wheel to zoom,
+double-click to frame and click to select an object. There is no stable project
 save/open command yet; clipboard import/duplication is disabled.
 
 No source or build paths in CMake reference the old repository. Qt DLLs and
@@ -61,3 +65,16 @@ In restricted process environments, nested Qt moc launches can fail. Run the
 reported `cmake -E cmake_autogen .../AutogenInfo.json Release` directly with
 process permission, then rebuild. This is an environment workaround, not a
 different source configuration.
+
+## N4 scene checks
+
+`native_scene` checks primitive geometry, transformed bounds/normals, material and
+snapshot independence, inspector-driven viewer recomputation with undo/redo,
+camera/selection separation from project state, merge behavior and error/size
+limits. Report: `build/native/native/scene-results.xml`. `native_workspace`
+continues to link and run without the scene library.
+
+Use `--screenshot build/native/n4-smoke.png` for the default scene smoke check.
+The orthographic software preview uses fixed lighting and sorted opaque faces;
+intersecting surfaces and production GPU rendering are not supported. Read the
+[scene extension guide](../extensions/scene-3d/README.md) for its current scope.
