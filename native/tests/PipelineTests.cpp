@@ -26,6 +26,7 @@ struct Probe {
     std::promise<void> entered;
     std::shared_future<void> release;
     std::thread::id worker;
+    bool observedCancellation = false;
 };
 
 class NumberDelegate final : public StepDelegate {
@@ -47,6 +48,7 @@ public:
                 const auto deadline = std::chrono::steady_clock::now() + 5s;
                 while(context->progress->poll() && std::chrono::steady_clock::now() < deadline)
                     std::this_thread::yield();
+                probe->observedCancellation = !context->progress->poll();
             }
         }
         const auto mode = context->stepDetails->parameterValue<std::string>("mode");
@@ -213,8 +215,11 @@ private Q_SLOTS:
         auto handle = executor.submit(f.graph, f.delegates, f.factory);
         QVERIFY(entered.wait_for(5s) == std::future_status::ready);
         handle.cancel();
-        QVERIFY(handle.result.wait_for(5s) == std::future_status::ready);
+        // The delegate's five-second watchdog must not masquerade as successful
+        // cancellation. Wait beyond it, then verify the delegate saw the request.
+        QVERIFY(handle.result.wait_for(10s) == std::future_status::ready);
         const auto result = handle.result.get();
+        QVERIFY(probe->observedCancellation);
         QVERIFY(result.cancelled);
         QVERIFY(!result.succeeded());
         QVERIFY(result.steps.empty());

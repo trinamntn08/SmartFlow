@@ -100,6 +100,10 @@ ExecutionResult execute(PipelineDetails& graph, const StepDelegateMap& delegates
     manager.startExecution();
     while(auto* context = manager.takeNextAvailableStep(&parallel)) {
         if(cancelled()) break;
+        // The copied parallel progress child reads only the parent's cached
+        // stop flag. Refresh its cancellation callback whenever a delegate polls,
+        // including polls from nested progress children.
+        context->progress->pollCallbacks.addCallback([&progress] { progress.poll(); });
         StepResult stepResult;
         const bool upstreamFailed = std::any_of(context->dependsOn.begin(), context->dependsOn.end(),
                                                [](auto* parent) { return !parent->runOk; });
