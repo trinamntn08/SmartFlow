@@ -18,6 +18,12 @@ preview. Broader scene and production renderer migration remain pending. See
 not a dependency. The TypeScript package diagram below
 describes the preserved future-extension prototype, not the native build.
 
+N5a adds `native/app/project/ProjectFile`, a Qt Core/JSON-only file layer sharing
+the schema-v1 envelope with the preserved prototype. It retains unknown content
+and performs atomic file writes, but is not yet connected to editor Save/Open.
+See [decision 0007](decisions/0007-native-project-files.md) and the
+[next-session handoff](../agents/handoffs/2026-09-30-native-checkpoint-n5a.md).
+
 ## Product invariant
 
 3D scene support ships with the product, while the core remains usable without a 3D data model. Prove this with an independent data/text extension.

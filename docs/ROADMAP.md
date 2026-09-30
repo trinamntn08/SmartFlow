@@ -16,6 +16,10 @@
   See [checkpoint N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md).
 - Native persistence and production 3D rendering remain pending. The native work is
   a migration foundation, not a production runtime or plugin loader.
+- N5a implements the standalone native schema-v1 file codec and atomic file I/O,
+  preserving unknown JSON content without extension registration. Editor Save/Open,
+  missing-node handling and the independent non-3D extension are still pending.
+  See [N5a checkpoint and next-session handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md).
 - Project name and branding: SmartFlow.
 
 - Independent local repository and product proposal.
@@ -37,7 +41,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. Next, N5: establish native project persistence, unknown-extension preservation and a separate non-3D extension workflow; record N5.
+5. In progress, N5: native file codec completed as N5a; next connect editor save/reopen and unknown-extension preservation, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

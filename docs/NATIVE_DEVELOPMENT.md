@@ -78,3 +78,13 @@ Use `--screenshot build/native/n4-smoke.png` for the default scene smoke check.
 The orthographic software preview uses fixed lighting and sorted opaque faces;
 intersecting surfaces and production GPU rendering are not supported. Read the
 [scene extension guide](../extensions/scene-3d/README.md) for its current scope.
+
+## N5a project-file checks
+
+`smartflow_project` implements registry-independent schema-v1 file operations.
+`native_project` checks shared native/browser fixture compatibility, unknown
+content retention, real filesystem round trips, malformed files, numeric limits,
+and failed-save preservation. Report: `build/native/native/project-results.xml`.
+The library is not yet connected to application Save/Open actions. Read the
+[N5a handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md) before continuing
+the editor integration.

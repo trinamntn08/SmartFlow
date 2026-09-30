@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import { createProject, parseProject, serializeProject } from '../src/index.ts';
+
+test('shared native/browser schema fixture preserves unknown extension content', () => {
+  const text = readFileSync(
+    new URL('../../../tests/fixtures/project-v1.json', import.meta.url),
+    'utf8',
+  );
+  const document = parseProject(text);
+  assert.deepEqual(parseProject(serializeProject(document)), JSON.parse(text));
+  assert.equal(document.project.graphs[0]!.connections[0]!.source.nodeId, 'missing-node');
+});
 
 function fixture() {
   const file = createProject('project-1');
