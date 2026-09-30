@@ -16,9 +16,13 @@ build/native/native/Release/smartflow.exe
 
 `smartflow.exe --smoke-test -platform offscreen` starts the application and
 exits automatically. It does not validate real display/GPU interaction.
-The preview provides Number nodes on the copied QtNodes canvas. Right-click
-to add nodes and drag matching ports to connect; edit the source value to
-propagate it. There is no 3D viewer or stable project save/open command yet.
+The preview starts with Number (41) connected to Add (1), yielding 42.
+Right-click or use Add node, then drag matching ports to connect. Select a node,
+edit its inspector value, and click Apply. Undo/redo covers parameter edits,
+creation, deletion, connections, and movement. Live updates recompute after edits;
+disable them to use Run explicitly. Cancel discards the active result. Select
+nodes or result rows to inspect outputs. There is no 3D viewer or stable project
+save/open command yet; clipboard import/duplication is disabled.
 
 No source or build paths in CMake reference the old repository. Qt DLLs and
 plugins must be discoverable locally; standalone installer/deployment is a
@@ -30,8 +34,7 @@ The build also produces `smartflow_legacy`, `smartflow_pipeline`, and
 `pipeline_tests.exe`. CTest runs `native_pipeline` alongside the canvas test.
 The pipeline suite writes `build/native/native/pipeline-results.xml`; for readable
 Windows test output, run `pipeline_tests.exe -o pipeline-results.txt,txt` and read
-that file. The native application still displays the N1 numeric canvas; N3 will
-connect it to the background pipeline adapter.
+that file. N3 connects the native workspace to the background pipeline adapter.
 
 The adapter takes a graph snapshot and immutable delegate/factory registrations,
 then returns a cancellable future. It requires initialized named parameters and
@@ -41,3 +44,20 @@ delegates must poll for cancellation and must not edit the graph or UI. See
 [decision 0004](architecture/decisions/0004-native-pipeline-migration.md) for
 behavior and limitations, and the [vendor audit](../native/vendor/legacy/README.md)
 for the source/license inventory.
+
+## N3 workspace checks
+
+CTest also runs `native_workspace`, covering inspector edits and recomputation,
+undo/redo and identity restoration, connections, workspace-only movement,
+parameter validation, cancellation, manual runs, and obsolete completion rejection.
+Results are written to `build/native/native/workspace-results.xml`.
+
+For visual verification, append `--screenshot build/native/n3-smoke.png` to the
+offscreen smoke command. If system font discovery fails, also pass
+`--smoke-font C:/Windows/Fonts/segoeui.ttf`. This optional font is loaded only in
+smoke-test mode; no machine-specific font or path is bundled with the app.
+
+In restricted process environments, nested Qt moc launches can fail. Run the
+reported `cmake -E cmake_autogen .../AutogenInfo.json Release` directly with
+process permission, then rebuild. This is an environment workaround, not a
+different source configuration.

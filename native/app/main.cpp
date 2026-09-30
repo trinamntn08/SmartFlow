@@ -1,32 +1,33 @@
-#include "NumberNode.h"
-#include <QtNodes/DataFlowGraphicsScene>
-#include <QtNodes/GraphicsView>
+#include "workspace/WorkspaceWindow.h"
 #include <QApplication>
-#include <QMainWindow>
-#include <QStatusBar>
+#include <QElapsedTimer>
+#include <QFontDatabase>
 #include <QTimer>
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     app.setApplicationName("SmartFlow");
-    auto registry = std::make_shared<QtNodes::NodeDelegateModelRegistry>();
-    registry->registerModel<NumberNode>("Data");
-    QtNodes::DataFlowGraphModel graph(registry);
-    QtNodes::DataFlowGraphicsScene scene(graph);
-    QMainWindow window;
-    window.setWindowTitle("SmartFlow — Native migration preview");
-    window.setCentralWidget(new QtNodes::GraphicsView(&scene));
-    window.statusBar()->showMessage("Right-click to add a Number node. Drag ports to connect. 3D migration is pending.");
-    const auto first = graph.addNode("Number");
-    const auto second = graph.addNode("Number");
-    graph.setNodeData(first, QtNodes::NodeRole::Position, QPointF(0, 0));
-    graph.setNodeData(second, QtNodes::NodeRole::Position, QPointF(320, 0));
-    graph.addConnection({first, 0, second, 0});
-    window.resize(1100, 720);
+    // Optional test font for offscreen environments without system font discovery.
+    const auto fontIndex = app.arguments().indexOf("--smoke-font");
+    if(app.arguments().contains("--smoke-test") && fontIndex >= 0) {
+        if(fontIndex + 1 >= app.arguments().size()) return 3;
+        const auto id = QFontDatabase::addApplicationFont(app.arguments().at(fontIndex + 1));
+        if(id < 0) return 3;
+        app.setFont(QFont(QFontDatabase::applicationFontFamilies(id).first(), 10));
+    }
+    smartflow::WorkspaceWindow window;
     window.show();
+    QTimer smokeTimer;
+    QElapsedTimer elapsed;
     if (app.arguments().contains("--smoke-test")) {
-        QTimer::singleShot(250, &app, [&] {
+        elapsed.start();
+        QObject::connect(&smokeTimer, &QTimer::timeout, &app, [&] {
+            if(!window.execution().result()) {
+                if(elapsed.elapsed() > 5000) app.exit(4);
+                return;
+            }
+            if(!window.execution().result()->succeeded()) { app.exit(5); return; }
             const auto index = app.arguments().indexOf("--screenshot");
             if (index >= 0 && (index + 1 >= app.arguments().size() ||
                 !window.grab().save(app.arguments().at(index + 1)))) {
@@ -35,6 +36,7 @@ int main(int argc, char** argv)
             }
             app.quit();
         });
+        smokeTimer.start(50);
     }
     return app.exec();
 }

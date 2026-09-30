@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "d6f457e8415445d00eaf7e9fbf9e5047768ea637",
+  "files": [
+    {
+      "path": "LICENSE",
+      "sourceSha256": "f7935ef25cd40550b2fa1446c7eb1669d47c1d50253203c3fe0eb9698bb449e6",
+      "copiedSha256": "f7935ef25cd40550b2fa1446c7eb1669d47c1d50253203c3fe0eb9698bb449e6"
+    },
+    {
+      "path": "inc/tp_qt_pipeline_widgets/Globals.h",
+      "sourceSha256": "33e389b593b91450403e8295a36fd66cb0babe93d070ffa88549c901a863b952",
+      "copiedSha256": "33e389b593b91450403e8295a36fd66cb0babe93d070ffa88549c901a863b952"
+    },
+    {
+      "path": "inc/tp_qt_pipeline_widgets/AbstractParameterEditor.h",
+      "sourceSha256": "ef8d1b33bbb424ddd26b26151f22c672d721af41ba4181ecd41e746947464baa",
+      "copiedSha256": "ef8d1b33bbb424ddd26b26151f22c672d721af41ba4181ecd41e746947464baa"
+    },
+    {
+      "path": "src/AbstractParameterEditor.cpp",
+      "sourceSha256": "13b83d217ccf5e98d10060d170a68f4e9eb70ac513228455417790181d204313",
+      "copiedSha256": "13b83d217ccf5e98d10060d170a68f4e9eb70ac513228455417790181d204313"
+    },
+    {
+      "path": "inc/tp_qt_pipeline_widgets/parameter_editors/DoubleParameterEditor.h",
+      "sourceSha256": "9185b1ba337da4df2d861b7538d01d50fb44ad1f7b13726f187cd412119e39f1",
+      "copiedSha256": "9185b1ba337da4df2d861b7538d01d50fb44ad1f7b13726f187cd412119e39f1"
+    },
+    {
+      "path": "src/parameter_editors/DoubleParameterEditor.cpp",
+      "sourceSha256": "3202a93551fdc0f68f0768a803ed2b1792c8fc5f2db5543b147f4fb824ad25cd",
+      "copiedSha256": "3202a93551fdc0f68f0768a803ed2b1792c8fc5f2db5543b147f4fb824ad25cd"
+    },
+    {
+      "path": "inc/tp_qt_pipeline_widgets/StepDelegateNodeDelegateModel.h",
+      "sourceSha256": "118ed5a5e335991abe52b3e75e1d6290a55f584d5792f654a212debb899dee90",
+      "copiedSha256": "118ed5a5e335991abe52b3e75e1d6290a55f584d5792f654a212debb899dee90"
+    },
+    {
+      "path": "src/StepDelegateNodeDelegateModel.cpp",
+      "sourceSha256": "f3a32d0987069a30c43b0dc219c3db90853f779bf9052e717ef3d036f72d5848",
+      "copiedSha256": "f3a32d0987069a30c43b0dc219c3db90853f779bf9052e717ef3d036f72d5848"
+    }
+  ]
+}

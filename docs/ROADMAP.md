@@ -8,8 +8,11 @@
   background execution adapter validates ports/dependencies, rejects cycles,
   propagates failures, isolates graph snapshots and supports cancellation.
   See [checkpoint N2](agents/handoffs/2026-09-28-native-checkpoint-n2.md).
-- Canvas/inspector integration and 3D modules remain pending. N2 is a migration
-  foundation, not a production runtime or plugin loader.
+- N3: canvas/inspector integration with parameter commands, undo/redo,
+  background execution, live/manual runs, cancellation, and current-result
+  inspection. See [checkpoint N3](agents/handoffs/2026-09-30-native-checkpoint-n3.md).
+- Required 3D modules and native persistence remain pending. The native work is
+  a migration foundation, not a production runtime or plugin loader.
 - Project name and branding: SmartFlow.
 
 - Independent local repository and product proposal.
@@ -29,8 +32,8 @@ implementation by this native migration sequence:
 
 1. Completed N1: copied QtNodes canvas and native shell, with build/tests.
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
-3. Next, N3: copy and adapt the pipeline inspector/workspace, connect the execution adapter, and test parameter edits and undo.
-4. Copy the required 3D modules and their audited dependencies; test primitive/transform/material/viewer behavior; record N4.
+3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
+4. Next, N4: copy the required 3D modules and their audited dependencies; test primitive/transform/material/viewer behavior; record N4.
 5. Establish native project persistence, unknown-extension preservation and a non-3D workflow; record N5.
 
 Each checkpoint must include actual build/test results and remaining limitations.
