@@ -64,6 +64,11 @@ N5g saves canvas positions/navigation, node selection, pinned output and opaque
 viewer state, preserving unknown workspace fields. See the
 [N5g handoff](agents/handoffs/2026-10-01-native-checkpoint-n5g.md).
 
+N5h adds the independent native data extension, sample/filter/summary nodes and
+a table viewer. `smartflow-data.exe` and its behavior tests do not link scene
+libraries. Packaged interaction acceptance remains the next step. See the
+[N5h handoff](agents/handoffs/2026-10-01-native-checkpoint-n5h.md).
+
 ## Next: define and implement the first vertical slice
 
 The list below records the earlier TypeScript plan. It is superseded for current
@@ -73,7 +78,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) completed; next implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) and independent data workflow (N5h) completed; next verify both packaged desktop workflows. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 
@@ -91,8 +96,8 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 ## Then: prove extensibility
 
-- Add a table/text workflow through the same SDK.
-- Run that workflow without loading or initializing the 3D package.
+- Completed N5h: add a native table workflow through the same SDK.
+- Completed N5h: run it in a separate executable without linking/initializing the 3D package.
 - Package a graph as a reusable component.
 - Check missing package and unsupported backend behavior.
 

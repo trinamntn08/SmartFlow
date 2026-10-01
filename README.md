@@ -5,7 +5,7 @@ An independent, extensible visual workspace for interactive node graphs and thei
 
 ## Current state
 
-SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds the pipeline foundation and background execution adapter. N3 connects the workspace, inspector and undo/redo. N4 adds the included scene-3d extension: Cube, Transform, Material, Scene and Merge nodes with an interactive primitive preview. N5a–N5e add the native project-file codec, retained-document editor commands and undo, and unavailable-node placeholders. N5f adds Open/Save/Save As and retained-content dirty tracking. N5g adds canvas layout/navigation, selection, pinned-output and viewer-state persistence. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
+SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds the pipeline foundation and background execution adapter. N3 connects the workspace, inspector and undo/redo. N4 adds the included scene-3d extension: Cube, Transform, Material, Scene and Merge nodes with an interactive primitive preview. N5a–N5e add the native project-file codec, retained-document editor commands and undo, and unavailable-node placeholders. N5f adds Open/Save/Save As and retained-content dirty tracking. N5g adds canvas layout/navigation, selection, pinned-output and viewer-state persistence. N5h adds the independent data extension and table workflow. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
 
 ## Start locally
 
@@ -57,7 +57,7 @@ npm run preview
 | `packages/extension-sdk` | Public extension contracts                            | Initial contracts   |
 | `packages/runtime`       | Validation, scheduling, execution state               | Reserved            |
 | `extensions/scene-3d`    | Included native 3D types, nodes, and viewer           | Primitive preview   |
-| `extensions/data`        | Independent non-3D validation package                 | Reserved            |
+| `extensions/data`        | Independent native table/filter/summary workflow      | Validation preview  |
 | `docs`                   | Product, decisions, development, and agent context    | Available           |
 
 Reserved folders contain ownership notes, not working libraries. Add their package manifests when implementation starts. The root npm workspace configuration already covers these locations.

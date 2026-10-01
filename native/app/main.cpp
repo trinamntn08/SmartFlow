@@ -1,5 +1,8 @@
 #include "workspace/WorkspaceWindow.h"
+#include <DataExtension.h>
+#ifndef SMARTFLOW_DATA_ONLY
 #include <SceneExtension.h>
+#endif
 #include <QApplication>
 #include <QElapsedTimer>
 #include <QFontDatabase>
@@ -19,9 +22,13 @@ int main(int argc, char** argv)
     }
     // The composition root selects bundled contributions; the workspace and
     // executor do not import or require any concrete scene types.
-    auto window = app.arguments().contains("--numeric") ?
-        std::make_unique<smartflow::WorkspaceWindow>() :
-        std::make_unique<smartflow::WorkspaceWindow>(smartflow::scene3d::sceneConfiguration());
+    std::unique_ptr<smartflow::WorkspaceWindow> window;
+    if(app.arguments().contains("--numeric")) window=std::make_unique<smartflow::WorkspaceWindow>();
+#ifndef SMARTFLOW_DATA_ONLY
+    else if(!app.arguments().contains("--data"))
+        window=std::make_unique<smartflow::WorkspaceWindow>(smartflow::scene3d::sceneConfiguration());
+#endif
+    else window=std::make_unique<smartflow::WorkspaceWindow>(smartflow::data::dataConfiguration());
     window->show();
     QTimer smokeTimer;
     QElapsedTimer elapsed;

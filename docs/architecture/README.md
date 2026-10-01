@@ -31,6 +31,11 @@ See [decision 0010](decisions/0010-native-workspace-persistence.md).
 See [decision 0007](decisions/0007-native-project-files.md) and the
 [editor integration decision](decisions/0008-retained-editor-commands.md).
 
+N5h adds `extensions/data/native` with its own table type, nodes and viewer.
+The data-only executable and tests exclude scene libraries. The composition
+root also exposes it through `smartflow.exe --data`. No graph editor or runtime
+domain branch is introduced. See [decision 0011](decisions/0011-independent-native-data-extension.md).
+
 ## Product invariant
 
 3D scene support ships with the product, while the core remains usable without a 3D data model. Prove this with an independent data/text extension.

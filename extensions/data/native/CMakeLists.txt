@@ -1,0 +1,4 @@
+add_library(smartflow_data STATIC DataExtension.cpp TableViewer.cpp)
+set_target_properties(smartflow_data PROPERTIES AUTOMOC OFF)
+target_include_directories(smartflow_data PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(smartflow_data PUBLIC smartflow_extension_sdk)

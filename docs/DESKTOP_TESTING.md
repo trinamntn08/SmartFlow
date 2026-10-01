@@ -49,14 +49,25 @@ For the desktop test:
 7. Try opening an invalid file or saving to an unwritable location. Confirm an
    error is shown and the active project remains usable.
 
+## Independent table workflow
+
+Launch `build/desktop-test/bin/smartflow-data.exe` or `smartflow.exe --data`.
+The separate executable does not link scene libraries. Sample table ? Filter
+rows ? Summary initially displays count 3, total 104 and mean 34.66666667.
+Select Filter rows, change minimum from 20 to 30 and Apply; expect count 2,
+total 79 and mean 39.5. Undo/Redo restores those results. Select a viewer row,
+move a canvas node, Save As, relaunch and Open to check parameters, selection
+and layout restoration. This is a bundled sample, without CSV import.
+
 ## Current limitations
 
 - Canvas positions/navigation, selection and viewer camera/pinning are saved.
   Splitter sizes and window geometry are not yet saved.
-  Open resets the canvas and displays a terminal output by default.
+  Files without saved workspace state use a fitted canvas and terminal output by default.
 - Open edits the first graph; other graphs and unknown extension data remain
   preserved. Unsupported nodes are displayed but cannot execute.
 - The 3D view is a primitive software preview, not a production GPU renderer.
-- The independent non-3D extension and remaining N5 acceptance are pending.
+- The independent data extension is available; packaged interaction acceptance
+  for both workflows is the next checkpoint.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.

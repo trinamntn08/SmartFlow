@@ -149,3 +149,17 @@ Malformed view fields use safe defaults; unknown fields remain retained.
 Scene tests cover a fresh-window round trip, camera/selection, layout, opaque
 fields and semantic undo isolation. See [N5g](agents/handoffs/2026-10-01-native-checkpoint-n5g.md)
 and [decision 0010](architecture/decisions/0010-native-workspace-persistence.md).
+
+## N5h independent data extension
+
+`smartflow.exe --data` selects Sample table ? Filter rows ? Summary. The separate
+`smartflow-data.exe` builds the same workspace without scene-domain libraries.
+Both support the generic numeric inspector, semantic undo, execution and project
+Save/Open. The data viewer shows label/value rows and saves its selected row.
+
+`native_data` checks filter/aggregation, empty input, snapshot isolation,
+inspector/undo, saved parameters and viewer/layout restore, invalid parameters
+and missing-package retention. Two additional startup checks cover `--data`
+and the independent executable. Report: `build/native/native/data-results.xml`.
+See [the data extension](../extensions/data/README.md) and
+[decision 0011](architecture/decisions/0011-independent-native-data-extension.md).
