@@ -174,3 +174,15 @@ CTest includes both example startup processes and exact exit-code/diagnostic
 checks for missing projects and missing path arguments. See
 [the examples](../examples/README.md) and the
 [N5i handoff](agents/handoffs/2026-10-01-native-checkpoint-n5i.md).
+
+## N6a reusable graph components
+
+`smartflow_components` is a project-codec/Qt Core library, without domain or
+canvas imports. DocumentSession/DocumentHistory expose atomic component
+instantiation with retained catalog insertion, typed binding validation and undo.
+This is a model/command API; no component UI or collapsed node is provided yet.
+`native_components` checks independent data instances, save/reopen, opaque-field
+retention, undo/redo and failed-command isolation. Report:
+`build/native/native/component-results.xml`. Read the
+[component guide](GRAPH_COMPONENTS.md) and
+[decision 0012](architecture/decisions/0012-native-graph-component-foundation.md).

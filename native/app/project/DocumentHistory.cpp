@@ -100,4 +100,14 @@ void DocumentHistory::setWorkspaceField(const std::string& name, const Document&
     current->setWorkspaceField(name,value);
     Q_EMIT workspaceChanged();
 }
+
+ComponentBindings DocumentHistory::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
+    const Document& controls, const Document& inputSources)
+{
+    ComponentBindings result;
+    edit("Instantiate component",[&](auto& candidate) {
+        result=candidate.instantiateComponent(component,instanceId,controls,inputSources);
+    });
+    return result;
+}
 } // namespace smartflow::project

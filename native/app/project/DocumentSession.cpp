@@ -279,4 +279,29 @@ void DocumentSession::setWorkspaceField(const std::string& name, const Document&
     validate(replacement);
     source.swap(replacement);
 }
+
+ComponentBindings DocumentSession::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
+    const Document& controls, const Document& inputSources)
+{
+    const auto graphId=selectedGraph()["id"].get<std::string>();
+    auto expanded=component.instantiate(source,graphId,instanceId,controls,inputSources);
+    DocumentSession candidate(std::move(expanded.document),graphId,delegates,registrations);
+    // Existing unsupported content remains retained. Reject only new problems
+    // introduced by this command, before changing the active document.
+    const std::set<std::string> previous(issues.begin(),issues.end());
+    for(const auto& issue : candidate.issues)
+        if(!previous.count(issue)) throw FileError("Component cannot instantiate: "+issue);
+    for(const auto& endpoint : expanded.bindings.outputs) {
+        const auto id=endpoint["nodeId"].get<std::string>();
+        const auto& nodes=candidate.selectedGraph()["nodes"];
+        const auto found=findId(nodes,id);
+        const auto* entry=found==nodes.end() ? nullptr : registration(*found,registrations);
+        if(!entry) throw FileError("Component output node is unavailable");
+        const auto& ports=delegates->stepDelegate(entry->type.toStdString())->outPorts();
+        if(std::none_of(ports.begin(),ports.end(),[&](const auto& port) { return port.name.toString()==endpoint["portId"]; }))
+            throw FileError("Component output port is unavailable");
+    }
+    source.swap(candidate.source); compiled.swap(candidate.compiled); issues.swap(candidate.issues);
+    return expanded.bindings;
+}
 } // namespace smartflow::project

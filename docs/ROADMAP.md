@@ -75,6 +75,12 @@ could not run because the computer-use native pipe was unavailable; full N5 is
 still pending that acceptance. See the
 [N5i handoff](agents/handoffs/2026-10-01-native-checkpoint-n5i.md).
 
+N6a adds a versioned graph-component model, retained definition catalog and atomic
+subgraph insertion with exposed inputs, outputs and controls. Instances expand
+into ordinary nodes; this does not yet satisfy collapsed component-node behavior.
+See [the component guide](GRAPH_COMPONENTS.md) and the
+[N6a handoff](agents/handoffs/2026-10-01-native-checkpoint-n6a.md).
+
 ## Next: define and implement the first vertical slice
 
 The list below records the earlier TypeScript plan. It is superseded for current
@@ -104,7 +110,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 - Completed N5h: add a native table workflow through the same SDK.
 - Completed N5h: run it in a separate executable without linking/initializing the 3D package.
-- Package a graph as a reusable component.
+- N6a: reusable graph definitions and atomic subgraph insertion commands implemented; component authoring/UI and collapsed-node execution remain pending.
 - Check missing package and unsupported backend behavior.
 
 ## Later, when justified

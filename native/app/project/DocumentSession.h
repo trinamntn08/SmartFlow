@@ -1,5 +1,6 @@
 #pragma once
 #include "ProjectFile.h"
+#include "GraphComponent.h"
 #include <WorkspaceExtension.h>
 #include <tp_pipeline/PipelineDetails.h>
 
@@ -34,6 +35,8 @@ public:
                  const std::string& sourceNode, const std::string& sourcePort,
                  const std::string& targetNode, const std::string& targetPort);
     void disconnect(const std::string& connectionId);
+    ComponentBindings instantiateComponent(const GraphComponent& component, const std::string& instanceId,
+        const Document& controls, const Document& inputSources);
     // Replace only an explicitly owned top-level workspace field. This does not
     // recompile the graph or alter its transient output identities.
     void setWorkspaceField(const std::string& name, const Document& value);
