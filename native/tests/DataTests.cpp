@@ -70,6 +70,28 @@ private Q_SLOTS:
         for(const auto& row : output(window,"summary").rows) QCOMPARE(row.value,0.0);
     }
 
+    void shippedExampleRestoresDataAndViewer()
+    {
+        WorkspaceWindow window(dataConfiguration());
+        window.show();
+        window.openProject(SMARTFLOW_DATA_EXAMPLE);
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        QCOMPARE(output(window,"summary").rows[1].value,79.0);
+        auto* table=window.findChild<QTableWidget*>("outputTable");
+        QCOMPARE(table->item(2,1)->text(),QString("39.5"));
+        QVERIFY(!table->selectionModel()->selectedRows().isEmpty());
+        QCOMPARE(table->selectionModel()->selectedRows().front().row(),1);
+        QVERIFY(!window.projectDirty());
+        QTemporaryDir directory;
+        const auto copy=directory.filePath("example-copy.smartflow");
+        window.saveProject(copy);
+        window.openProject(copy);
+        QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(output(window,"summary").rows[1].value,79.0);
+        QVERIFY(window.grab().save("n5i-data-example.png"));
+    }
+
     void inspectorUndoSaveAndFreshWindowRestore()
     {
         QTemporaryDir directory;

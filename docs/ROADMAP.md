@@ -69,6 +69,12 @@ a table viewer. `smartflow-data.exe` and its behavior tests do not link scene
 libraries. Packaged interaction acceptance remains the next step. See the
 [N5h handoff](agents/handoffs/2026-10-01-native-checkpoint-n5h.md).
 
+N5i adds shipped scene/data example projects and `--project` launch support,
+with native save/reopen and fresh-process startup checks. Real desktop interaction
+could not run because the computer-use native pipe was unavailable; full N5 is
+still pending that acceptance. See the
+[N5i handoff](agents/handoffs/2026-10-01-native-checkpoint-n5i.md).
+
 ## Next: define and implement the first vertical slice
 
 The list below records the earlier TypeScript plan. It is superseded for current
@@ -78,7 +84,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) and independent data workflow (N5h) completed; next verify both packaged desktop workflows. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) and independent data workflow (N5h) completed; N5i adds shipped examples and packaged project launch checks; real desktop interaction acceptance remains pending. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

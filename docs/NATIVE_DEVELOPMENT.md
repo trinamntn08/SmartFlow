@@ -163,3 +163,14 @@ and missing-package retention. Two additional startup checks cover `--data`
 and the independent executable. Report: `build/native/native/data-results.xml`.
 See [the data extension](../extensions/data/README.md) and
 [decision 0011](architecture/decisions/0011-independent-native-data-extension.md).
+
+## N5i shipped-project launch checks
+
+`--project <path>` opens a retained document after window layout. Load failures
+report a diagnostic and exit 6, without a modal dialog. Smoke mode then checks
+the loaded graph, rather than the preset. Scene/data examples are installed
+alongside the app and tested for parameters, viewer state and save/reopen.
+CTest includes both example startup processes and exact exit-code/diagnostic
+checks for missing projects and missing path arguments. See
+[the examples](../examples/README.md) and the
+[N5i handoff](agents/handoffs/2026-10-01-native-checkpoint-n5i.md).

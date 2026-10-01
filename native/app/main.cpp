@@ -7,6 +7,7 @@
 #include <QElapsedTimer>
 #include <QFontDatabase>
 #include <QTimer>
+#include <cstdio>
 
 int main(int argc, char** argv)
 {
@@ -30,6 +31,15 @@ int main(int argc, char** argv)
 #endif
     else window=std::make_unique<smartflow::WorkspaceWindow>(smartflow::data::dataConfiguration());
     window->show();
+    const auto projectIndex=app.arguments().indexOf("--project");
+    if(projectIndex>=0) {
+        if(projectIndex+1>=app.arguments().size()) {
+            std::fprintf(stderr,"--project requires a file path\n");
+            return 6;
+        }
+        try { window->openProject(app.arguments().at(projectIndex+1)); }
+        catch(const std::exception& error) { std::fprintf(stderr,"Open failed: %s\n",error.what()); return 6; }
+    }
     QTimer smokeTimer;
     QElapsedTimer elapsed;
     if (app.arguments().contains("--smoke-test")) {

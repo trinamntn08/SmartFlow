@@ -40,6 +40,29 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void shippedExampleRestoresSceneAndCamera()
+    {
+        WorkspaceWindow window(sceneConfiguration());
+        window.show();
+        window.openProject(SMARTFLOW_SCENE_EXAMPLE);
+        QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        QCOMPARE(scene(window,"cube").objects.front().geometry.getMinMax().second.x,1.5f);
+        auto* viewer=dynamic_cast<SceneViewer*>(window.findChild<QWidget*>("sceneViewer"));
+        QVERIFY(viewer);
+        QCOMPARE(viewer->cameraAngles(),QPointF(60,15));
+        QCOMPARE(viewer->selectedObject(),0);
+        QCOMPARE(viewer->objectCount(),size_t(1));
+        QVERIFY(!window.projectDirty());
+        QTemporaryDir directory;
+        const auto copy=directory.filePath("example-copy.smartflow");
+        window.saveProject(copy);
+        window.openProject(copy);
+        QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(viewer->cameraAngles(),QPointF(60,15));
+        QVERIFY(window.grab().save("n5i-scene-example.png"));
+    }
+
     void desktopSceneEditSaveAndReopenShowsResult()
     {
         QTemporaryDir directory;

@@ -398,7 +398,9 @@ bool WorkspaceWindow::saveFromDialog(bool saveAs)
 
 bool WorkspaceWindow::confirmSave()
 {
-    captureWorkspace();
+    // An untouched loaded workspace may contain more precise navigation than
+    // Qt's pixel-rounded scrollbars. Only flush actual pending UI changes.
+    if(capturePending) captureWorkspace();
     if(!projectDirty()) return true;
     const auto answer = QMessageBox::warning(this, "Unsaved project", "Save changes to this project?",
         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);

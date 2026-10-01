@@ -1,0 +1,104 @@
+{
+  "format": "smartflow",
+  "schemaVersion": 1,
+  "project": {
+    "id": "example-data",
+    "packages": [
+      {
+        "id": "smartflow.data",
+        "version": "1"
+      }
+    ],
+    "assets": [],
+    "graphs": [
+      {
+        "id": "graph",
+        "nodes": [
+          {
+            "id": "sample",
+            "packageId": "smartflow.data",
+            "typeId": "sample",
+            "version": 1,
+            "parameters": {
+              "multiplier": 1
+            }
+          },
+          {
+            "id": "filter",
+            "packageId": "smartflow.data",
+            "typeId": "filter",
+            "version": 1,
+            "parameters": {
+              "minimum": 30
+            }
+          },
+          {
+            "id": "summary",
+            "packageId": "smartflow.data",
+            "typeId": "summary",
+            "version": 1,
+            "parameters": {}
+          }
+        ],
+        "connections": [
+          {
+            "id": "edge-1",
+            "source": {
+              "nodeId": "sample",
+              "portId": "out"
+            },
+            "target": {
+              "nodeId": "filter",
+              "portId": "in"
+            }
+          },
+          {
+            "id": "edge-2",
+            "source": {
+              "nodeId": "filter",
+              "portId": "out"
+            },
+            "target": {
+              "nodeId": "summary",
+              "portId": "in"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "workspace": {
+    "smartflow.native-editor@1": {
+      "graph": {
+        "positions": {
+          "sample": {
+            "x": 0,
+            "y": 0
+          },
+          "filter": {
+            "x": 200,
+            "y": 0
+          },
+          "summary": {
+            "x": 400,
+            "y": 0
+          }
+        },
+        "selection": [
+          "filter"
+        ],
+        "pinned": "summary",
+        "navigation": {
+          "scale": 0.9,
+          "x": 200,
+          "y": 0
+        },
+        "viewers": {
+          "smartflow.data.table-viewer@1": {
+            "selectedRow": 1
+          }
+        }
+      }
+    }
+  }
+}

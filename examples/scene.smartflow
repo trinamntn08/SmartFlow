@@ -1,0 +1,144 @@
+{
+  "format": "smartflow",
+  "schemaVersion": 1,
+  "project": {
+    "id": "example-scene",
+    "packages": [
+      {
+        "id": "smartflow.scene-3d",
+        "version": "1"
+      }
+    ],
+    "assets": [],
+    "graphs": [
+      {
+        "id": "graph",
+        "nodes": [
+          {
+            "id": "cube",
+            "packageId": "smartflow.scene-3d",
+            "typeId": "cube",
+            "version": 1,
+            "parameters": {
+              "size": 3
+            }
+          },
+          {
+            "id": "transform",
+            "packageId": "smartflow.scene-3d",
+            "typeId": "transform",
+            "version": 1,
+            "parameters": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "rotation Y": 25,
+              "scale X": 1,
+              "scale Y": 1,
+              "scale Z": 1
+            }
+          },
+          {
+            "id": "material",
+            "packageId": "smartflow.scene-3d",
+            "typeId": "material",
+            "version": 1,
+            "parameters": {
+              "red": 0.18,
+              "green": 0.58,
+              "blue": 0.88
+            }
+          },
+          {
+            "id": "scene",
+            "packageId": "smartflow.scene-3d",
+            "typeId": "scene",
+            "version": 1,
+            "parameters": {}
+          }
+        ],
+        "connections": [
+          {
+            "id": "edge-1",
+            "source": {
+              "nodeId": "cube",
+              "portId": "out"
+            },
+            "target": {
+              "nodeId": "transform",
+              "portId": "in"
+            }
+          },
+          {
+            "id": "edge-2",
+            "source": {
+              "nodeId": "transform",
+              "portId": "out"
+            },
+            "target": {
+              "nodeId": "material",
+              "portId": "in"
+            }
+          },
+          {
+            "id": "edge-3",
+            "source": {
+              "nodeId": "material",
+              "portId": "out"
+            },
+            "target": {
+              "nodeId": "scene",
+              "portId": "in"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "workspace": {
+    "smartflow.native-editor@1": {
+      "graph": {
+        "positions": {
+          "cube": {
+            "x": 0,
+            "y": 0
+          },
+          "transform": {
+            "x": 200,
+            "y": 0
+          },
+          "material": {
+            "x": 400,
+            "y": 0
+          },
+          "scene": {
+            "x": 600,
+            "y": 0
+          }
+        },
+        "selection": [
+          "cube"
+        ],
+        "pinned": "scene",
+        "navigation": {
+          "scale": 0.9,
+          "x": 300,
+          "y": 0
+        },
+        "viewers": {
+          "smartflow.scene-3d.viewer@1": {
+            "yaw": 60,
+            "pitch": 15,
+            "span": 8,
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "selection": 0
+          }
+        }
+      }
+    }
+  }
+}

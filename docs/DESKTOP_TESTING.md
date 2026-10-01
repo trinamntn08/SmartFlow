@@ -20,6 +20,21 @@ Open `build/desktop-test/bin/smartflow.exe` in Explorer. Keep the whole
 and the compiler runtime. Running this folder does not require Node.js, npm,
 a browser server or a Qt PATH entry. Close the app before reinstalling the folder.
 
+## Open the shipped examples
+
+CMake install copies `examples/scene.smartflow` and `examples/data.smartflow`
+into the desktop test folder. Launch either directly from a PowerShell prompt:
+
+```powershell
+build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples/scene.smartflow"
+build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/data.smartflow"
+```
+
+The scene example restores size 3 and an orbited camera with the object selected.
+The data example restores minimum 30, total 79, mean 39.5 and the selected Total
+row. See [example details](../examples/README.md). Missing project paths report
+an error and exit 6; choose the matching scene/data app configuration.
+
 ## Verify
 
 ```powershell
