@@ -11,7 +11,7 @@ The main app starts with Cube → Transform → Material → Scene. Edit paramet
 through the inspector and Apply; the pinned Scene output updates with undo/redo.
 Pin output changes the viewed node without changing graph data. Drag the preview
 to orbit, scroll to zoom, double-click to frame, and click an object to select it.
-These viewer actions do not edit the project or enter the undo stack.
+These viewer actions update saved workspace state without changing graph semantics or entering the undo stack.
 
 Transform supplies translation, Y rotation and nonuniform positive scaling.
 Material sets RGB albedo. Scene exposes one input as the final scene; Merge joins
@@ -22,7 +22,7 @@ This is a bounded opaque-primitive preview, not a production renderer: fixed
 lighting, depth-sorted painted faces, at most 64 generated boxes and coordinates
 within 100,000 units. Intersecting surfaces are not rendered reliably. Textures,
 transparency, PBR shading, import, hierarchy editing, configurable lights and
-camera persistence are pending. No 3D project/result serialization is exposed.
+configurable camera projections are pending. Camera and object selection are persisted through opaque native viewer hooks; computed scene results are not serialized.
 
 Native behavior tests are in `native/tests/SceneTests.cpp`; they run with CTest.
 The source-level contribution interface is in `native/sdk/WorkspaceExtension.h`.

@@ -26,7 +26,8 @@ and performs atomic file writes. N5b adds the retained `DocumentSession` executi
 adapter and explicit persisted identities in native registrations. N5c/N5d add
 structural commands and retained-document undo; N5e connects them to the editor
 and adds unavailable-node placeholders. N5f adds editor file actions and
-retained-content dirty tracking; workspace persistence remains pending.
+retained-content dirty tracking; N5g adds workspace persistence through opaque viewer hooks.
+See [decision 0010](decisions/0010-native-workspace-persistence.md).
 See [decision 0007](decisions/0007-native-project-files.md) and the
 [editor integration decision](decisions/0008-retained-editor-commands.md).
 

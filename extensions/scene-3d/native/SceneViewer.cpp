@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPainter>
+#include <QJsonArray>
 #include <algorithm>
 #include <cmath>
 
@@ -22,8 +23,36 @@ void SceneViewer::present(std::shared_ptr<const tp_data::Collection> output)
     if(collection)
         for(const auto& member : collection->members())
             if(const auto* found = dynamic_cast<const SceneMember*>(member.get())) { scene = found; break; }
-    if(!scene || selection >= int(scene->objects.size())) selection = -1;
+    // Keep workspace selection while results are temporarily invalidated.
+    if(scene && selection >= int(scene->objects.size())) selection = -1;
     pickFaces.clear();
+    update();
+}
+
+QJsonObject SceneViewer::workspaceState() const
+{
+    return {{"yaw",yaw},{"pitch",pitch},{"span",span},
+            {"target",QJsonArray{target.x,target.y,target.z}},{"selection",selection}};
+}
+
+void SceneViewer::restoreWorkspaceState(const QJsonObject& state)
+{
+    // Invalid or future fields are retained by the host, never trusted as geometry.
+    const auto number = [&](const char* key, double low, double high, float fallback) {
+        const auto value=state.value(key);
+        const auto n=value.toDouble(fallback);
+        return value.isDouble() && std::isfinite(n) && n>=low && n<=high ? float(n) : fallback;
+    };
+    yaw=number("yaw",-1000000,1000000,35);
+    pitch=number("pitch",-85,85,25);
+    span=number("span",0.1,1000000,6);
+    target=glm::vec3(0);
+    const auto values=state.value("target").toArray();
+    if(values.size()==3)
+        for(int i=0; i<3; ++i)
+            if(values[i].isDouble() && std::isfinite(values[i].toDouble()) && std::abs(values[i].toDouble())<=1000000)
+                target[i]=float(values[i].toDouble());
+    selection=int(number("selection",-1,63,-1));
     update();
 }
 
@@ -49,6 +78,7 @@ void SceneViewer::frameScene()
     target = (low + high) / 2.0f;
     span = std::max(0.1f, glm::length(high-low) * 1.4f);
     update();
+    if(workspaceStateChanged) workspaceStateChanged();
 }
 
 void SceneViewer::paintEvent(QPaintEvent*)
@@ -128,6 +158,7 @@ void SceneViewer::mouseMoveEvent(QMouseEvent* event)
     pitch = std::clamp(pitch + float(delta.y()) * 0.5f, -85.0f, 85.0f);
     lastPosition = event->position();
     update();
+    if(workspaceStateChanged) workspaceStateChanged();
 }
 void SceneViewer::mouseReleaseEvent(QMouseEvent* event)
 {
@@ -136,12 +167,14 @@ void SceneViewer::mouseReleaseEvent(QMouseEvent* event)
     for(auto it=pickFaces.rbegin(); it!=pickFaces.rend(); ++it)
         if(it->polygon.containsPoint(event->position(), Qt::OddEvenFill)) { selection=it->object; break; }
     update();
+    if(workspaceStateChanged) workspaceStateChanged();
 }
 void SceneViewer::wheelEvent(QWheelEvent* event)
 {
     const float factor = std::exp(std::clamp(-float(event->angleDelta().y())/1000.0f, -1.0f, 1.0f));
     span = std::clamp(span * factor, 0.1f, 1000000.0f);
     update();
+    if(workspaceStateChanged) workspaceStateChanged();
     event->accept();
 }
 void SceneViewer::mouseDoubleClickEvent(QMouseEvent*) { frameScene(); }

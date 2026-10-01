@@ -30,7 +30,7 @@ disable them to use Run explicitly. Cancel discards the active result. Select
 nodes or result rows to inspect outputs. Pin output keeps one result in the viewer
 while inspecting another node. Drag the 3D preview to orbit, wheel to zoom,
 double-click to frame and click to select an object. Use File > Open, Save or
-Save As for project files. Canvas layout and viewer settings are not yet saved;
+Save As for project files. Canvas layout/navigation, selection, pinned output and viewer settings are saved;
 clipboard import/duplication is disabled.
 
 No source or build paths in CMake reference the old repository. Raw build outputs
@@ -139,3 +139,13 @@ unsaved content. Open selects the first graph and resets canvas layout and
 selection; files with no graphs are rejected without replacing the editor.
 Unknown content and other graphs remain retained. Workspace/viewer restoration
 is the next checkpoint. See the [N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).
+
+## N5g workspace persistence
+
+Save/Open restores stable-node canvas positions, selection, canvas navigation,
+pinned output and extension-owned viewer JSON. Camera navigation changes dirty
+workspace state without executing the graph or adding semantic undo commands.
+Malformed view fields use safe defaults; unknown fields remain retained.
+Scene tests cover a fresh-window round trip, camera/selection, layout, opaque
+fields and semantic undo isolation. See [N5g](agents/handoffs/2026-10-01-native-checkpoint-n5g.md)
+and [decision 0010](architecture/decisions/0010-native-workspace-persistence.md).

@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QUndoStack>
 #include <QTemporaryDir>
+#include <QJsonArray>
+#include <QAction>
 #include <QtNodes/GraphicsView>
 #include <QtNodes/internal/NodeGraphicsObject.hpp>
 #include <QtTest/QtTest>
@@ -63,11 +65,83 @@ private Q_SLOTS:
         auto* viewer=dynamic_cast<SceneViewer*>(reopened.findChild<QWidget*>("sceneViewer"));
         QVERIFY(viewer);
         QCOMPARE(viewer->objectCount(),size_t(1));
-        auto* canvas=reopened.findChild<QtNodes::GraphicsView*>("graphCanvas");
-        const auto visible=canvas->mapToScene(canvas->viewport()->rect()).boundingRect();
         for(const auto id : reopened.canvas().allNodeIds())
-            QVERIFY(visible.contains(reopened.scene().nodeGraphicsObject(id)->sceneBoundingRect()));
+            for(const auto originalId : original.canvas().allNodeIds())
+                if(reopened.canvas().projectId(id)==original.canvas().projectId(originalId))
+                    QCOMPARE(reopened.canvas().nodeData(id,QtNodes::NodeRole::Position).value<QPointF>(),
+                             original.canvas().nodeData(originalId,QtNodes::NodeRole::Position).value<QPointF>());
         QVERIFY(!reopened.projectDirty());
+    }
+
+    void workspaceRoundTripPreservesOpaqueStateAndSemanticUndo()
+    {
+        QTemporaryDir directory;
+        WorkspaceWindow original(sceneConfiguration());
+        original.show();
+        QTRY_VERIFY(original.execution().result().has_value());
+        auto* viewer=dynamic_cast<SceneViewer*>(original.findChild<QWidget*>("sceneViewer"));
+        const auto revision=original.project().revision();
+        const auto cube=node(original,"cube");
+        original.canvas().setNodeData(cube,QtNodes::NodeRole::Position,QPointF(-420,275));
+        original.selectNode(cube);
+        for(auto* action : original.findChildren<QAction*>())
+            if(action->text()=="Pin output") action->trigger();
+        original.selectNode(node(original,"transform"));
+        auto* view=original.findChild<QtNodes::GraphicsView*>("graphCanvas");
+        view->resetTransform(); view->scale(0.7,0.7); view->centerOn(200,100);
+        viewer->restoreWorkspaceState({{"yaw",72},{"pitch",-12},{"span",9},
+                                     {"target",QJsonArray{1,2,3}},{"selection",0}});
+        const auto path=directory.filePath("workspace.smartflow");
+        original.saveProject(path);
+        QCOMPARE(original.project().revision(),revision);
+        QCOMPARE(original.scene().undoStack().count(),0);
+        auto file=project::read(path);
+        auto& workspace=file["workspace"]["smartflow.native-editor@1"]["graph"];
+        workspace["future"]={{"opaque",true}};
+        workspace["positions"][original.canvas().projectId(cube).toString()]["future"]=42;
+        workspace["viewers"]["smartflow.scene-3d.viewer@1"]["future"]="preserve";
+        file["workspace"]["other-extension"]={{"data",17}};
+        project::write(path,file);
+        WorkspaceWindow reopened(sceneConfiguration());
+        reopened.show();
+        reopened.openProject(path);
+        QTRY_VERIFY(reopened.execution().result().has_value());
+        auto* restored=dynamic_cast<SceneViewer*>(reopened.findChild<QWidget*>("sceneViewer"));
+        QCOMPARE(restored->workspaceState(),viewer->workspaceState());
+        QCOMPARE(reopened.canvas().nodeData(node(reopened,"cube"),QtNodes::NodeRole::Position).value<QPointF>(),QPointF(-420,275));
+        QCOMPARE(reopened.scene().selectedNodes().size(),size_t(1));
+        QCOMPARE(reopened.canvas().projectId(reopened.scene().selectedNodes().front()),reopened.canvas().projectId(node(reopened,"transform")));
+        QCOMPARE(reopened.findChild<QtNodes::GraphicsView*>("graphCanvas")->transform().m11(),0.7);
+        QVERIFY(!reopened.projectDirty());
+        QCOMPARE(reopened.project().retained()["workspace"]["smartflow.native-editor@1"]["graph"]["pinned"].get<std::string>(),
+                 reopened.canvas().projectId(node(reopened,"cube")).toString());
+        const auto camera=restored->workspaceState();
+        edit(reopened,"cube","size",4);
+        reopened.scene().undoStack().undo();
+        QTRY_VERIFY(reopened.execution().result().has_value());
+        QCOMPARE(restored->workspaceState(),camera);
+        reopened.saveProject(path);
+        const auto saved=project::read(path);
+        const auto& result=saved["workspace"]["smartflow.native-editor@1"]["graph"];
+        QVERIFY(result["future"]==workspace["future"]);
+        QVERIFY(result["positions"][original.canvas().projectId(cube).toString()]["future"]==42);
+        QVERIFY(result["viewers"]["smartflow.scene-3d.viewer@1"]["future"]=="preserve");
+        QVERIFY(saved["workspace"]["other-extension"]==file["workspace"]["other-extension"]);
+        const auto newRevision=reopened.project().revision();
+        restored->frameScene();
+        QVERIFY(reopened.projectDirty());
+        QCOMPARE(reopened.project().revision(),newRevision);
+    }
+
+    void malformedViewerStateUsesDefaults()
+    {
+        SceneViewer viewer;
+        viewer.restoreWorkspaceState({{"yaw","future"},{"pitch",9999},{"span",-1},
+                                      {"target",QJsonArray{1e200,"bad",0}},{"selection",1e200}});
+        QCOMPARE(viewer.cameraAngles(),QPointF(35,25));
+        QCOMPARE(viewer.selectedObject(),-1);
+        QCOMPARE(viewer.workspaceState().value("span").toDouble(),6.0);
+        QCOMPARE(viewer.workspaceState().value("target").toArray(),QJsonArray({0,0,0}));
     }
 
     void persistedSceneGraphExecutesThroughExplicitIdentities()
@@ -195,6 +269,7 @@ private Q_SLOTS:
         QApplication::sendEvent(viewer,&move);
         QTest::mouseRelease(viewer,Qt::LeftButton,Qt::NoModifier,center+QPoint(35,20));
         QVERIFY(viewer->cameraAngles() != initial);
+        QVERIFY(window.projectDirty());
         QCOMPARE(window.project().revision(),revision);
         QCOMPARE(window.scene().undoStack().count(),0);
         const auto orbited = viewer->cameraAngles();

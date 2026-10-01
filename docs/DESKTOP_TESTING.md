@@ -51,7 +51,8 @@ For the desktop test:
 
 ## Current limitations
 
-- Canvas positions/navigation and viewer camera/pinning are not yet saved.
+- Canvas positions/navigation, selection and viewer camera/pinning are saved.
+  Splitter sizes and window geometry are not yet saved.
   Open resets the canvas and displays a terminal output by default.
 - Open edits the first graph; other graphs and unknown extension data remain
   preserved. Unsupported nodes are displayed but cannot execute.

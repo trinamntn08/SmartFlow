@@ -19,7 +19,7 @@
 - N4: included native scene-3d extension with copied geometry/material math,
   Cube/Transform/Material/Scene/Merge nodes, and orbit/zoom/selection preview.
   See [checkpoint N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md).
-- Canvas/viewer persistence and production 3D rendering remain pending. The native work is
+- N5g adds canvas/viewer workspace persistence; production 3D rendering remains pending. The native work is
   a migration foundation, not a production runtime or plugin loader.
 - N5a implements the standalone native schema-v1 file codec and atomic file I/O,
   preserving unknown JSON content without extension registration. Editor Save/Open,
@@ -57,8 +57,12 @@ The browser starter is a setup page. It does not yet implement graph editing, sc
 
 N5f adds Open/Save/Save As, unsaved-change prompts and retained-content dirty
 tracking. Failed file operations preserve the active project and path. Next:
-canvas/viewer persistence, then the independent non-3D extension. See the
+the independent non-3D extension. See the
 [N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).
+
+N5g saves canvas positions/navigation, node selection, pinned output and opaque
+viewer state, preserving unknown workspace fields. See the
+[N5g handoff](agents/handoffs/2026-10-01-native-checkpoint-n5g.md).
 
 ## Next: define and implement the first vertical slice
 
@@ -69,7 +73,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; next connect workspace persistence, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) completed; next implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

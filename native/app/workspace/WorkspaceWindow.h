@@ -28,8 +28,17 @@ public:
     QString projectPath() const { return filePath; }
     bool projectDirty() const { return document.retained() != savedDocument; }
 protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
+    void showEvent(QShowEvent* event) override;
+    bool firstShow = true;
     void closeEvent(QCloseEvent* event) override;
 private:
+    void captureWorkspace();
+    void scheduleWorkspaceCapture();
+    void restoreWorkspace();
+    bool restoringWorkspace = true;
+    bool capturePending = false;
+    quint64 workspaceGeneration = 0;
     bool confirmSave();
     bool saveFromDialog(bool saveAs);
     void refreshFileState();

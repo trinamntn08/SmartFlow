@@ -71,7 +71,7 @@ private Q_SLOTS:
         QVERIFY(window.project().retained()==saved);
         QVERIFY(!window.projectDirty());
         QCOMPARE(window.scene().undoStack().count(),0);
-        QVERIFY(window.scene().selectedNodes().empty());
+        QCOMPARE(window.scene().selectedNodes().size(),size_t(1));
         window.execution().run();
         QTRY_VERIFY(window.execution().result().has_value());
         QCOMPARE(output(window,findNode(window,"smartflow.numeric.add@1")),24.0);
@@ -82,7 +82,9 @@ private Q_SLOTS:
         window.openProject(path);
         const auto copy=directory.filePath("copy.smartflow");
         window.saveProject(copy);
-        QVERIFY(project::read(copy)==unknown);
+        const auto copied=project::read(copy);
+        QVERIFY(copied["project"]==unknown["project"]);
+        QVERIFY(copied["workspace"]["opaque"]==unknown["workspace"]["opaque"]);
         QVERIFY(!window.project().diagnostics().empty());
     }
 
@@ -148,14 +150,14 @@ private Q_SLOTS:
         QVERIFY(window.execution().result()->steps.empty());
         window.scene().disconnectNodes({source,0,target,0});
         window.scene().undoStack().undo();
-        QVERIFY(window.project().retained()==file);
+        QVERIFY(window.project().retained()["project"]==file["project"]);
         window.selectNode(source);
         window.scene().nodeGraphicsObject(missing)->setSelected(true);
         window.findChild<QtNodes::GraphicsView*>("graphCanvas")->onDeleteSelectedObjects();
         QCOMPARE(window.scene().undoStack().count(),1);
         QCOMPARE(window.canvas().allNodeIds().size(),size_t(1));
         window.scene().undoStack().undo();
-        QVERIFY(window.project().retained()==file);
+        QVERIFY(window.project().retained()["project"]==file["project"]);
         QCOMPARE(window.canvas().projectId(source).toString(),stable);
         QVERIFY(window.canvas().nodeExists(missing));
         QVERIFY(window.canvas().connectionExists({source,0,target,0}));
@@ -163,7 +165,7 @@ private Q_SLOTS:
         const auto path=directory.filePath("editor.smartflow");
         project::write(path,window.project().retained());
         window.project().commands().replace(project::read(path),"graph");
-        QVERIFY(window.project().retained()==file);
+        QVERIFY(window.project().retained()["project"]==file["project"]);
         QCOMPARE(window.scene().undoStack().count(),0);
         QCOMPARE(window.canvas().allNodeIds().size(),size_t(3));
         window.show();
@@ -270,7 +272,7 @@ private Q_SLOTS:
         QVERIFY(!window.project().step(window.canvas().projectId(target))->inputMapping()[0].dataName.isValid());
         undo.undo();
         QCOMPARE(window.canvas().projectId(source), stable);
-        QVERIFY(window.project().retained()==snapshot);
+        QVERIFY(window.project().retained()["project"]==snapshot["project"]);
         QVERIFY(window.canvas().connectionExists(link));
         window.execution().run();
         QTRY_VERIFY(window.execution().result().has_value());
@@ -279,7 +281,7 @@ private Q_SLOTS:
         undo.redo();
         QVERIFY(!window.project().step(stable));
         undo.undo();
-        QVERIFY(window.project().retained()==snapshot);
+        QVERIFY(window.project().retained()["project"]==snapshot["project"]);
     }
 
     void createDisconnectAndWorkspaceUndo()

@@ -23,6 +23,11 @@
 #include <QFileInfo>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QTimer>
+#include <QScrollBar>
+#include <QJsonDocument>
+#include <QScopedValueRollback>
+#include <cmath>
 
 namespace smartflow {
 namespace {
@@ -130,6 +135,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         connect(pin, &QAction::triggered, this, [this] {
             pinned = selected;
             refreshResults();
+            captureWorkspace();
         });
         pin->setToolTip("Keep the selected node's output in the viewer while editing other nodes");
     }
@@ -148,7 +154,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     results->setRootIsDecorated(false);
     inspectorLayout->addWidget(outputLabel);
     inspectorLayout->addWidget(results, 1);
-    auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nSave preserves graph content. Canvas layout and viewer settings are not yet saved.");
+    auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nSave preserves graph content, canvas layout and viewer settings.");
     hint->setWordWrap(true);
     inspectorLayout->addWidget(hint);
     auto* scroll = new QScrollArea;
@@ -171,6 +177,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         selected = nodes.size() == 1 ? canvasModel.projectId(nodes.front()) : tp_utils::StringID();
         refreshInspector();
         refreshResults();
+        scheduleWorkspaceCapture();
     });
     connect(&document, &GraphProject::changed, this, [this] { refreshInspector(); refreshResults(); });
     connect(&runner, &ExecutionController::updated, this, &WorkspaceWindow::refreshResults);
@@ -199,12 +206,147 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         selectNode(initialNodes.front());
     }
     canvasScene.undoStack().clear();
+    restoringWorkspace = false;
+    captureWorkspace();
     savedDocument = document.retained();
+    connect(&canvasModel, &QtNodes::AbstractGraphModel::nodePositionUpdated, this, [this] { scheduleWorkspaceCapture(); });
+    connect(view, &QtNodes::GraphicsView::scaleChanged, this, [this] { scheduleWorkspaceCapture(); });
+    view->viewport()->installEventFilter(this);
+    for(auto* bar : {view->horizontalScrollBar(),view->verticalScrollBar()})
+        connect(bar, &QScrollBar::actionTriggered, this, [this] { scheduleWorkspaceCapture(); });
+    if(viewer) viewer->workspaceStateChanged = [this] { captureWorkspace(); };
     connect(&document, &GraphProject::changed, this, &WorkspaceWindow::refreshFileState);
     connect(&document.commands(), &project::DocumentHistory::workspaceChanged,
             this, &WorkspaceWindow::refreshFileState);
     refreshFileState();
     runner.run();
+}
+
+namespace {
+bool finiteNumber(const project::Document& value, double low, double high)
+{
+    if(!value.is_number()) return false;
+    const auto n=value.get<double>();
+    return std::isfinite(n) && n>=low && n<=high;
+}
+}
+
+void WorkspaceWindow::scheduleWorkspaceCapture()
+{
+    if(restoringWorkspace || capturePending) return;
+    capturePending=true;
+    const auto generation=workspaceGeneration;
+    QTimer::singleShot(0,this,[this,generation] {
+        if(generation!=workspaceGeneration) return;
+        capturePending=false; captureWorkspace();
+    });
+}
+
+bool WorkspaceWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    if(event->type()==QEvent::MouseButtonRelease || event->type()==QEvent::Wheel)
+        scheduleWorkspaceCapture();
+    return QMainWindow::eventFilter(watched,event);
+}
+
+void WorkspaceWindow::captureWorkspace()
+{
+    if(restoringWorkspace) return;
+    const auto& workspace=document.retained()["workspace"];
+    auto state=workspace.value("smartflow.native-editor@1",project::Document::object());
+    // Unrecognized future shapes are left untouched.
+    if(!state.is_object()) return;
+    const auto graph=document.selectedGraph()["id"].get<std::string>();
+    if(state.contains(graph) && !state[graph].is_object()) return;
+    auto& current=state[graph];
+    if(current.is_null()) current=project::Document::object();
+    auto positions=current.value("positions",project::Document::object());
+    if(positions.is_object()) {
+        for(const auto id : canvasModel.allNodeIds()) {
+            const auto pos=canvasModel.nodeData(id,QtNodes::NodeRole::Position).value<QPointF>();
+            auto& entry=positions[canvasModel.projectId(id).toString()];
+            if(entry.is_null()) entry=project::Document::object();
+            if(entry.is_object()) { entry["x"]=pos.x(); entry["y"]=pos.y(); }
+        }
+        current["positions"]=positions;
+    }
+    current["selection"]=project::Document::array();
+    for(const auto id : canvasScene.selectedNodes()) current["selection"].push_back(canvasModel.projectId(id).toString());
+    current["pinned"]=pinned.toString();
+    auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
+    const auto center=view->mapToScene(view->viewport()->rect().center());
+    auto navigation=current.value("navigation",project::Document::object());
+    if(navigation.is_object()) {
+        navigation["scale"]=view->transform().m11();
+        navigation["x"]=center.x(); navigation["y"]=center.y();
+        current["navigation"]=navigation;
+    }
+    if(viewer && !viewer->workspaceStateKey().isEmpty()) {
+        auto& viewers=current["viewers"];
+        if(viewers.is_null()) viewers=project::Document::object();
+        if(viewers.is_object()) {
+            auto& entry=viewers[viewer->workspaceStateKey().toStdString()];
+            if(entry.is_null()) entry=project::Document::object();
+            if(entry.is_object()) {
+                const auto fresh=project::Document::parse(QJsonDocument(viewer->workspaceState()).toJson().toStdString());
+                entry.update(fresh);
+            }
+        }
+    }
+    document.commands().setWorkspaceField("smartflow.native-editor@1",state);
+}
+
+void WorkspaceWindow::restoreWorkspace()
+{
+    const auto& workspace=document.retained()["workspace"];
+    auto state=workspace.value("smartflow.native-editor@1",project::Document::object());
+    const auto graph=document.selectedGraph()["id"].get<std::string>();
+    const auto current=state.is_object() ? state.value(graph,project::Document::object()) : project::Document::object();
+    auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
+    if(viewer) viewer->restoreWorkspaceState({});
+    bool navigationRestored=false;
+    if(current.is_object()) {
+        const auto positions=current.value("positions",project::Document::object());
+        for(const auto id : canvasModel.allNodeIds()) {
+            const auto stable=canvasModel.projectId(id).toString();
+            if(positions.is_object() && positions.contains(stable)) {
+                const auto& pos=positions[stable];
+                if(pos.is_object() && pos.contains("x") && pos.contains("y") &&
+                   finiteNumber(pos["x"],-1000000,1000000) && finiteNumber(pos["y"],-1000000,1000000))
+                    canvasModel.setNodeData(id,QtNodes::NodeRole::Position,QPointF(pos["x"].get<double>(),pos["y"].get<double>()));
+            }
+            if(current.contains("selection") && current["selection"].is_array())
+                for(const auto& selectedId : current["selection"])
+                    if(selectedId==stable) canvasScene.nodeGraphicsObject(id)->setSelected(true);
+        }
+        if(current.contains("pinned") && current["pinned"].is_string()) pinned=current["pinned"].get<std::string>();
+        const auto nav=current.value("navigation",project::Document::object());
+        if(nav.is_object() && nav.contains("scale") && nav.contains("x") && nav.contains("y") &&
+           finiteNumber(nav["scale"],0.01,2) && finiteNumber(nav["x"],-1000000,1000000) && finiteNumber(nav["y"],-1000000,1000000)) {
+            view->resetTransform(); view->scale(nav["scale"].get<double>(),nav["scale"].get<double>());
+            view->centerOn(nav["x"].get<double>(),nav["y"].get<double>());
+            navigationRestored=true;
+        }
+        const auto viewers=current.value("viewers",project::Document::object());
+        if(viewer && viewers.is_object()) {
+            const auto data=viewers.value(viewer->workspaceStateKey().toStdString(),project::Document::object());
+            if(data.is_object()) viewer->restoreWorkspaceState(QJsonDocument::fromJson(QByteArray::fromStdString(data.dump())).object());
+        }
+    }
+    if(viewer && (!current.is_object() || !current.contains("pinned"))) {
+        const auto& graph=document.selectedGraph();
+        for(auto node=graph["nodes"].rbegin(); node!=graph["nodes"].rend(); ++node) {
+            const auto id=(*node)["id"].get<std::string>();
+            const bool hasConsumer=std::any_of(graph["connections"].begin(),graph["connections"].end(),
+                [&](const auto& edge) { return edge["source"]["nodeId"]==id; });
+            if(!hasConsumer && document.step(id)) { pinned=id; break; }
+        }
+    }
+    if(!navigationRestored) {
+        view->resetTransform();
+        if(!canvasModel.allNodeIds().empty()) view->fitInView(canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30),Qt::KeepAspectRatio);
+        else view->centerOn(0,0);
+    }
 }
 
 void WorkspaceWindow::refreshFileState()
@@ -215,6 +357,7 @@ void WorkspaceWindow::refreshFileState()
 
 void WorkspaceWindow::saveProject(const QString& path)
 {
+    captureWorkspace();
     project::write(path, document.retained());
     filePath = QFileInfo(path).absoluteFilePath();
     savedDocument = document.retained();
@@ -227,26 +370,14 @@ void WorkspaceWindow::openProject(const QString& path)
     const auto& graphs = source["project"]["graphs"];
     if(graphs.empty()) throw project::FileError("This project has no graph to open.");
     const auto graph = graphs.front()["id"].get<std::string>();
+    QScopedValueRollback<bool> guard(restoringWorkspace,true);
+    ++workspaceGeneration;
+    capturePending=false;
     document.commands().replace(std::move(source), graph);
     selected = {};
     pinned = {};
     canvasModel.resetLayout();
-    // Until saved viewer configuration is supported, show a terminal output
-    // on Open instead of leaving a successfully loaded scene invisible.
-    if(viewer) {
-        const auto& graph = document.selectedGraph();
-        for(auto node = graph["nodes"].rbegin(); node != graph["nodes"].rend(); ++node) {
-            const auto id = (*node)["id"].get<std::string>();
-            const bool hasConsumer = std::any_of(graph["connections"].begin(), graph["connections"].end(),
-                [&](const auto& edge) { return edge["source"]["nodeId"] == id; });
-            if(!hasConsumer && document.step(id)) { pinned = id; break; }
-        }
-    }
-    auto* view = findChild<QtNodes::GraphicsView*>("graphCanvas");
-    view->resetTransform();
-    const auto bounds = canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30);
-    if(!canvasModel.allNodeIds().empty()) view->fitInView(bounds, Qt::KeepAspectRatio);
-    else view->centerOn(0,0);
+    restoreWorkspace();
     filePath = QFileInfo(path).absoluteFilePath();
     savedDocument = document.retained();
     refreshInspector();
@@ -267,11 +398,26 @@ bool WorkspaceWindow::saveFromDialog(bool saveAs)
 
 bool WorkspaceWindow::confirmSave()
 {
+    captureWorkspace();
     if(!projectDirty()) return true;
     const auto answer = QMessageBox::warning(this, "Unsaved project", "Save changes to this project?",
         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
     if(answer == QMessageBox::Save) return saveFromDialog(false);
     return answer == QMessageBox::Discard;
+}
+
+void WorkspaceWindow::showEvent(QShowEvent* event)
+{
+    const bool clean=!projectDirty();
+    QMainWindow::showEvent(event);
+    if(firstShow) {
+        firstShow=false;
+        if(filePath.isEmpty() && clean) {
+            captureWorkspace();
+            savedDocument=document.retained();
+            refreshFileState();
+        }
+    }
 }
 
 void WorkspaceWindow::closeEvent(QCloseEvent* event)
@@ -285,6 +431,7 @@ WorkspaceWindow::~WorkspaceWindow()
     // Scene teardown emits selection changes after later members (including
     // the runner and selected ID) have been destroyed. Disconnect while all
     // members still exist, before QObject's automatic disconnection occurs.
+    if(viewer) viewer->workspaceStateChanged = {};
     disconnect(&canvasScene, nullptr, this, nullptr);
     disconnect(&document, nullptr, this, nullptr);
     disconnect(&runner, nullptr, this, nullptr);

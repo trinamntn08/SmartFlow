@@ -4,6 +4,7 @@
 #include <tp_data/Collection.h>
 #include <QWidget>
 #include <QPointF>
+#include <QJsonObject>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -24,6 +25,11 @@ class OutputViewer : public QWidget {
 public:
     using QWidget::QWidget;
     virtual void present(std::shared_ptr<const tp_data::Collection> output) = 0;
+    // Opaque versioned viewer state; the platform never interprets domain fields.
+    virtual QString workspaceStateKey() const { return {}; }
+    virtual QJsonObject workspaceState() const { return {}; }
+    virtual void restoreWorkspaceState(const QJsonObject&) {}
+    std::function<void()> workspaceStateChanged;
     virtual QString describe(const tp_data::Collection&) const { return {}; }
 };
 
