@@ -22,7 +22,17 @@ public:
     WorkspaceScene& scene() { return canvasScene; }
     ExecutionController& execution() { return runner; }
     void selectNode(QtNodes::NodeId id);
+    // Dialog-free operations throw on failure and preserve the active file state.
+    void openProject(const QString& path);
+    void saveProject(const QString& path);
+    QString projectPath() const { return filePath; }
+    bool projectDirty() const { return document.retained() != savedDocument; }
+protected:
+    void closeEvent(QCloseEvent* event) override;
 private:
+    bool confirmSave();
+    bool saveFromDialog(bool saveAs);
+    void refreshFileState();
     void refreshInspector();
     void refreshResults();
     std::shared_ptr<tp_pipeline::StepDelegateMap> delegates;
@@ -38,5 +48,7 @@ private:
     OutputViewer* viewer = nullptr;
     tp_utils::StringID pinned;
     tp_utils::StringID selected;
+    QString filePath;
+    project::Document savedDocument;
 };
 } // namespace smartflow

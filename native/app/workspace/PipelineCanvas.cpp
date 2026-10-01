@@ -169,4 +169,17 @@ void PipelineCanvas::synchronize()
     for(const auto edge : desired)
         if(!connectionExists(edge)) DataFlowGraphModel::addConnection(edge);
 }
+
+void PipelineCanvas::resetLayout()
+{
+    {
+        QScopedValueRollback<bool> guard(syncing,true);
+        for(const auto id : allNodeIds()) DataFlowGraphModel::deleteNode(id);
+        bindings.clear();
+        identities.clear();
+        positions.clear();
+        edgeBindings.clear();
+    }
+    synchronize();
+}
 } // namespace smartflow

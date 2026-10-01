@@ -23,7 +23,8 @@ the schema-v1 envelope with the preserved prototype. It retains unknown content
 and performs atomic file writes. N5b adds the retained `DocumentSession` execution
 adapter and explicit persisted identities in native registrations. N5c/N5d add
 structural commands and retained-document undo; N5e connects them to the editor
-and adds unavailable-node placeholders. Editor Save/Open actions remain pending.
+and adds unavailable-node placeholders. N5f adds editor file actions and
+retained-content dirty tracking; workspace persistence remains pending.
 See [decision 0007](decisions/0007-native-project-files.md) and the
 [editor integration decision](decisions/0008-retained-editor-commands.md).
 

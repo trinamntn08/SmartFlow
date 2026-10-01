@@ -31,6 +31,61 @@ double output(WorkspaceWindow& window, QtNodes::NodeId id)
 class WorkspaceTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void fileActionsRoundTripAndFailures()
+    {
+        WorkspaceWindow window;
+        window.execution().setLive(false);
+        QTemporaryDir directory;
+        const auto path=directory.filePath("saved.smartflow");
+        QVERIFY(!window.projectDirty());
+        const auto source=findNode(window,"smartflow.numeric.number@1");
+        window.selectNode(source);
+        QCoreApplication::sendPostedEvents(nullptr,QEvent::DeferredDelete);
+        window.findChild<QDoubleSpinBox*>("parameter_value")->setValue(23);
+        window.findChild<QPushButton*>("applyParameter")->click();
+        QVERIFY(window.projectDirty());
+        window.saveProject(path);
+        QVERIFY(!window.projectDirty());
+        const auto saved=window.project().retained();
+        window.scene().undoStack().undo();
+        QVERIFY(window.projectDirty());
+        window.scene().undoStack().redo();
+        QVERIFY(!window.projectDirty());
+        window.project().commands().setWorkspaceField("opaque",{{"future",42}});
+        QVERIFY(window.projectDirty());
+        const auto before=window.project().retained();
+        const auto revision=window.project().revision();
+        const auto history=window.scene().undoStack().count();
+        QVERIFY_EXCEPTION_THROWN(window.saveProject(directory.path()),project::FileError);
+        QVERIFY_EXCEPTION_THROWN(window.openProject(directory.filePath("missing")),project::FileError);
+        auto empty=project::create("empty");
+        project::write(directory.filePath("empty.smartflow"),empty);
+        QVERIFY_EXCEPTION_THROWN(window.openProject(directory.filePath("empty.smartflow")),project::FileError);
+        QVERIFY(window.project().retained()==before);
+        QCOMPARE(window.project().revision(),revision);
+        QCOMPARE(window.scene().undoStack().count(),history);
+        QCOMPARE(window.projectPath(),path);
+        QVERIFY(window.projectDirty());
+        QVERIFY(project::read(path)==saved);
+        window.openProject(path);
+        QVERIFY(window.project().retained()==saved);
+        QVERIFY(!window.projectDirty());
+        QCOMPARE(window.scene().undoStack().count(),0);
+        QVERIFY(window.scene().selectedNodes().empty());
+        window.execution().run();
+        QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(output(window,findNode(window,"smartflow.numeric.add@1")),24.0);
+        auto unknown=saved;
+        unknown["project"]["graphs"][0]["nodes"][0]["packageId"]="future";
+        unknown["workspace"]={{"opaque",{{"integer",uint64_t(18446744073709551615ULL)}}}};
+        project::write(path,unknown);
+        window.openProject(path);
+        const auto copy=directory.filePath("copy.smartflow");
+        window.saveProject(copy);
+        QVERIFY(project::read(copy)==unknown);
+        QVERIFY(!window.project().diagnostics().empty());
+    }
+
     void initTestCase()
     {
         // Optional offscreen visual QA font; no machine-specific path is bundled.

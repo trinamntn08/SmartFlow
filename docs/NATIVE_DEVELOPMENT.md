@@ -25,8 +25,9 @@ creation, deletion, connections, and movement. Live updates recompute after edit
 disable them to use Run explicitly. Cancel discards the active result. Select
 nodes or result rows to inspect outputs. Pin output keeps one result in the viewer
 while inspecting another node. Drag the 3D preview to orbit, wheel to zoom,
-double-click to frame and click to select an object. There is no stable project
-save/open command yet; clipboard import/duplication is disabled.
+double-click to frame and click to select an object. Use File > Open, Save or
+Save As for project files. Canvas layout and viewer settings are not yet saved;
+clipboard import/duplication is disabled.
 
 No source or build paths in CMake reference the old repository. Qt DLLs and
 plugins must be discoverable locally; standalone installer/deployment is a
@@ -124,3 +125,12 @@ viewer/canvas persistence remain pending. See the
 For readable workspace-test screenshots when offscreen font discovery fails, set
 `SMARTFLOW_TEST_FONT` to a local font file before running `native_workspace`.
 The test writes `build/native/native/n5e-unavailable-smoke.png` under CTest.
+
+## N5f editor file actions
+
+File actions use the atomic codec and track retained-content changes, including
+undo back to the saved snapshot. Open and Close offer Save/Discard/Cancel for
+unsaved content. Open selects the first graph and resets canvas layout and
+selection; files with no graphs are rejected without replacing the editor.
+Unknown content and other graphs remain retained. Workspace/viewer restoration
+is the next checkpoint. See the [N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).

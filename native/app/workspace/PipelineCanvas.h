@@ -17,6 +17,7 @@ public:
     QVariant nodeData(QtNodes::NodeId id, QtNodes::NodeRole role) const override;
     tp_utils::StringID projectId(QtNodes::NodeId id) const;
     std::string edgeId(QtNodes::ConnectionId connection) const;
+    void resetLayout();
 private:
     void synchronize();
     GraphProject& project;

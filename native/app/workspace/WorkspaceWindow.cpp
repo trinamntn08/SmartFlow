@@ -18,6 +18,11 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMenuBar>
+#include <QMessageBox>
 
 namespace smartflow {
 namespace {
@@ -58,6 +63,24 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
 {
     setWindowTitle("SmartFlow - Graph workspace");
     resize(1180, 760);
+    auto* file = menuBar()->addMenu("&File");
+    auto* open = file->addAction("&Open...");
+    open->setShortcut(QKeySequence::Open);
+    open->setObjectName("openProject");
+    connect(open, &QAction::triggered, this, [this] {
+        const auto path = QFileDialog::getOpenFileName(this, "Open project", filePath,
+                                                      "SmartFlow projects (*.smartflow *.json);;All files (*)");
+        if(path.isEmpty() || !confirmSave()) return;
+        try { openProject(path); }
+        catch(const std::exception& error) { QMessageBox::warning(this, "Open failed", error.what()); }
+    });
+    auto* save = file->addAction("&Save");
+    save->setShortcut(QKeySequence::Save);
+    save->setObjectName("saveProject");
+    connect(save, &QAction::triggered, this, [this] { saveFromDialog(false); });
+    auto* saveAs = file->addAction("Save &As...");
+    saveAs->setShortcut(QKeySequence::SaveAs);
+    connect(saveAs, &QAction::triggered, this, [this] { saveFromDialog(true); });
     auto* toolbar = addToolBar("Graph");
     toolbar->setMovable(false);
     auto* undo = canvasScene.undoStack().createUndoAction(this, "Undo");
@@ -125,7 +148,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     results->setRootIsDecorated(false);
     inspectorLayout->addWidget(outputLabel);
     inspectorLayout->addWidget(results, 1);
-    auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nProject saving is not available in this preview.");
+    auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nSave preserves graph content. Canvas layout and viewer settings are not yet saved.");
     hint->setWordWrap(true);
     inspectorLayout->addWidget(hint);
     auto* scroll = new QScrollArea;
@@ -176,7 +199,72 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         selectNode(initialNodes.front());
     }
     canvasScene.undoStack().clear();
+    savedDocument = document.retained();
+    connect(&document, &GraphProject::changed, this, &WorkspaceWindow::refreshFileState);
+    connect(&document.commands(), &project::DocumentHistory::workspaceChanged,
+            this, &WorkspaceWindow::refreshFileState);
+    refreshFileState();
     runner.run();
+}
+
+void WorkspaceWindow::refreshFileState()
+{
+    setWindowTitle((filePath.isEmpty() ? QString("Untitled") : QFileInfo(filePath).fileName()) + "[*] - SmartFlow");
+    setWindowModified(projectDirty());
+}
+
+void WorkspaceWindow::saveProject(const QString& path)
+{
+    project::write(path, document.retained());
+    filePath = QFileInfo(path).absoluteFilePath();
+    savedDocument = document.retained();
+    refreshFileState();
+}
+
+void WorkspaceWindow::openProject(const QString& path)
+{
+    auto source = project::read(path);
+    const auto& graphs = source["project"]["graphs"];
+    if(graphs.empty()) throw project::FileError("This project has no graph to open.");
+    const auto graph = graphs.front()["id"].get<std::string>();
+    document.commands().replace(std::move(source), graph);
+    selected = {};
+    pinned = {};
+    canvasModel.resetLayout();
+    auto* view = findChild<QtNodes::GraphicsView*>("graphCanvas");
+    view->resetTransform();
+    view->centerOn(canvasScene.itemsBoundingRect().center());
+    filePath = QFileInfo(path).absoluteFilePath();
+    savedDocument = document.retained();
+    refreshInspector();
+    refreshResults();
+    refreshFileState();
+}
+
+bool WorkspaceWindow::saveFromDialog(bool saveAs)
+{
+    auto path = filePath;
+    if(saveAs || path.isEmpty())
+        path = QFileDialog::getSaveFileName(this, "Save project", path,
+                                          "SmartFlow projects (*.smartflow)");
+    if(path.isEmpty()) return false;
+    try { saveProject(path); return true; }
+    catch(const std::exception& error) { QMessageBox::warning(this, "Save failed", error.what()); return false; }
+}
+
+bool WorkspaceWindow::confirmSave()
+{
+    if(!projectDirty()) return true;
+    const auto answer = QMessageBox::warning(this, "Unsaved project", "Save changes to this project?",
+        QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+    if(answer == QMessageBox::Save) return saveFromDialog(false);
+    return answer == QMessageBox::Discard;
+}
+
+void WorkspaceWindow::closeEvent(QCloseEvent* event)
+{
+    if(confirmSave()) event->accept();
+    else event->ignore();
 }
 
 WorkspaceWindow::~WorkspaceWindow()

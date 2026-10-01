@@ -50,6 +50,11 @@
 
 The browser starter is a setup page. It does not yet implement graph editing, scene rendering, execution, or extension loading.
 
+N5f adds Open/Save/Save As, unsaved-change prompts and retained-content dirty
+tracking. Failed file operations preserve the active project and path. Next:
+canvas/viewer persistence, then the independent non-3D extension. See the
+[N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).
+
 ## Next: define and implement the first vertical slice
 
 The list below records the earlier TypeScript plan. It is superseded for current
@@ -59,7 +64,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), and retained editor integration (N5e) completed; next connect Save/Open actions and workspace persistence, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; next connect workspace persistence, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 
