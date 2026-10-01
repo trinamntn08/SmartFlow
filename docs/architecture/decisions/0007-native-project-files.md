@@ -94,3 +94,26 @@ and must merge nested content when appropriate. Node creation does not invent
 package dependency versions: contributions currently expose node contract versions,
 not resolved package versions. Package dependency management remains future work.
 These commands do not yet provide Qt undo commands or connect the demo canvas.
+
+## Retained-document undo (N5d)
+
+`DocumentHistory` owns a session and a Qt undo stack. Commands store complete
+semantic JSON snapshots using the retained DOM, including unknown fields and
+64-bit integers. They never serialize through Qt JSON or legacy step snapshots.
+Deletion undo therefore restores all incident edges, including unavailable ones,
+and disconnect undo restores the original edge identity and opaque metadata.
+Commands validate a candidate before pushing to the stack; failed edits and
+no-ops preserve the redo branch, clean marker, revision and active projection.
+
+Semantic snapshots exclude `workspace`. Undo/redo restores the semantic document
+with the current workspace, recompiles its projection, increments a monotonic
+revision and emits `changed`. Workspace edits use a separate signal and leave
+the semantic revision and projection intact. The undo stack's clean marker covers
+semantic edits only; future file dirty tracking must account for workspace edits.
+Replacing a document prepares the candidate first, then clears old history and
+increments the revision. Registrations must remain immutable, as for the session.
+
+Whole-document snapshots are a correctness-first implementation; history memory
+limits and compaction remain future work. Canvas integration must replace or
+adapt the vendor commands that retain only connection endpoints. The demo editor
+does not yet use this command layer, and no UI Save/Open behavior is claimed.

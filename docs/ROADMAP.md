@@ -29,6 +29,11 @@
   workspace edits, with create/save/reopen execution tests. The demo editor still
   uses its existing in-memory graph; file actions and unknown-node visuals remain
   pending. See [N5c handoff](agents/handoffs/2026-09-30-native-checkpoint-n5c.md).
+- N5d adds retained-document undo/redo for semantic commands, preserving opaque
+  node/edge data and keeping current workspace state during undo. This command
+  layer is tested independently; switching the canvas from its legacy undo
+  commands and connecting file actions remain pending.
+  See [N5d handoff](agents/handoffs/2026-10-01-native-checkpoint-n5d.md).
 
 - Independent local repository and product proposal.
 - Shared agent instructions and development workflow.
@@ -49,7 +54,7 @@ implementation by this native migration sequence:
 2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
 3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), and structural document commands (N5c) completed; next connect editor save/reopen and unknown-node display, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
+5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), and document undo layer (N5d) completed; next integrate the editor with this command layer, connect save/reopen and unknown-node display, then implement a separate non-3D extension workflow. Record full N5 only after acceptance checks pass.
 
 Each checkpoint must include actual build/test results and remaining limitations.
 

@@ -1,4 +1,5 @@
 #include "project/DocumentSession.h"
+#include "project/DocumentHistory.h"
 #include "workspace/GraphProject.h"
 #include "pipeline/PipelineExecution.h"
 #include <tp_data/members/NumberMember.h>
@@ -55,6 +56,130 @@ double execute(const DocumentSession& session, const std::shared_ptr<tp_pipeline
 class DocumentSessionTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void undoRestoresOpaqueNodesAndIncidentEdgesExactly()
+    {
+        auto original=fixture();
+        auto& graph=original["project"]["graphs"][0];
+        graph["nodes"].push_back({{"id","opaque"},{"packageId","future"},{"typeId","raw"},
+            {"version",99},{"parameters",{{"integer",uint64_t(18446744073709551615ULL)}}}});
+        graph["connections"].push_back({{"id","opaque-edge"},
+            {"source",{{"nodeId","source"},{"portId","unknown"}}},
+            {"target",{{"nodeId","opaque"},{"portId","unknown"}}},
+            {"metadata",{{"integer",uint64_t(18446744073709551615ULL)}}}});
+        DocumentHistory editor(original,"graph",numericDelegates(),registrations());
+        QSignalSpy changes(&editor,&DocumentHistory::changed);
+        editor.removeNode("source");
+        QVERIFY(editor.session().document()["project"]["graphs"][0]["connections"].empty());
+        editor.removeNode("opaque");
+        const auto deleted=editor.session().document();
+        editor.undoStack().undo();
+        editor.undoStack().undo();
+        QVERIFY(editor.session().document()==original);
+        QVERIFY_EXCEPTION_THROWN(editor.session().executableGraph(),FileError);
+        editor.undoStack().redo();
+        editor.undoStack().redo();
+        QVERIFY(editor.session().document()==deleted);
+        editor.undoStack().undo();
+        editor.undoStack().undo();
+        QVERIFY(parse(serialize(editor.session().document()))==original);
+        QCOMPARE(editor.revision(),quint64(8));
+        QCOMPARE(changes.count(),8);
+    }
+    void historyRetainsConnectionIdentityAndExecutesAfterUndo()
+    {
+        const auto registry=numericDelegates();
+        const auto original=fixture();
+        DocumentHistory editor(original,"graph",registry,registrations());
+        editor.disconnect("edge");
+        QVERIFY_EXCEPTION_THROWN(editor.session().executableGraph(),FileError);
+        editor.undoStack().undo();
+        QVERIFY(editor.session().document()==original);
+        QCOMPARE(execute(editor.session(),registry),42.0);
+        editor.setParameter("source","value",9);
+        QCOMPARE(execute(editor.session(),registry),10.0);
+        editor.undoStack().undo();
+        QVERIFY(editor.session().document()==original);
+        editor.createNode("temporary","smartflow.numeric.add@1");
+        editor.connect("new-edge","source","out","temporary","in");
+        const auto connected=editor.session().document();
+        editor.undoStack().undo();
+        editor.undoStack().undo();
+        QVERIFY(editor.session().document()==original);
+        editor.undoStack().redo();
+        editor.undoStack().redo();
+        QVERIFY(editor.session().document()==connected);
+        QTemporaryDir directory;
+        const auto path=directory.filePath("history.smartflow");
+        write(path,editor.session().document());
+        QVERIFY(read(path)==connected);
+    }
+    void rejectedAndNoopCommandsPreserveRedoAndCleanState()
+    {
+        DocumentHistory editor(fixture(),"graph",numericDelegates(),registrations());
+        editor.setParameter("source","value",9);
+        editor.undoStack().undo();
+        const auto original=editor.session().document();
+        const auto revision=editor.revision();
+        const auto* projection=&editor.session().executableGraph();
+        editor.undoStack().setClean();
+        QVERIFY_EXCEPTION_THROWN(editor.createNode("source","smartflow.numeric.number@1"),FileError);
+        QVERIFY_EXCEPTION_THROWN(editor.removeNode("absent"),FileError);
+        QVERIFY_EXCEPTION_THROWN(editor.setParameter("source","value",1000001),FileError);
+        QVERIFY_EXCEPTION_THROWN(editor.disconnect("absent"),FileError);
+        QVERIFY_EXCEPTION_THROWN(editor.connect("new","source","out","target","in"),FileError);
+        editor.setParameter("source","value",41);
+        QVERIFY(editor.session().document()==original);
+        QCOMPARE(editor.revision(),revision);
+        QCOMPARE(&editor.session().executableGraph(),projection);
+        QCOMPARE(editor.undoStack().count(),1);
+        QVERIFY(editor.undoStack().isClean());
+        QVERIFY(editor.undoStack().canRedo());
+        editor.undoStack().redo();
+        QCOMPARE(execute(editor.session(),numericDelegates()),10.0);
+        editor.undoStack().undo();
+        editor.setParameter("source","value",12);
+        QVERIFY(!editor.undoStack().canRedo());
+        QCOMPARE(editor.undoStack().count(),1);
+        QCOMPARE(execute(editor.session(),numericDelegates()),13.0);
+    }
+    void semanticUndoPreservesWorkspaceAndReplacementClearsHistory()
+    {
+        DocumentHistory editor(fixture(),"graph",numericDelegates(),registrations());
+        editor.setParameter("source","value",9);
+        const auto revision=editor.revision();
+        const auto* projection=&editor.session().executableGraph();
+        QSignalSpy semanticChanges(&editor,&DocumentHistory::changed);
+        QSignalSpy workspaceChanges(&editor,&DocumentHistory::workspaceChanged);
+        const Document camera={{"camera",{4,5,6}},{"unknown",uint64_t(18446744073709551615ULL)}};
+        editor.setWorkspaceField("viewers",camera);
+        editor.setWorkspaceField("viewers",camera);
+        QVERIFY_EXCEPTION_THROWN(editor.setWorkspaceField(" ",0),FileError);
+        QCOMPARE(workspaceChanges.count(),1);
+        QCOMPARE(semanticChanges.count(),0);
+        QCOMPARE(editor.revision(),revision);
+        QCOMPARE(&editor.session().executableGraph(),projection);
+        editor.undoStack().undo();
+        auto expected=fixture(); expected["workspace"]["viewers"]=camera;
+        QVERIFY(editor.session().document()==expected);
+        editor.undoStack().redo();
+        QVERIFY(editor.session().document()["workspace"]["viewers"]==camera);
+        const auto before=editor.session().document();
+        auto invalid=fixture(); invalid["schemaVersion"]=99;
+        QVERIFY_EXCEPTION_THROWN(editor.replace(invalid,"graph"),FileError);
+        QVERIFY_EXCEPTION_THROWN(editor.replace(fixture(),"absent"),FileError);
+        QVERIFY(editor.session().document()==before);
+        QVERIFY(editor.undoStack().canUndo());
+        const auto beforeReplacement=editor.revision();
+        editor.replace(fixture(),"untouched");
+        QVERIFY(editor.session().executableGraph().steps().empty());
+        QCOMPARE(editor.undoStack().count(),0);
+        QCOMPARE(editor.revision(),beforeReplacement+1);
+        editor.createNode("other","smartflow.numeric.number@1");
+        QCOMPARE(editor.session().document()["project"]["graphs"][0]["nodes"].size(),size_t(2));
+        QCOMPARE(editor.session().document()["project"]["graphs"][1]["nodes"].size(),size_t(1));
+        editor.undoStack().undo();
+        QVERIFY(editor.session().document()==fixture());
+    }
     void buildSaveReopenAndReconnectFromEmptyDocument()
     {
         const auto registry=numericDelegates();

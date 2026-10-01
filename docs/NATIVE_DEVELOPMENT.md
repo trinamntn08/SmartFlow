@@ -104,3 +104,10 @@ N5c extends that suite with empty-project creation, structural node/connection
 edits, save/reopen execution, opaque-edge preservation, failed-command isolation,
 type compatibility and workspace-only edits. Continue editor integration from the
 [N5c handoff](agents/handoffs/2026-09-30-native-checkpoint-n5c.md).
+
+N5d adds `smartflow_document_history`, a Qt undo command layer over retained
+documents. The same suite now checks exact restoration of opaque nodes and
+incident edges, connection identity, redo branching and rejection, execution
+after undo, workspace isolation and transactional document replacement. The demo
+editor still uses its earlier canvas undo stack; no file actions are exposed yet.
+Continue from the [N5d handoff](agents/handoffs/2026-10-01-native-checkpoint-n5d.md).

@@ -41,7 +41,7 @@ Record a durable handoff as requested by the user. Full N5 remains incomplete.
   permitted. No source changes were made to bypass file permissions.
 - After adding the final opaque-connection/type-mismatch case, rebuilt successfully
   and reran `ctest --test-dir build/native -C Release --output-on-failure -R
-  native_document_session`: passed. The suite now has ten behavior cases plus
+native_document_session`: passed. The suite now has ten behavior cases plus
   setup/cleanup.
 - `npm.cmd run check`: formatting, typechecks, nine persistence tests and build
   passed. `git diff --check`: passed.
