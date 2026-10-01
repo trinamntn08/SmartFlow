@@ -2,6 +2,11 @@
 
 ## Available now
 
+- The first user test release is the Windows C++/Qt desktop app. Browser delivery
+  is deferred. See [desktop testing](DESKTOP_TESTING.md) and
+  [decision 0009](architecture/decisions/0009-desktop-test-release.md).
+- Local desktop install folder and real desktop edit/undo/save/relaunch/Open
+  verification are available; see the [desktop checkpoint](agents/handoffs/2026-10-01-desktop-test-release.md).
 - Native C++/Qt is the primary implementation direction; TypeScript is retained for a future extension.
 - First native migration: copied QtNodes canvas, independent CMake build, numeric graph preview and native tests.
 - N2: selected pipeline/data/task sources copied with licenses and provenance;
@@ -14,7 +19,7 @@
 - N4: included native scene-3d extension with copied geometry/material math,
   Cube/Transform/Material/Scene/Merge nodes, and orbit/zoom/selection preview.
   See [checkpoint N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md).
-- Native persistence and production 3D rendering remain pending. The native work is
+- Canvas/viewer persistence and production 3D rendering remain pending. The native work is
   a migration foundation, not a production runtime or plugin loader.
 - N5a implements the standalone native schema-v1 file codec and atomic file I/O,
   preserving unknown JSON content without extension registration. Editor Save/Open,
@@ -91,7 +96,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 - Asset import and larger scene performance.
 - Worker execution, caching, and more detailed progress/cancellation.
-- Desktop integration or remote execution for demonstrated needs.
+- Additional desktop integrations or remote execution for demonstrated needs.
 - Broader domain packages and simplified use mode.
 
 ## Open decisions
@@ -100,7 +105,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 - Node canvas and 3D rendering libraries.
 - Project schema, extension packaging, and compatibility policy.
 - Browser storage and asset strategy.
-- First-release performance targets and supported browsers.
-- Native distribution packaging and whether remote services are needed.
+- Desktop performance targets and supported Windows versions beyond the tested machine.
+- Public installer/signing/distribution and whether remote services are needed.
 
 Follow [the native-first decision](architecture/decisions/0003-native-first.md) for the approved implementation direction and [the product proposal](product/SmartFlowProposal.md) for domain requirements.

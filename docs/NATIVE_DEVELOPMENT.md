@@ -3,6 +3,10 @@
 SmartFlow now starts with C++17, Qt6 Widgets and CMake. The existing TypeScript
 workspace is retained as a future extension prototype.
 
+The first version for user testing is the Windows desktop application. Use
+[desktop testing](DESKTOP_TESTING.md) to prepare and launch the app with its
+runtime dependencies, and to exercise the real desktop acceptance workflow.
+
 On Windows, use Visual Studio 2022 C++ tools and a matching Qt MSVC kit. From
 the repository root (adjust the Qt installation path for your machine):
 
@@ -29,9 +33,10 @@ double-click to frame and click to select an object. Use File > Open, Save or
 Save As for project files. Canvas layout and viewer settings are not yet saved;
 clipboard import/duplication is disabled.
 
-No source or build paths in CMake reference the old repository. Qt DLLs and
-plugins must be discoverable locally; standalone installer/deployment is a
-later checkpoint. Build outputs and personal CMake presets are ignored.
+No source or build paths in CMake reference the old repository. Raw build outputs
+need Qt on PATH; the Windows CMake install target copies runtime dependencies
+into a local test folder. A public installer remains a later checkpoint.
+Build outputs and personal CMake presets are ignored.
 
 ## N2 pipeline foundation
 

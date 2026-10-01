@@ -9,7 +9,12 @@ SmartFlow starts as a native C++/Qt application based on audited source copied f
 
 ## Start locally
 
-Follow [native development](docs/NATIVE_DEVELOPMENT.md) to build and run the C++/Qt application. The old repository is preserved and is not required by the new build.
+The first version for user testing is the **Windows desktop app**, built with C++/Qt.
+Follow [desktop testing](docs/DESKTOP_TESTING.md) to build a local test folder and
+launch `build/desktop-test/bin/smartflow.exe` directly. Qt and compiler runtime
+dependencies are copied into that folder; Node.js and a browser server are not
+required to run it. This is a development preview with the limitations listed in
+the testing guide. The old repository is not required by the new build.
 
 ### Future web prototype
 

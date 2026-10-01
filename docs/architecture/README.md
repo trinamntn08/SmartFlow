@@ -3,6 +3,8 @@
 ## Current implementation direction
 
 Native C++/Qt is primary, per [decision 0003](decisions/0003-native-first.md).
+The first user test release is the Windows desktop app, per
+[decision 0009](decisions/0009-desktop-test-release.md); browser delivery is deferred.
 `native/app` composes the application and links the copied QtNodes library in
 `native/vendor`. N2 adds selected pipeline/data/task sources and a separate
 `native/app/pipeline` background execution adapter. It has no QtNodes or scene

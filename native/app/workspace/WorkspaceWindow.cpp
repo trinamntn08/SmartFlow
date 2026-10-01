@@ -231,9 +231,22 @@ void WorkspaceWindow::openProject(const QString& path)
     selected = {};
     pinned = {};
     canvasModel.resetLayout();
+    // Until saved viewer configuration is supported, show a terminal output
+    // on Open instead of leaving a successfully loaded scene invisible.
+    if(viewer) {
+        const auto& graph = document.selectedGraph();
+        for(auto node = graph["nodes"].rbegin(); node != graph["nodes"].rend(); ++node) {
+            const auto id = (*node)["id"].get<std::string>();
+            const bool hasConsumer = std::any_of(graph["connections"].begin(), graph["connections"].end(),
+                [&](const auto& edge) { return edge["source"]["nodeId"] == id; });
+            if(!hasConsumer && document.step(id)) { pinned = id; break; }
+        }
+    }
     auto* view = findChild<QtNodes::GraphicsView*>("graphCanvas");
     view->resetTransform();
-    view->centerOn(canvasScene.itemsBoundingRect().center());
+    const auto bounds = canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30);
+    if(!canvasModel.allNodeIds().empty()) view->fitInView(bounds, Qt::KeepAspectRatio);
+    else view->centerOn(0,0);
     filePath = QFileInfo(path).absoluteFilePath();
     savedDocument = document.retained();
     refreshInspector();

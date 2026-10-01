@@ -1,6 +1,7 @@
 # Local development
 
-The primary application is now native C++/Qt: follow [native development](NATIVE_DEVELOPMENT.md).
+The first user test release is the native Windows desktop app: follow
+[desktop testing](DESKTOP_TESTING.md) and [native development](NATIVE_DEVELOPMENT.md).
 The commands below maintain the preserved TypeScript prototype for a future extension.
 
 ## Prerequisites

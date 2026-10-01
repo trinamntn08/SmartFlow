@@ -6,6 +6,9 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QUndoStack>
+#include <QTemporaryDir>
+#include <QtNodes/GraphicsView>
+#include <QtNodes/internal/NodeGraphicsObject.hpp>
 #include <QtTest/QtTest>
 
 using namespace smartflow;
@@ -35,6 +38,38 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void desktopSceneEditSaveAndReopenShowsResult()
+    {
+        QTemporaryDir directory;
+        QVERIFY(directory.isValid());
+        const auto path=directory.filePath("desktop-scene.smartflow");
+        WorkspaceWindow original(sceneConfiguration());
+        original.show();
+        QTRY_VERIFY(original.execution().result().has_value());
+        QCoreApplication::sendPostedEvents(nullptr,QEvent::DeferredDelete);
+        original.findChild<QDoubleSpinBox*>("parameter_size")->setValue(3);
+        QTest::mouseClick(original.findChild<QPushButton*>("applyParameter"),Qt::LeftButton);
+        QTRY_VERIFY(original.execution().result().has_value());
+        QVERIFY(original.projectDirty());
+        original.saveProject(path);
+        QVERIFY(!original.projectDirty());
+        WorkspaceWindow reopened(sceneConfiguration());
+        reopened.show();
+        reopened.openProject(path);
+        QTRY_VERIFY(reopened.execution().result().has_value());
+        QVERIFY(reopened.execution().result()->succeeded());
+        QVERIFY(reopened.project().retained()==original.project().retained());
+        QCOMPARE(scene(reopened,"cube").objects.front().geometry.getMinMax().second.x,1.5f);
+        auto* viewer=dynamic_cast<SceneViewer*>(reopened.findChild<QWidget*>("sceneViewer"));
+        QVERIFY(viewer);
+        QCOMPARE(viewer->objectCount(),size_t(1));
+        auto* canvas=reopened.findChild<QtNodes::GraphicsView*>("graphCanvas");
+        const auto visible=canvas->mapToScene(canvas->viewport()->rect()).boundingRect();
+        for(const auto id : reopened.canvas().allNodeIds())
+            QVERIFY(visible.contains(reopened.scene().nodeGraphicsObject(id)->sceneBoundingRect()));
+        QVERIFY(!reopened.projectDirty());
+    }
+
     void persistedSceneGraphExecutesThroughExplicitIdentities()
     {
         const auto config=sceneConfiguration();

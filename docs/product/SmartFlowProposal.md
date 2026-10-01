@@ -189,33 +189,35 @@ The diagram describes planned package dependencies. Execution backends communica
 
 ## 6. Desktop and web strategy
 
-Treat a standalone web app as a valid first delivery option. Desktop packaging remains an option when concrete workflows need deeper local integration. The final choice is open; the design should allow a shared interface and project model.
+The first version delivered for user testing is the **Windows desktop app**, built with native C++17 and Qt6. This is an explicit delivery requirement, confirmed on 2026-10-01. Provide a runnable local app with its dependencies and verify editing, execution, undo, native file dialogs and save/reopen on the desktop. See [decision 0009](../architecture/decisions/0009-desktop-test-release.md) and [desktop testing](../DESKTOP_TESTING.md).
 
-| Environment    | Proposed role                                                               |
-| -------------- | --------------------------------------------------------------------------- |
-| Browser        | Easy access, lightweight processing, visual editing, and remote execution.  |
-| Desktop        | Local files, offline projects, native tools, and heavier local processing.  |
-| Remote service | Optional execution for workloads requiring servers or specialized hardware. |
+| Environment    | Proposed role                                                                  |
+| -------------- | ------------------------------------------------------------------------------ |
+| Browser        | Deferred future extension; the current TypeScript starter is preserved.        |
+| Desktop        | First user test release: local graph editing, files, execution and 3D preview. |
+| Remote service | Optional execution for workloads requiring servers or specialized hardware.    |
 
 The interface and project format can be shared, but execution capabilities will differ. Each node declares where it can run, and the app explains missing capabilities.
 
-A web version must support the basic graph editor and 3D scene interaction without requiring the desktop app. Browser-compatible nodes can execute locally; operations requiring native software or heavier infrastructure can use an explicitly configured execution service. Opening a project must not silently send its assets to a remote service.
+If a web version is developed later, its supported workflows and execution capabilities will be specified separately. It is not an acceptance requirement for the first desktop test version. Opening a project must not silently send its assets to a remote service.
 
 Project portability does not guarantee execution parity: a project may open everywhere while some nodes require an unavailable backend. Show these requirements before running it.
 
-### Implementation candidates to evaluate
+### Deferred browser implementation candidates
 
-React and TypeScript with React Flow are candidates for the initial interface prototype. React Flow supports custom node interfaces and connection handles. It addresses the editor surface; the execution engine still needs its own design.
+React and TypeScript with React Flow remain candidates for a future browser interface. The initial desktop interface uses Qt Widgets and the copied QtNodes canvas.
 
 Reference: [React Flow custom nodes](https://reactflow.dev/learn/customization/custom-nodes).
 
-Tauri is a candidate for the desktop shell. It hosts a web interface alongside a native core process, using the platform's webview. Validate graphics behavior and native integrations before committing to it.
+Tauri was an earlier desktop-shell candidate. Native C++/Qt supersedes it for the first desktop delivery.
 
 Reference: [Tauri process model](https://v2.tauri.app/concept/process-model/).
 
-These are implementation candidates, not requirements of the product. Compare them through a prototype of graph interaction, an interactive 3D viewport, and extension loading. Do not choose a desktop shell before establishing that the first workflows need one.
+These browser references record future options. They do not reopen the selected native desktop implementation or delay desktop testing.
 
 ## 7. First version
+
+Deliver the first testable version as the Windows desktop app. A passing browser build does not establish desktop readiness. Validate the installed native executable and its actual interaction workflow, and report unfinished capabilities explicitly.
 
 Build a complete 3D scene workflow first, then a small data or text workflow that proves the same platform works independently of 3D. The second workflow is an architectural test, not a decision about the eventual market.
 
@@ -249,7 +251,7 @@ The first graph establishes 3D as a usable capability. The second must work with
 - Saving and reopening preserves graph parameters, asset references, and viewer configuration.
 - A developer can add the non-3D package without editing the graph editor or introducing its domain model into the core.
 - A reusable component exposes defined inputs and controls and behaves like another node.
-- For a web-first release, both demonstration graphs run in the browser with their documented capabilities and no desktop dependency.
+- The first user test release launches as a desktop application with its runtime dependencies, without a browser server or Node.js. Both demonstration workflows target the native extension contracts; full N5 remains incomplete until the independent non-3D workflow and workspace persistence pass acceptance.
 
 ### Deferred scope
 
@@ -262,21 +264,21 @@ Each can become substantial work without proving the core interaction.
 
 ## 8. Delivery plan
 
-| Stage                 | Deliverable                                                                 | Question it resolves                                                       |
-| --------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Scope definition      | Required 3D workflow, non-3D validation workflow, documented open decisions | What must the platform demonstrate before choosing a market?               |
-| Interaction prototype | Graph canvas, inspector, interactive 3D viewer                              | Can users build and inspect a scene through a graph?                       |
-| Execution prototype   | Complete 3D graph with recomputation and cancellation                       | Does the runtime support real interaction?                                 |
-| Extensibility test    | Independent non-3D package and reusable graph component                     | Can another domain work through the public contracts?                      |
-| Platform validation   | Browser prototype; desktop integration spike only where needed              | Can the initial product ship as a web app, and what needs another backend? |
-| First release         | Reliable saving, error recovery, packaging, and examples                    | Can someone use it independently?                                          |
+| Stage                 | Deliverable                                                                       | Question it resolves                                                |
+| --------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Scope definition      | Required 3D workflow, non-3D validation workflow, documented open decisions       | What must the platform demonstrate before choosing a market?        |
+| Interaction prototype | Graph canvas, inspector, interactive 3D viewer                                    | Can users build and inspect a scene through a graph?                |
+| Execution prototype   | Complete 3D graph with recomputation and cancellation                             | Does the runtime support real interaction?                          |
+| Extensibility test    | Independent non-3D package and reusable graph component                           | Can another domain work through the public contracts?               |
+| Platform validation   | Native desktop test folder, startup checks and real desktop workflow verification | Can the user launch, edit, execute and save/reopen the desktop app? |
+| First release         | Reliable saving, error recovery, packaging, and examples                          | Can someone use it independently?                                   |
 
 ## 9. Open decisions
 
 - Which application fields and audiences become priorities after the prototypes are evaluated?
 - What scene complexity and asset sizes must the initial 3D viewer support?
 - Which operations need native or remote execution rather than browser execution?
-- Is the first delivery a web app, a desktop app, or both?
+- Which additional desktop operating systems or future browser capabilities should follow the Windows test version?
 - Which extension language and packaging format provide a practical first developer experience?
 - Which project and asset storage model is appropriate for the first delivery?
 

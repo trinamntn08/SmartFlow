@@ -10,6 +10,7 @@ Read `README.md`, `docs/ROADMAP.md`, and the documentation for the area being ch
 - Keep the platform domain-independent. Do not require a scene, mesh, camera, or material in every project.
 - Keep the audience and final application field open. Validate extensions using a separate non-3D workflow.
 - Start with a native C++/Qt application, reusing audited source from the old repository. TypeScript/browser work is retained for a future extension, not the primary implementation.
+- The first version delivered for user testing is the Windows native desktop app. Validate the packaged executable, desktop interaction and save/reopen workflow; a browser preview or passing web checks does not satisfy desktop acceptance.
 - Never delete or modify the old repository. Copy reviewed sources and licenses into SmartFlow; do not reference the old checkout at build/runtime or copy machine-specific configuration.
 
 ## Ownership
