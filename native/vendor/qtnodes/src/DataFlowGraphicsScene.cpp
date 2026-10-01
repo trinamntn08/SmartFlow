@@ -110,7 +110,7 @@ QMenu *DataFlowGraphicsScene::createSceneMenu(QPointF const scenePos)
                     return;
                 }
 
-                this->undoStack().push(new CreateCommand(this, item->text(0), scenePos));
+                this->createNode(item->text(0), scenePos);
 
                 modelMenu->close();
             });

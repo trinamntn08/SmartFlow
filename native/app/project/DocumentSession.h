@@ -17,6 +17,9 @@ public:
                     std::vector<NodePresentation> registrations);
     const Document& document() const { return source; }
     const std::vector<std::string>& diagnostics() const { return issues; }
+    const Document& selectedGraph() const { return source["project"]["graphs"][graphIndex]; }
+    // Detached inspector copy; never exposes the mutable compiled projection.
+    std::unique_ptr<tp_pipeline::StepDetails> inspectNode(const std::string& id) const;
     // Never return a partial graph that silently excludes unsupported content.
     const tp_pipeline::PipelineDetails& executableGraph() const;
     // Explicit single-field edit. All other JSON, including extra graphs and

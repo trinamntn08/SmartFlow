@@ -1,7 +1,6 @@
 #include <SceneExtension.h>
 #include <SceneViewer.h>
 #include "workspace/WorkspaceWindow.h"
-#include "workspace/ProjectCommands.h"
 #include "project/DocumentSession.h"
 #include <tp_math_utils/materials/OpenGLMaterial.h>
 #include <QDoubleSpinBox>
@@ -29,7 +28,7 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
     const auto id = window.canvas().projectId(node(window,suffix));
     auto p = window.project().step(id)->parameter(name);
     p.value = value;
-    window.scene().undoStack().push(new SetParameterCommand(window.project(), id, p));
+    window.project().setParameter(id,p);
 }
 }
 
@@ -41,7 +40,7 @@ private Q_SLOTS:
         const auto config=sceneConfiguration();
         auto file=project::create("scene-project");
         auto nodes=project::Document::array();
-        GraphProject definitions(config.delegates);
+        GraphProject definitions(config.delegates,config.nodes);
         for(size_t i=0; i<config.preset.size(); ++i) {
             const auto& preset=config.preset[i];
             const auto entry=std::find_if(config.nodes.begin(),config.nodes.end(),[&](const auto& n) { return n.type==preset.type; });
@@ -192,14 +191,17 @@ private Q_SLOTS:
         auto* viewer = dynamic_cast<SceneViewer*>(window.findChild<QWidget*>("sceneViewer"));
         QCOMPARE(viewer->objectCount(),size_t(0));
         window.canvas().addConnection({cubeNode,0,transformNode,0});
-        // Exercise execution validation, independent of the inspector bounds.
-        window.project().step(window.canvas().projectId(cubeNode))->setParameterValue("size", -1.0);
+        // Invalid persisted parameters are retained, diagnosed and never run.
+        auto file=window.project().retained();
+        const auto stable=window.canvas().projectId(cubeNode).toString();
+        for(auto& item : file["project"]["graphs"][0]["nodes"])
+            if(item["id"]==stable) item["parameters"]["size"]=-1.0;
+        window.project().commands().replace(file,"graph");
         window.execution().run();
         QTRY_VERIFY(window.execution().result().has_value());
         QVERIFY(!window.execution().result()->succeeded());
-        const auto& failed = window.execution().result()->steps.at(window.canvas().projectId(cubeNode));
-        QCOMPARE(failed.state,StepState::Failed);
-        QVERIFY(!failed.error.empty());
+        QVERIFY(window.execution().result()->steps.empty());
+        QVERIFY(!window.execution().result()->diagnostics.empty());
     }
 
     void oversizedSceneIsRejected()

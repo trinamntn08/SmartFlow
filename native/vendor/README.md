@@ -14,8 +14,10 @@ claim that it matches a particular upstream release.
 
 Local adaptation: `inc/QtNodes/Globals.h` replaces the `lib_platform` export
 macros with Qt export macros and adds `SMARTFLOW_QTNODES_STATIC`. The new CMake
-target compiles the copied sources without the old `tp_build` scripts. Other
-copied files remain byte-identical; the copy manifest records their SHA-256.
+target compiles the copied sources without the old `tp_build` scripts. N5e also
+adds isolated scene command-routing hooks; see
+[the local patch notes](qtnodes/SMARTFLOW_PATCHES.md). The copy manifest records
+the original source hashes, not the locally adapted hashes.
 
 No private assets, application configuration, native binaries or credentials
 were copied. Pipeline widgets and 3D modules have not yet been migrated.

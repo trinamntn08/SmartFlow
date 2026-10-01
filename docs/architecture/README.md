@@ -21,10 +21,11 @@ describes the preserved future-extension prototype, not the native build.
 N5a adds `native/app/project/ProjectFile`, a Qt Core/JSON-only file layer sharing
 the schema-v1 envelope with the preserved prototype. It retains unknown content
 and performs atomic file writes. N5b adds the retained `DocumentSession` execution
-adapter and explicit persisted identities in native registrations. Neither is
-yet connected to editor Save/Open or unknown-node canvas display.
+adapter and explicit persisted identities in native registrations. N5c/N5d add
+structural commands and retained-document undo; N5e connects them to the editor
+and adds unavailable-node placeholders. Editor Save/Open actions remain pending.
 See [decision 0007](decisions/0007-native-project-files.md) and the
-[next-session handoff](../agents/handoffs/2026-09-30-native-checkpoint-n5b.md).
+[editor integration decision](decisions/0008-retained-editor-commands.md).
 
 ## Product invariant
 

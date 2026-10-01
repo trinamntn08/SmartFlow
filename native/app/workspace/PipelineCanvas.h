@@ -3,8 +3,8 @@
 #include <QtNodes/DataFlowGraphModel>
 
 namespace smartflow {
-// Translates canvas operations (including QtNodes undo commands) into project
-// edits. The copied canvas owns only its presentation state and transient IDs.
+// Display adapter. Semantic commands operate on retained documents; syncing
+// the canvas never issues edits. IDs and positions survive semantic undo.
 class PipelineCanvas : public QtNodes::DataFlowGraphModel {
 public:
     explicit PipelineCanvas(GraphProject& project);
@@ -13,11 +13,17 @@ public:
     bool connectionPossible(QtNodes::ConnectionId connection) const override;
     void addConnection(QtNodes::ConnectionId connection) override;
     bool deleteConnection(QtNodes::ConnectionId connection) override;
-    QJsonObject saveNode(QtNodes::NodeId id) const override;
-    void loadNode(const QJsonObject& snapshot) override;
+    void loadNode(const QJsonObject&) override {} // Not a project or clipboard loader.
+    QVariant nodeData(QtNodes::NodeId id, QtNodes::NodeRole role) const override;
     tp_utils::StringID projectId(QtNodes::NodeId id) const;
+    std::string edgeId(QtNodes::ConnectionId connection) const;
 private:
+    void synchronize();
     GraphProject& project;
     std::unordered_map<QtNodes::NodeId, tp_utils::StringID> bindings;
+    std::map<std::string,QtNodes::NodeId> identities;
+    std::map<std::string,QPointF> positions;
+    std::unordered_map<QtNodes::ConnectionId,std::string> edgeBindings;
+    bool syncing = false;
 };
 } // namespace smartflow

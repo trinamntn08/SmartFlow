@@ -66,7 +66,7 @@ bool NodeConnectionInteraction::tryConnect() const
 
     _ngo.nodeScene()->resetDraftConnection();
 
-    _ngo.nodeScene()->undoStack().push(new ConnectCommand(_ngo.nodeScene(), newConnectionId));
+    _ngo.nodeScene()->connectNodes(newConnectionId);
 
     return true;
 }
@@ -75,7 +75,7 @@ bool NodeConnectionInteraction::disconnect(PortType portToDisconnect) const
 {
     ConnectionId connectionId = _cgo.connectionId();
 
-    _scene.undoStack().push(new DisconnectCommand(&_scene, connectionId));
+    _scene.disconnectNodes(connectionId);
 
     AbstractNodeGeometry &geometry = _scene.nodeGeometry();
 

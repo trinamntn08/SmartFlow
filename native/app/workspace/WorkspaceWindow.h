@@ -1,5 +1,6 @@
 #pragma once
 #include "PipelineCanvas.h"
+#include "WorkspaceScene.h"
 #include "ExecutionController.h"
 #include <QtNodes/DataFlowGraphicsScene>
 #include <QMainWindow>
@@ -18,7 +19,7 @@ public:
     ~WorkspaceWindow() override;
     GraphProject& project() { return document; }
     PipelineCanvas& canvas() { return canvasModel; }
-    QtNodes::DataFlowGraphicsScene& scene() { return canvasScene; }
+    WorkspaceScene& scene() { return canvasScene; }
     ExecutionController& execution() { return runner; }
     void selectNode(QtNodes::NodeId id);
 private:
@@ -27,7 +28,7 @@ private:
     std::shared_ptr<tp_pipeline::StepDelegateMap> delegates;
     GraphProject document;
     PipelineCanvas canvasModel;
-    QtNodes::DataFlowGraphicsScene canvasScene;
+    WorkspaceScene canvasScene;
     ExecutionController runner;
     QWidget* inspectorBody = nullptr;
     QVBoxLayout* inspectorLayout = nullptr;

@@ -66,6 +66,13 @@ void ExecutionController::startRequested()
     requested = false;
     submittedRevision = project.revision();
     submittedGeneration = generation;
+    if(!project.diagnostics().empty()) {
+        published=ExecutionResult{};
+        published->diagnostics=project.diagnostics();
+        message="Graph has unsupported content or missing inputs";
+        Q_EMIT updated();
+        return;
+    }
     try {
         pending = executor.submit(project.graph(), project.registry(), factory);
         message = "Running...";

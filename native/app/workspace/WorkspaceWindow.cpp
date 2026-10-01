@@ -1,5 +1,4 @@
 #include "WorkspaceWindow.h"
-#include "ProjectCommands.h"
 #include <tp_qt_pipeline_widgets/parameter_editors/DoubleParameterEditor.h>
 #include <tp_data/members/NumberMember.h>
 #include <tp_data/Collection.h>
@@ -55,7 +54,7 @@ WorkspaceWindow::WorkspaceWindow()
 
 WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     : delegates(configuration.delegates), document(delegates, configuration.nodes), canvasModel(document),
-      canvasScene(canvasModel), runner(document, configuration.factory)
+      canvasScene(canvasModel,document), runner(document, configuration.factory)
 {
     setWindowTitle("SmartFlow - Graph workspace");
     resize(1180, 760);
@@ -141,9 +140,8 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     connect(cancelButton, &QPushButton::clicked, &runner, &ExecutionController::cancel);
     connect(live, &QCheckBox::toggled, &runner, &ExecutionController::setLive);
     connect(add, &QPushButton::clicked, this, [this, library, view] {
-        auto* command = new QtNodes::CreateCommand(&canvasScene, library->currentData().toString(),
-                                                  view->mapToScene(view->viewport()->rect().center()));
-        canvasScene.undoStack().push(command);
+        canvasScene.createNode(library->currentData().toString(),
+                               view->mapToScene(view->viewport()->rect().center()));
     });
     connect(&canvasScene, &QGraphicsScene::selectionChanged, this, [this] {
         const auto nodes = canvasScene.selectedNodes();
@@ -177,6 +175,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         pinned = canvasModel.projectId(initialNodes.back());
         selectNode(initialNodes.front());
     }
+    canvasScene.undoStack().clear();
     runner.run();
 }
 
@@ -208,7 +207,13 @@ void WorkspaceWindow::refreshInspector()
     auto* layout = new QVBoxLayout(inspectorBody);
     layout->setContentsMargins(0, 0, 0, 12);
     auto* step = document.step(selected);
-    if(!step) { layout->addWidget(new QLabel("Select one node to edit its parameters.")); return; }
+    if(!step) {
+        auto* message=new QLabel(selected.isValid() ? "Node unavailable. Saved content is retained; execution is blocked."
+                                                   : "Select one node to edit its parameters.");
+        message->setWordWrap(true);
+        layout->addWidget(message);
+        return;
+    }
     auto* title = new QLabel(document.title(step->delegateName()));
     auto font = title->font();
     font.setBold(true);
@@ -237,7 +242,7 @@ void WorkspaceWindow::refreshInspector()
             editor->updateParameter(next);
             auto* current = document.step(id);
             if(current && current->parameter(next.name).value != next.value)
-                canvasScene.undoStack().push(new SetParameterCommand(document, id, next));
+                document.setParameter(id, next);
         });
     }
 }
@@ -257,6 +262,12 @@ void WorkspaceWindow::refreshResults()
                 output = found->second.output;
         }
         viewer->present(std::move(output));
+    }
+    if(!document.diagnostics().empty()) {
+        QStringList diagnostics;
+        for(const auto& issue : document.diagnostics()) diagnostics << QString::fromStdString(issue);
+        outputLabel->setText(diagnostics.join("\n"));
+        return;
     }
     if(!result) return;
     if(!result->diagnostics.empty()) {

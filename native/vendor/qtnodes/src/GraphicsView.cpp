@@ -274,7 +274,7 @@ void GraphicsView::setupScale(double scale)
 
 void GraphicsView::onDeleteSelectedObjects()
 {
-    nodeScene()->undoStack().push(new DeleteCommand(nodeScene()));
+    nodeScene()->deleteSelected();
 }
 
 void GraphicsView::onDuplicateSelectedObjects()

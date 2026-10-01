@@ -111,3 +111,16 @@ incident edges, connection identity, redo branching and rejection, execution
 after undo, workspace isolation and transactional document replacement. The demo
 editor still uses its earlier canvas undo stack; no file actions are exposed yet.
 Continue from the [N5d handoff](agents/handoffs/2026-10-01-native-checkpoint-n5d.md).
+
+N5e wires that command layer into the running workspace. The inspector and canvas
+now edit retained documents, with exact semantic undo and workspace-only movement
+undo. Unknown node types display as labeled placeholders, and unsupported graph
+diagnostics block worker submission. `native_workspace` checks editor-level
+opaque-content round trips, deletion/disconnection undo, hidden-edge occupancy,
+inspection-copy isolation and replacement during execution. File actions and
+viewer/canvas persistence remain pending. See the
+[N5e handoff](agents/handoffs/2026-10-01-native-checkpoint-n5e.md).
+
+For readable workspace-test screenshots when offscreen font discovery fails, set
+`SMARTFLOW_TEST_FONT` to a local font file before running `native_workspace`.
+The test writes `build/native/native/n5e-unavailable-smoke.png` under CTest.

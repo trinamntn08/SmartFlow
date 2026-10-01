@@ -59,7 +59,14 @@ public:
 
     void setConnectionPainter(std::unique_ptr<AbstractConnectionPainter> newPainter);
 
-    QUndoStack &undoStack();
+    virtual QUndoStack &undoStack();
+
+    // SmartFlow adaptation: application-owned command routing. Defaults retain
+    // the copied canvas behavior; subclasses can use a retained document model.
+    virtual void createNode(QString const &type, QPointF const &position);
+    virtual void deleteSelected();
+    virtual void connectNodes(ConnectionId const connection);
+    virtual void disconnectNodes(ConnectionId const connection);
 
 public:
     /**

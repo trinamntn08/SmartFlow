@@ -10,6 +10,7 @@
 #include "QtNodes/internal/NodeGraphicsObject.hpp"
 
 #include <QUndoStack>
+#include "QtNodes/internal/UndoCommands.hpp"
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QGraphicsSceneMoveEvent>
@@ -120,6 +121,26 @@ void BasicGraphicsScene::setNodePainter(std::unique_ptr<AbstractNodePainter> new
 void BasicGraphicsScene::setConnectionPainter(std::unique_ptr<AbstractConnectionPainter> newPainter)
 {
     _connectionPainter = std::move(newPainter);
+}
+
+void BasicGraphicsScene::createNode(QString const &type, QPointF const &position)
+{
+    undoStack().push(new CreateCommand(this, type, position));
+}
+
+void BasicGraphicsScene::deleteSelected()
+{
+    undoStack().push(new DeleteCommand(this));
+}
+
+void BasicGraphicsScene::connectNodes(ConnectionId const connection)
+{
+    undoStack().push(new ConnectCommand(this, connection));
+}
+
+void BasicGraphicsScene::disconnectNodes(ConnectionId const connection)
+{
+    undoStack().push(new DisconnectCommand(this, connection));
 }
 
 QUndoStack &BasicGraphicsScene::undoStack()

@@ -1,9 +1,6 @@
 #include "GraphProject.h"
 #include <tp_pipeline/StepDelegate.h>
 #include <tp_data/members/NumberMember.h>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <cmath>
 
 namespace smartflow {
 using namespace tp_pipeline;
@@ -58,124 +55,99 @@ QString nodeTitle(const StringID& type)
     return QString::fromStdString(type.toString());
 }
 
+std::vector<NodePresentation> numericPresentations()
+{
+    return {{"smartflow.numeric.number@1","Number","Numeric","smartflow.numeric","number",1},
+            {"smartflow.numeric.add@1","Add","Numeric","smartflow.numeric","add",1}};
+}
 GraphProject::GraphProject(std::shared_ptr<const StepDelegateMap> delegates,
                            std::vector<NodePresentation> presentations)
-    : delegates(std::move(delegates)), presentations(std::move(presentations)) {}
-
+    : delegates(std::move(delegates)), presentations(std::move(presentations)),
+      history(project::DocumentSession::empty(randomId().toString(),"graph",this->delegates,this->presentations).document(),
+              "graph",this->delegates,this->presentations)
+{
+    QObject::connect(&history,&project::DocumentHistory::changed,this,[this] {
+        refreshInspection();
+        Q_EMIT changed();
+    });
+}
 QString GraphProject::title(const StringID& type) const
 {
     for(const auto& item : presentations)
         if(item.type.toStdString() == type.toString()) return item.title;
     return nodeTitle(type);
 }
-
 QString GraphProject::category(const StringID& type) const
 {
     for(const auto& item : presentations)
         if(item.type.toStdString() == type.toString()) return item.category;
     return "Nodes";
 }
-
+void GraphProject::refreshInspection()
+{
+    inspection.clear();
+    for(const auto& node : selectedGraph()["nodes"]) {
+        const auto id=node["id"].get<std::string>();
+        if(auto copy=history.session().inspectNode(id)) inspection.emplace(id,std::move(copy));
+    }
+}
 StepDetails* GraphProject::step(const StringID& id) const
 {
-    return document.findStepFromStepId(id);
+    const auto found=inspection.find(id.toString());
+    return found==inspection.end() ? nullptr : found->second.get();
 }
-
-void GraphProject::modified()
-{
-    ++currentRevision;
-    Q_EMIT changed();
-}
-
 StepDetails* GraphProject::create(const StringID& type)
 {
-    const auto* definition = delegates->stepDelegate(type);
-    if(!definition) return nullptr;
-    auto item = std::make_unique<StepDetails>(type);
-    std::vector<StringID> parameters;
-    // Defaults are initialized only for a brand-new node, never during load/edit.
-    definition->fixupParameters(item.get(), parameters);
-    item->setParametersOrder(parameters);
-    std::vector<PortMapping> inputs, outputs;
-    for(const auto& port : definition->inPorts())
-        inputs.push_back({port.type, port.name, {}, {}});
-    for(const auto& port : definition->outPorts())
-        outputs.push_back({port.type, port.name, randomId(), {}});
-    item->setInputMapping(inputs);
-    item->setOutputMapping(outputs);
-    auto* result = item.release();
-    document.addStep(result);
-    modified();
-    return result;
+    const auto id=randomId();
+    try { history.createNode(id.toString(),type.toString()); }
+    catch(const project::FileError&) { return nullptr; }
+    return step(id);
 }
-
 void GraphProject::remove(const StringID& id)
 {
-    if(auto* item = step(id)) { document.deleteStep(item); modified(); }
+    history.removeNode(id.toString());
 }
-
 bool GraphProject::setParameter(const StringID& id, const Parameter& parameter)
 {
-    auto* item = step(id);
+    auto* item=step(id);
     if(!item) return false;
-    const auto previous = item->parameter(parameter.name);
-    if(!previous.name.isValid() || previous.type != parameter.type ||
-       previous.value.index() != parameter.value.index() || previous.value == parameter.value)
-        return false;
-    if(const auto* value = std::get_if<double>(&parameter.value)) {
-        if(!std::isfinite(*value) || *value < tpGetVariantValue<double>(previous.min, -INFINITY) ||
-           *value > tpGetVariantValue<double>(previous.max, INFINITY)) return false;
-    }
-    // Retain metadata and unknown parameters; a control only changes its value.
-    item->setParameterValue(parameter.name, parameter.value);
-    modified();
+    const auto previous=item->parameter(parameter.name);
+    if(!previous.name.isValid() || previous.type!=parameter.type ||
+       previous.value.index()!=parameter.value.index() || previous.value==parameter.value) return false;
+    project::Document value;
+    if(const auto* number=std::get_if<double>(&parameter.value)) value=*number;
+    else if(const auto* text=std::get_if<std::string>(&parameter.value)) value=*text;
+    else if(const auto* boolean=std::get_if<bool>(&parameter.value)) value=*boolean;
+    else return false;
+    const auto nodeId=id.toString(), name=parameter.name.toString();
+    try { history.setParameter(nodeId,name,value); }
+    catch(const project::FileError&) { return false; }
     return true;
 }
-
-void GraphProject::connectInput(const StringID& target, size_t input, const StringID& source, size_t output)
+bool GraphProject::connectInput(const StringID& target, size_t input, const StringID& source, size_t output)
 {
-    auto* to = step(target);
-    auto* from = step(source);
-    if(!to || !from || input >= to->inputMapping().size() || output >= from->outputMapping().size()) return;
-    auto mapping = to->inputMapping();
-    mapping[input].dataName = from->outputMapping()[output].dataName;
-    to->setInputMapping(mapping);
-    modified();
+    auto* to=step(target);
+    auto* from=step(source);
+    if(!to || !from || input>=to->inputMapping().size() || output>=from->outputMapping().size()) return false;
+    const auto targetId=target.toString(), sourceId=source.toString();
+    const auto in=to->inputMapping()[input].portName.toString(), out=from->outputMapping()[output].portName.toString();
+    try { history.connect(randomId().toString(),sourceId,out,targetId,in); }
+    catch(const project::FileError&) { return false; }
+    return true;
 }
-
+std::string GraphProject::connectionId(const StringID& target, size_t input) const
+{
+    const auto* to=step(target);
+    if(!to || input>=to->inputMapping().size()) return {};
+    for(const auto& edge : selectedGraph()["connections"])
+        if(edge["target"]["nodeId"]==target.toString() &&
+           edge["target"]["portId"]==to->inputMapping()[input].portName.toString())
+            return edge["id"].get<std::string>();
+    return {};
+}
 void GraphProject::disconnectInput(const StringID& target, size_t input)
 {
-    auto* to = step(target);
-    if(!to || input >= to->inputMapping().size()) return;
-    auto mapping = to->inputMapping();
-    mapping[input].dataName = {};
-    to->setInputMapping(mapping);
-    modified();
-}
-
-QJsonObject GraphProject::capture(const StringID& id) const
-{
-    tp_utils::JSON data;
-    QJsonArray blobs;
-    step(id)->saveBinary(data, [&](const std::string& blob) {
-        blobs.append(QString::fromLatin1(QByteArray::fromStdString(blob).toBase64()));
-        return uint64_t(blobs.size() - 1);
-    });
-    return {{"step", QJsonDocument::fromJson(QByteArray::fromStdString(data.dump())).object()}, {"blobs", blobs}};
-}
-
-StepDetails* GraphProject::restore(const QJsonObject& snapshot)
-{
-    const auto data = tp_utils::jsonFromString(QJsonDocument(snapshot["step"].toObject()).toJson(QJsonDocument::Compact).toStdString());
-    std::vector<std::string> blobs;
-    for(const auto& value : snapshot["blobs"].toArray())
-        blobs.push_back(QByteArray::fromBase64(value.toString().toLatin1()).toStdString());
-    auto item = std::make_unique<StepDetails>();
-    item->loadBinary(data, blobs);
-    if(step(item->id()) || !delegates->stepDelegate(item->delegateName())) return nullptr;
-    auto* result = item.release();
-    document.addStep(result);
-    modified();
-    return result;
+    const auto id=connectionId(target,input);
+    if(!id.empty()) history.disconnect(id);
 }
 } // namespace smartflow

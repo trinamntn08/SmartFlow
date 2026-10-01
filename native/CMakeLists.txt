@@ -34,10 +34,11 @@ target_link_libraries(smartflow_pipeline_widgets PUBLIC smartflow_legacy smartfl
 add_library(smartflow_workspace STATIC
   app/workspace/GraphProject.cpp app/workspace/GraphProject.h
   app/workspace/PipelineCanvas.cpp app/workspace/PipelineCanvas.h
+  app/workspace/WorkspaceScene.cpp app/workspace/WorkspaceScene.h
   app/workspace/ExecutionController.cpp app/workspace/ExecutionController.h
   app/workspace/WorkspaceWindow.cpp app/workspace/WorkspaceWindow.h)
 target_include_directories(smartflow_workspace PUBLIC app)
-target_link_libraries(smartflow_workspace PUBLIC smartflow_pipeline smartflow_pipeline_widgets smartflow_extension_sdk)
+target_link_libraries(smartflow_workspace PUBLIC smartflow_pipeline smartflow_pipeline_widgets smartflow_extension_sdk smartflow_document_history)
 add_executable(smartflow WIN32 app/main.cpp)
 target_include_directories(smartflow PRIVATE app)
 target_link_libraries(smartflow PRIVATE smartflow_workspace smartflow_scene_3d)

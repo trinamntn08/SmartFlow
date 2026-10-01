@@ -1,45 +1,43 @@
 #pragma once
-#include <tp_pipeline/PipelineDetails.h>
-#include <tp_pipeline/StepDelegateMap.h>
+#include "project/DocumentHistory.h"
 #include <QObject>
-#include <QJsonObject>
-#include <memory>
-#include <WorkspaceExtension.h>
+#include <map>
 
 namespace smartflow {
-
-// Semantic project state. Canvas identities, positions and execution results
-// are deliberately kept outside this model. Not a persisted project format.
+// Retained documents are authoritative. step() returns detached inspector
+// copies, valid only until the next semantic change.
 class GraphProject : public QObject {
     Q_OBJECT
 public:
     explicit GraphProject(std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates,
-                          std::vector<NodePresentation> presentations = {});
+                          std::vector<NodePresentation> presentations);
     QString title(const tp_utils::StringID& type) const;
     QString category(const tp_utils::StringID& type) const;
-    const tp_pipeline::PipelineDetails& graph() const { return document; }
+    const auto& graph() const { return history.session().executableGraph(); }
+    const auto& retained() const { return history.session().document(); }
+    const auto& selectedGraph() const { return history.session().selectedGraph(); }
+    const auto& diagnostics() const { return history.session().diagnostics(); }
     auto registry() const { return delegates; }
-    quint64 revision() const { return currentRevision; }
+    auto& commands() { return history; }
+    quint64 revision() const { return history.revision(); }
     tp_pipeline::StepDetails* step(const tp_utils::StringID& id) const;
     tp_pipeline::StepDetails* create(const tp_utils::StringID& type);
     void remove(const tp_utils::StringID& id);
     bool setParameter(const tp_utils::StringID& id, const tp_pipeline::Parameter& parameter);
-    void connectInput(const tp_utils::StringID& target, size_t input,
+    bool connectInput(const tp_utils::StringID& target, size_t input,
                       const tp_utils::StringID& source, size_t output);
     void disconnectInput(const tp_utils::StringID& target, size_t input);
-    QJsonObject capture(const tp_utils::StringID& id) const;
-    tp_pipeline::StepDetails* restore(const QJsonObject& snapshot);
+    std::string connectionId(const tp_utils::StringID& target, size_t input) const;
 Q_SIGNALS:
     void changed();
 private:
-    void modified();
+    void refreshInspection();
     std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates;
-    tp_pipeline::PipelineDetails document;
-    quint64 currentRevision = 0;
     std::vector<NodePresentation> presentations;
+    project::DocumentHistory history;
+    std::map<std::string,std::unique_ptr<tp_pipeline::StepDetails>> inspection;
 };
-
 std::shared_ptr<tp_pipeline::StepDelegateMap> numericDelegates();
+std::vector<NodePresentation> numericPresentations();
 QString nodeTitle(const tp_utils::StringID& type);
-
 } // namespace smartflow

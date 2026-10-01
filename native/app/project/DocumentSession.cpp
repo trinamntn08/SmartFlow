@@ -171,6 +171,12 @@ const tp_pipeline::PipelineDetails& DocumentSession::executableGraph() const
     return *compiled;
 }
 
+std::unique_ptr<tp_pipeline::StepDetails> DocumentSession::inspectNode(const std::string& id) const
+{
+    const auto* node=compiled->findStepFromStepId(id);
+    return node ? std::make_unique<tp_pipeline::StepDetails>(*node) : nullptr;
+}
+
 void DocumentSession::setParameter(const std::string& nodeId, const std::string& name, const Document& value)
 {
     auto& nodes=source["project"]["graphs"][graphIndex]["nodes"];
