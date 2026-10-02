@@ -1,7 +1,7 @@
 # Parallel web implementation plan
 
 Updated: 2026-10-02. W1 planning/audit, W1b transport and W2a commands/registry are complete. Browser
-W2b editor/file actions are complete; execution milestones below are pending. Native C++17/Qt6 remains the primary
+W2b editor/file actions are complete; W3 data execution and table outputs are complete; remaining milestones are pending. Native C++17/Qt6 remains the primary
 implementation and the first user test delivery remains packaged Windows desktop.
 
 ## Goal and initial scope
@@ -47,7 +47,7 @@ workspaces only when their implementation begins.
 | W2a (complete) | Retained commands/history and extension lookup                  | Add/remove/connect/parameter edits undo and redo exactly; unknown fields and inactive graphs survive; workspace navigation is independent of semantic history                                    |
 | W2b (complete) | Browser library, canvas, inspector and file actions             | Create/edit/connect/delete, dirty-state indication, undo/redo and import/download/reopen work through browser interaction; unsupported nodes display placeholders                                |
 | W3a (complete) | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
-| W3b            | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
+| W3b (complete) | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
 | W4             | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
 | W5a            | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
 | W5b            | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
@@ -101,6 +101,6 @@ explicitly implemented nodes and versions. Audience and application field stay o
 
 W2a commands/history and immutable bundled extension lookup are complete;
 see [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md).
-W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; next: W3b execution controls and table viewer.
+W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b execution controls and table viewer are complete; next: W4 scene capability.
 [W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
 tests; worker data execution is implemented and browser rendering remains pending.

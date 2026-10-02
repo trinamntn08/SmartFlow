@@ -485,3 +485,53 @@ pre {
     display: none;
   }
 }
+:root {
+  --output-height: 240px;
+}
+.output-panel {
+  flex-shrink: 0;
+  max-height: var(--output-height);
+  overflow: auto;
+  border-top: 1px solid var(--border);
+  padding: 0 20px 12px;
+}
+.output-panel .panel-title {
+  position: sticky;
+  top: 0;
+  background: #141d29;
+  gap: 16px;
+  z-index: 1;
+}
+.output-panel table {
+  border-collapse: collapse;
+  min-width: 360px;
+  width: 100%;
+  font-size: 13px;
+}
+.output-panel th,
+.output-panel td {
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid #2a3546;
+}
+.output-panel th {
+  color: #9aaac1;
+  font-weight: 500;
+}
+.output-panel tr {
+  cursor: pointer;
+}
+.output-panel .selected-row {
+  background: #244946;
+}
+.obsolete-note {
+  color: #f2be66;
+}
+.node-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11px;
+  color: #9aaac1;
+  margin-top: 12px;
+}

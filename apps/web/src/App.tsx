@@ -17,6 +17,8 @@ import { EditorSession, emptyProject } from './editor-session.ts';
 import { patchWorkspace, readWorkspace } from './workspace.ts';
 import { GraphCanvas } from './GraphCanvas.tsx';
 import { ParameterEditor } from './ParameterEditor.tsx';
+import { ExecutionClient, createExecutionWorker, type ExecutionState } from './execution-client.ts';
+import { OutputPanel } from './OutputPanel.tsx';
 
 const registry = new ExtensionRegistry([dataExtension, sceneExtension]);
 const examples: Record<string, string> = {
@@ -26,6 +28,8 @@ const examples: Record<string, string> = {
 };
 export function App() {
   const [session] = useState(() => new EditorSession(parseProject(dataText), registry));
+  const [execution, setExecution] = useState<ExecutionState>({ phase: 'idle', statuses: {} });
+  const [executor] = useState(() => new ExecutionClient(createExecutionWorker, setExecution));
   const [file, setFile] = useState(session.history.snapshot);
   const [graphId, setGraphId] = useState(file.project.graphs[0]?.id ?? '');
   const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
@@ -52,6 +56,10 @@ export function App() {
   );
   const graph = file.project.graphs.find((graph) => graph.id === graphId);
   const workspace = readWorkspace(file, graphId);
+  useEffect(() => {
+    executor.invalidate(session.history.revision, graphId);
+  }, [executor, session, file, graphId]);
+  useEffect(() => () => executor.dispose(), [executor]);
   const selected = graph?.nodes.find((node) => workspace.selection.includes(node.id));
   const definition = selected && session.definition(selected);
   const resolve = useCallback((node: NodeDocument) => session.definition(node), [session]);
@@ -166,6 +174,15 @@ export function App() {
         <button onClick={() => importInput.current?.click()}>Open project</button>
         <button onClick={download}>Download project</button>
         <span className="toolbar-divider" />
+        <button
+          disabled={!graph || !graph.nodes.length}
+          onClick={() => executor.run(session.history.snapshot, session.history.revision, graphId)}
+        >
+          Run graph
+        </button>
+        <button disabled={execution.phase !== 'running'} onClick={() => executor.cancel()}>
+          Cancel run
+        </button>
         <button
           disabled={!session.history.canUndo}
           title={session.history.undoLabel}
@@ -309,6 +326,7 @@ export function App() {
               graph={graph}
               workspace={workspace}
               definition={resolve}
+              statuses={execution.phase === 'obsolete' ? {} : execution.statuses}
               onConnect={onConnect}
               onSelection={(nodes, edges) => {
                 setSelectedEdges((current) =>
@@ -383,8 +401,8 @@ export function App() {
                     <p className="muted">This node has no parameters.</p>
                   )}
                   <p className="contract-note">
-                    Execution is added in the next checkpoints. Your graph can be edited and saved
-                    now.
+                    Run explicitly to inspect outputs. Parameter edits make earlier results
+                    obsolete.
                   </p>
                 </div>
               ) : (
@@ -424,6 +442,11 @@ export function App() {
           </div>
         </aside>
       </div>
+      <OutputPanel
+        execution={execution}
+        workspace={workspace}
+        patch={(value) => action(() => patchWorkspace(session.history, graphId, value))}
+      />
       <footer className="statusbar">
         <span>{notice || 'Local workspace · project files stay on your device'}</span>
         <span>Schema 1 · {file.project.assets.length} asset references</span>

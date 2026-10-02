@@ -1,7 +1,7 @@
 # Browser workspace development
 
-Updated: 2026-10-02. W2b editor/file actions are implemented alongside the native
-Windows app. Browser execution/rendering and component authoring are pending.
+Updated: 2026-10-02. W3b data execution and table outputs are implemented alongside
+the native Windows app. Browser scene rendering and component authoring are pending.
 
 ## Run and edit
 
@@ -19,6 +19,11 @@ to apply. Delete selection removes nodes and incident edges in one command.
 Use Undo/Redo or Ctrl+Z/Ctrl+Shift+Z (Ctrl+Y also works). Input fields retain normal
 text-editing shortcuts. Dragging/navigation changes workspace rather than semantic
 history. Examples include a scene and a preserved unsupported component instance.
+
+Run graph executes in a worker. Cancel run terminates work and discards partial
+outputs. Node states appear on the canvas. Choose a named output in the Output
+panel; table row selection and the pinned output are saved with browser workspace.
+Parameter/graph edits mark previous results obsolete until another run completes.
 
 New project starts domain-independent. The graph selector switches among retained
 graphs. Projects with no graphs can explicitly add one. Unknown nodes/edges are

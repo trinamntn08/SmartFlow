@@ -38,6 +38,13 @@ export class ExecutionClient {
   #state: ExecutionState = { phase: 'idle', statuses: {} };
   #factory: () => WorkerPort;
   #publish: (state: ExecutionState) => void;
+  #pending: Record<string, NodeState> = {};
+  #timer: ReturnType<typeof setTimeout> | undefined;
+  #clearProgress(): void {
+    if (this.#timer !== undefined) clearTimeout(this.#timer);
+    this.#timer = undefined;
+    this.#pending = {};
+  }
   constructor(factory: () => WorkerPort, publish: (state: ExecutionState) => void) {
     this.#factory = factory;
     this.#publish = publish;
@@ -48,6 +55,7 @@ export class ExecutionClient {
   }
   invalidate(revision: number, graphId: string): void {
     if (revision === this.#revision && graphId === this.#graphId) return;
+    this.#clearProgress();
     this.#revision = revision;
     this.#graphId = graphId;
     this.#gate.invalidate();
@@ -56,6 +64,7 @@ export class ExecutionClient {
     if (this.#state.phase !== 'idle') this.#update({ ...this.#state, phase: 'obsolete' });
   }
   run(file: ProjectFile, revision: number, graphId: string): void {
+    this.#clearProgress();
     this.#worker?.terminate();
     this.#revision = revision;
     this.#graphId = graphId;
@@ -67,12 +76,26 @@ export class ExecutionClient {
       worker.subscribe(
         (reply) => {
           if (!this.#gate.accepts(reply.identity, this.#revision, this.#graphId)) return;
-          if (reply.kind === 'status')
-            this.#update({
-              ...this.#state,
-              statuses: { ...this.#state.statuses, [reply.nodeId]: reply.state },
+          if (reply.kind === 'status') {
+            Object.defineProperty(this.#pending, reply.nodeId, {
+              value: reply.state,
+              enumerable: true,
+              configurable: true,
+              writable: true,
             });
-          else {
+            if (this.#timer === undefined)
+              this.#timer = setTimeout(() => {
+                const pending = this.#pending;
+                this.#pending = {};
+                this.#timer = undefined;
+                if (this.#gate.accepts(identity, this.#revision, this.#graphId))
+                  this.#update({
+                    ...this.#state,
+                    statuses: { ...this.#state.statuses, ...pending },
+                  });
+              }, 32);
+          } else {
+            this.#clearProgress();
             this.#gate.invalidate();
             worker.terminate();
             this.#worker = undefined;
@@ -86,6 +109,7 @@ export class ExecutionClient {
         },
         (error) => {
           if (!this.#gate.accepts(identity, this.#revision, this.#graphId)) return;
+          this.#clearProgress();
           this.#gate.invalidate();
           worker.terminate();
           this.#worker = undefined;
@@ -106,12 +130,14 @@ export class ExecutionClient {
     }
   }
   cancel(): void {
+    this.#clearProgress();
     this.#gate.invalidate();
     this.#worker?.terminate();
     this.#worker = undefined;
     this.#update({ phase: 'cancelled', statuses: {} });
   }
   dispose(): void {
+    this.#clearProgress();
     this.#gate.invalidate();
     this.#worker?.terminate();
     this.#worker = undefined;

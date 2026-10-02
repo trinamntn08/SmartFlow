@@ -158,6 +158,7 @@ export function GraphCanvas(props: Props) {
         edges={edges}
         nodeTypes={nodeTypes}
         colorMode="dark"
+        onlyRenderVisibleElements
         minZoom={0.01}
         maxZoom={2}
         onNodesChange={(changes) => {

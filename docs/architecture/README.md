@@ -110,7 +110,7 @@ rejection under [decision 0019](decisions/0019-browser-json-transport.md).
 W2a adds retained core commands/history and immutable SDK extension lookup.
 Workspace updates stay outside semantic undo/redo. W2b editing/file actions are
 implemented under [decision 0020](decisions/0020-browser-canvas.md). W3a worker
-execution is implemented; W3b controls and viewers are next. See [the web guide](../WEB_DEVELOPMENT.md).
+execution is implemented; W3b controls and table viewer are implemented; W4 scene capability is next. See [the web guide](../WEB_DEVELOPMENT.md).
 
 ## Verification and open work
 
