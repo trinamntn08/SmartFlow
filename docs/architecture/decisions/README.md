@@ -28,8 +28,8 @@ what runs today; this index is not a claim of completed production delivery.
 results. N5f/N5g complete file actions/workspace persistence after their earlier
 foundation decisions. 0013 implements collapsed components after 0012's expanded
 insertion; 0014 and its N6f follow-up implement standalone exchange and removal.
-0015 governs implemented editing copies followed by planned explicit compatible
-snapshot replacement. General migration and revision policy remain open.
+0015 governs editing copies and explicit compatible snapshot replacement.
+General migration and revision policy remain open.
 
 Use [the template](TEMPLATE.md) for consequential new decisions. Do not rewrite
 a dated decision's original rationale to imply it already contained later work.

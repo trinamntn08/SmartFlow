@@ -42,6 +42,7 @@ public:
     // Validate registered body parameters/ports while allowing exposed inputs
     // to remain unbound in an isolated definition draft.
     void validateComponent(const GraphComponent& component) const;
+    void replaceComponentInstance(const std::string& nodeId, const GraphComponent& component);
     // Remove exactly one retained catalog entry, including opaque entries.
     // Instance snapshots, graphs, workspace and other entries are untouched.
     void removeCatalogComponent(size_t index);

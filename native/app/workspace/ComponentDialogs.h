@@ -10,6 +10,7 @@ class QFormLayout;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QPlainTextEdit;
 
 namespace smartflow {
 class WorkspaceWindow;
@@ -50,6 +51,23 @@ private:
     project::Document original;
     WorkspaceWindow* draft;
     QLabel* error;
+};
+
+class ComponentUpdateDialog : public QDialog {
+public:
+    ComponentUpdateDialog(GraphProject& project, std::string nodeId, QWidget* parent = nullptr);
+    void accept() override;
+private:
+    void refresh();
+    GraphProject& graphProject;
+    std::string nodeId;
+    quint64 revision;
+    project::Document snapshot;
+    project::Document catalog;
+    QComboBox* choices;
+    QPlainTextEdit* comparison;
+    QLabel* error;
+    QPushButton* apply;
 };
 
 class ComponentLibraryDialog : public QDialog {

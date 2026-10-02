@@ -313,3 +313,14 @@ Registered parameters, ports and all required input boundaries are validated;
 stale drafts reject. Data and scene tests cover independent snapshot execution,
 opaque metadata, cancellation, undo/redo and save/reopen. UI tests write
 `component-editor-smoke.png` for rendering inspection.
+
+## N6h explicit instance updates
+
+`DocumentHistory::replaceComponentInstance` validates interface names/types,
+preserved control values, body support and connected graph compatibility before
+one semantic replacement. The selected-instance menu action previews both bodies
+and enables Apply only for compatible choices. Component tests cover different
+instance results, opaque/workspace retention, rejected edits/redo preservation,
+no-ops and save/reopen. Scene tests include preserved overrides and new bounds
+rejection. UI tests inspect pinning, menu/dialog Apply and stale/cancel behavior,
+and write `component-update-smoke.png`.

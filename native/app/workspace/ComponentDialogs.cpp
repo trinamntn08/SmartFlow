@@ -1,6 +1,7 @@
 #include "ComponentDialogs.h"
 #include "WorkspaceWindow.h"
 #include <QMenuBar>
+#include <QPlainTextEdit>
 #include "project/ComponentFile.h"
 #include <tp_pipeline/StepDelegate.h>
 #include <QCheckBox>
@@ -238,6 +239,87 @@ void ComponentEditDialog::saveCopy(const project::GraphComponent& component)
     destination.commands().session().validateComponent(component);
     destination.commands().catalogComponent(component);
     QDialog::accept();
+}
+
+namespace {
+QString describeDefinition(const Document& definition, GraphProject& project)
+{
+    QStringList lines; std::map<std::string,QString> labels; int index=0;
+    lines << text(definition["title"]);
+    for(const auto& node : definition["graph"]["nodes"]) {
+        QString label=text(node["typeId"]);
+        for(const auto& registration : project.nodePresentations())
+            if(registration.packageId.toStdString()==node["packageId"] && registration.typeId.toStdString()==node["typeId"] && registration.contractVersion==node["version"])
+                label=registration.title;
+        label=QString::number(++index)+". "+label; labels[node["id"]]=label;
+        lines << label;
+        for(auto parameter=node["parameters"].begin(); parameter!=node["parameters"].end(); ++parameter)
+            lines << "    "+text(parameter.key())+" = "+text(parameter.value().dump());
+    }
+    lines << "Connections:";
+    for(const auto& edge : definition["graph"]["connections"])
+        lines << "    "+labels[edge["source"]["nodeId"]]+" / "+text(edge["source"]["portId"])+" -> "+labels[edge["target"]["nodeId"]]+" / "+text(edge["target"]["portId"]);
+    for(const auto* section : {"inputs","outputs","controls"}) {
+        lines << text(section)+":";
+        for(const auto& entry : definition[section]) {
+            const auto& endpoint=entry[std::string(section)=="outputs" ? "source" : "target"];
+            lines << "    "+text(entry["id"])+" -> "+labels[endpoint["nodeId"]]+" / "+text(endpoint[std::string(section)=="controls" ? "parameter" : "portId"]);
+        }
+    }
+    return lines.join("\n");
+}
+}
+
+ComponentUpdateDialog::ComponentUpdateDialog(GraphProject& project, std::string nodeId, QWidget* parent)
+    : QDialog(parent), graphProject(project), nodeId(std::move(nodeId)), revision(project.revision()),
+      catalog(project.retained()["project"].value("components",Document::array()))
+{
+    for(const auto& node : project.selectedGraph()["nodes"]) if(node["id"]==this->nodeId && project::GraphComponent::isInstance(node))
+        snapshot=node.value("component",Document());
+    setObjectName("componentUpdate"); setWindowTitle("Update selected component instance"); resize(850,650);
+    auto* layout=new QVBoxLayout(this);
+    auto* hint=message(this,"componentUpdateHint");
+    hint->setText("Choose a library definition and review both bodies below. Apply updates this instance only. Its current control values, connections and viewer selection are preserved. Undo restores its previous snapshot.");
+    layout->addWidget(hint);
+    choices=new QComboBox; choices->setObjectName("componentUpdateCatalog"); layout->addWidget(choices);
+    if(catalog.is_array()) for(const auto& definition : catalog) {
+        QString label="Unavailable component";
+        if(definition.is_object() && definition.contains("title") && definition["title"].is_string()) label=text(definition["title"]);
+        choices->addItem(label);
+    }
+    comparison=new QPlainTextEdit; comparison->setReadOnly(true); comparison->setObjectName("componentUpdateComparison"); layout->addWidget(comparison,1);
+    error=message(this,"componentUpdateError"); layout->addWidget(error);
+    auto* buttons=new QDialogButtonBox(QDialogButtonBox::Apply|QDialogButtonBox::Cancel);
+    apply=buttons->button(QDialogButtonBox::Apply); apply->setObjectName("applyComponentUpdate"); layout->addWidget(buttons);
+    connect(apply,&QPushButton::clicked,this,&ComponentUpdateDialog::accept);
+    connect(buttons,&QDialogButtonBox::rejected,this,&QDialog::reject);
+    connect(choices,qOverload<int>(&QComboBox::currentIndexChanged),this,[this] { refresh(); }); refresh();
+}
+
+void ComponentUpdateDialog::refresh()
+{
+    error->clear(); comparison->clear(); apply->setEnabled(false);
+    try {
+        if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen the update dialog.");
+        const project::GraphComponent original(snapshot);
+        if(!catalog.is_array() || choices->currentIndex()<0) throw project::FileError("No library definitions are available. Create, edit or import one first.");
+        const project::GraphComponent replacement(catalog.at(size_t(choices->currentIndex())));
+        comparison->setPlainText("Current snapshot\n"+describeDefinition(original.definition(),graphProject)+"\n\nChosen definition\n"+describeDefinition(replacement.definition(),graphProject));
+        project::DocumentSession candidate(graphProject.retained(),graphProject.selectedGraph()["id"],graphProject.registry(),graphProject.nodePresentations());
+        candidate.replaceComponentInstance(nodeId,replacement);
+        if(snapshot==replacement.definition()) throw project::FileError("This instance already uses this definition.");
+        apply->setEnabled(true);
+    } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+}
+
+void ComponentUpdateDialog::accept()
+{
+    try {
+        if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen the update dialog.");
+        if(!apply->isEnabled()) return;
+        graphProject.commands().replaceComponentInstance(nodeId,project::GraphComponent(catalog.at(size_t(choices->currentIndex()))));
+        QDialog::accept();
+    } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
 }
 
 ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* parent)

@@ -25,6 +25,7 @@ public:
     void disconnect(const std::string& id);
     void catalogComponent(const GraphComponent& component);
     void removeCatalogComponent(size_t index);
+    void replaceComponentInstance(const std::string& nodeId, const GraphComponent& component);
     GraphComponent extractComponent(const std::vector<std::string>& nodeIds,
         const std::string& id, const std::string& title, const Document& inputs,
         const Document& outputs, const Document& controls);

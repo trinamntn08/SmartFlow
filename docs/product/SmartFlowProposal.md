@@ -11,7 +11,8 @@ cancellation, inspector controls, undo/redo, atomic Save/Open and workspace/view
 restoration. It includes the primitive scene workflow and an independent table
 workflow through source-level native contribution contracts. Components support
 collapsed snapshots with exposed controls/ports, standalone import/export and
-undoable library removal. VS Code CMake Tools and a local runtime test folder
+undoable library removal, isolated definition copies and explicit compatible
+instance replacement. VS Code CMake Tools and a local runtime test folder
 support development/manual launches.
 
 The automated baseline passes Release builds, 17 CTest entries, packaged startup
@@ -302,7 +303,7 @@ Each can become substantial work without proving the core interaction.
 - Which project and asset storage model is appropriate for the first delivery?
 
 Both reference workflows and the native extension boundaries are implemented.
-Component editing saves independent immutable copies; explicit instance updates
-follow decision 0015 as a separate step. Collect manual desktop acceptance results
+Component editing saves independent immutable copies; explicit compatible instance
+updates follow decision 0015. Collect manual desktop acceptance results
 and address concrete issues from testing. Selecting the final application field
 is not a prerequisite.

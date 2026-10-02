@@ -1,8 +1,7 @@
 # 0015: Component editing and explicit update scope
 
 Date: 2026-10-02
-Status: accepted for N6g editing copies; explicit instance replacement remains
-planned as a separate checkpoint.
+Status: accepted for N6g editing copies and N6h explicit instance replacement.
 
 ## Context
 
@@ -80,7 +79,8 @@ N6g implements editing copies in an isolated native workspace, followed by the
 interface chooser and one catalog command. The original definition's opaque
 fields and matching interface metadata remain retained. Publication validates
 installed registrations and all required input boundaries. Explicit replacement
-remains pending its separate implementation checkpoint.
+is implemented in N6h for one selected instance. Changed content under the same
+definition ID rejects, preserving immutable identity semantics.
 Existing schema-v1 files, exports and snapshots need no migration for edit-a-copy.
 
 For the editing checkpoint, verify independent data and required scene definitions,

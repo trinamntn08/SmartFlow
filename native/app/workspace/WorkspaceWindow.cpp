@@ -95,6 +95,14 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     createComponent->setObjectName("createComponent");
     auto* insertComponent=components->addAction("Component library...");
     insertComponent->setObjectName("insertComponent");
+    auto* updateComponent=components->addAction("Update selected instance...");
+    updateComponent->setObjectName("updateComponentInstance");
+    connect(updateComponent,&QAction::triggered,this,[this] {
+        const auto selection=canvasScene.selectedNodes();
+        if(selection.size()!=1) return;
+        ComponentUpdateDialog dialog(document,canvasModel.projectId(*selection.begin()).toString(),this);
+        dialog.exec();
+    });
     connect(createComponent,&QAction::triggered,this,[this] {
         std::vector<std::string> selection;
         for(const auto id : canvasScene.selectedNodes()) selection.push_back(canvasModel.projectId(id).toString());
@@ -127,8 +135,15 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         captureWorkspace();
         statusBar()->showMessage("Inserted component.",5000);
     });
-    connect(components,&QMenu::aboutToShow,this,[this,createComponent] {
+    connect(components,&QMenu::aboutToShow,this,[this,createComponent,updateComponent] {
         createComponent->setEnabled(!canvasScene.selectedNodes().empty());
+        const auto selection=canvasScene.selectedNodes(); bool instance=false;
+        if(selection.size()==1) {
+            const auto id=canvasModel.projectId(*selection.begin()).toString();
+            for(const auto& node : document.selectedGraph()["nodes"])
+                if(node["id"]==id && project::GraphComponent::isInstance(node)) instance=true;
+        }
+        updateComponent->setEnabled(instance);
     });
     auto* toolbar = addToolBar("Graph");
     toolbar->setMovable(false);

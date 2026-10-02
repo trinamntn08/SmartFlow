@@ -70,7 +70,10 @@ library removal do not update instance snapshots. Removal targets one array entr
 in the current revision and is undoable, including opaque entries. External asset
 bundling/relocation, definition migration and live updates are unimplemented.
 The library edits supported definitions in an isolated draft and saves fresh-ID
-copies, preserving existing snapshots. Explicit replacement remains pending.
+copies, preserving existing snapshots. An explicit one-instance command adopts a
+supported definition with matching interface names/types, preserving existing
+control values, connections and workspace aliases. Incompatible choices reject;
+undo restores the previous snapshot. No automatic update or migration exists.
 
 See [the component guide](../GRAPH_COMPONENTS.md) and decisions
 [0012](decisions/0012-native-graph-component-foundation.md),

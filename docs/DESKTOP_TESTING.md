@@ -3,7 +3,7 @@
 The first version for user testing is the Windows native C++/Qt application.
 The browser starter is deferred. This is a local development preview, not a
 public installer or a completed N5 release. Implementation is complete through
-N6g and VS Code setup; full N5 packaged interaction acceptance is pending the
+N6h and VS Code setup; full N5 packaged interaction acceptance is pending the
 user's manual test results. Automated native computer-use is deferred for now.
 
 For development runs, use [VS Code CMake Tools](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
@@ -104,6 +104,11 @@ Choose **Edit a copy...**, change a body parameter in its draft inspector, and
 use **Save copy...** to choose its title/interface. Confirm the new entry has the
 edited defaults, existing instances retain their original values, and Cancel
 discards draft edits. Undo/Redo should remove/restore the saved catalog copy.
+Select one collapsed instance and use **Components > Update selected instance...**
+to choose the edited copy. Review the body/defaults and Apply. Confirm existing
+control values and pinned output remain, other instances are unchanged, and Undo
+restores the old snapshot. Try an incompatible interface: Apply must be disabled
+with an explanatory error. Save/relaunch/Open must retain the chosen snapshot.
 
 ## Current limitations
 

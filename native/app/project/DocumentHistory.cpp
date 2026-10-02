@@ -111,6 +111,11 @@ void DocumentHistory::removeCatalogComponent(size_t index)
     edit("Remove component from library",[&](auto& candidate) { candidate.removeCatalogComponent(index); });
 }
 
+void DocumentHistory::replaceComponentInstance(const std::string& nodeId, const GraphComponent& component)
+{
+    edit("Update component instance",[&](auto& candidate) { candidate.replaceComponentInstance(nodeId,component); });
+}
+
 GraphComponent DocumentHistory::extractComponent(const std::vector<std::string>& nodeIds,
     const std::string& id, const std::string& title, const Document& inputs,
     const Document& outputs, const Document& controls)

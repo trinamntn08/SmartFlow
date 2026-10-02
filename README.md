@@ -14,7 +14,7 @@ bounded interactive primitive viewer. The separate data app provides sample,
 filter and summary nodes with a table viewer, without scene dependencies.
 Reusable components support collapsed snapshots, exposed ports/controls,
 standalone import/export, undoable library removal and isolated editing copies
-(N6a through N6g).
+and explicit compatible instance updates (N6a through N6h).
 
 Release build, 17 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;

@@ -18,6 +18,7 @@
 #include <QTemporaryDir>
 #include <QTimer>
 #include <QTableWidget>
+#include <QPlainTextEdit>
 #include <set>
 #include <QtNodes/internal/NodeGraphicsObject.hpp>
 #include <QtTest/QtTest>
@@ -47,6 +48,48 @@ double total(WorkspaceWindow& window, const std::string& summary)
 class ComponentUiTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void updateDialogReviewsAndPreservesPinnedAliases()
+    {
+        WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();
+        window.openProject(SMARTFLOW_COMPONENT_EXAMPLE);
+        const auto before=window.project().retained();
+        std::string instance;
+        for(const auto& node : window.project().selectedGraph()["nodes"]) if(project::GraphComponent::isInstance(node)) instance=node["id"];
+        auto replacement=before["project"]["components"][0]; replacement["id"]="updated-tool"; replacement["title"]="Updated tool";
+        replacement["graph"]["nodes"].push_back({{"id","extra"},{"packageId","smartflow.data"},{"typeId","filter"},{"version",1},{"parameters",{{"minimum",40}}}});
+        replacement["graph"]["connections"][0]["target"]["nodeId"]="extra";
+        replacement["graph"]["connections"].push_back({{"id","extra-edge"},{"source",{{"nodeId","extra"},{"portId","out"}}},{"target",{{"nodeId","summary"},{"portId","in"}}}});
+        window.project().commands().catalogComponent(project::GraphComponent(replacement));
+        for(const auto id : window.canvas().allNodeIds()) if(window.canvas().projectId(id).toString()==instance) {
+            window.scene().clearSelection(); window.scene().nodeGraphicsObject(id)->setSelected(true); window.selectNode(id);
+        }
+        QTest::qWait(40); // Flush the selected-node workspace capture before opening the modal.
+        const auto unchanged=window.project().retained();
+        QTimer::singleShot(0,&window,[&] {
+            auto* dialog=dynamic_cast<ComponentUpdateDialog*>(QApplication::activeModalWidget()); QVERIFY(dialog);
+            auto* choices=dialog->findChild<QComboBox*>("componentUpdateCatalog"); choices->setCurrentIndex(1);
+            QVERIFY(dialog->findChild<QPlainTextEdit*>("componentUpdateComparison")->toPlainText().contains("minimum = 40"));
+            QVERIFY(dialog->findChild<QPushButton*>("applyComponentUpdate")->isEnabled());
+            QVERIFY(dialog->grab().save("component-update-smoke.png"));
+            dialog->accept(); QCOMPARE(dialog->result(),int(QDialog::Accepted));
+        });
+        window.findChild<QAction*>("updateComponentInstance")->trigger();
+        QCOMPARE(QString::fromStdString(window.project().retained()["workspace"].dump()),QString::fromStdString(unchanged["workspace"].dump()));
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        window.scene().undoStack().undo(); QVERIFY(window.project().retained()["project"]==unchanged["project"]);
+        window.scene().undoStack().redo();
+        ComponentUpdateDialog cancelled(window.project(),instance); cancelled.reject();
+        const auto current=window.project().retained();
+        ComponentUpdateDialog stale(window.project(),instance);
+        stale.findChild<QComboBox*>("componentUpdateCatalog")->setCurrentIndex(0);
+        window.project().commands().setParameter(instance,"minimum",35); stale.accept();
+        QCOMPARE(stale.result(),int(QDialog::Rejected));
+        QVERIFY(!stale.findChild<QLabel*>("componentUpdateError")->text().isEmpty());
+        window.scene().undoStack().undo(); QVERIFY(window.project().retained()["project"]==current["project"]);
+    }
+
     void editedCopyDraftInterfaceUndoAndReopen()
     {
         WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();

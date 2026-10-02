@@ -69,6 +69,17 @@ private Q_SLOTS:
         const auto oldMax=dynamic_cast<const SceneMember*>(originalOutput->members().front().get())->objects.front().geometry.getMinMax().second.x;
         const auto newMax=dynamic_cast<const SceneMember*>(copyOutput->members().front().get())->objects.front().geometry.getMinMax().second.x;
         QVERIFY(newMax>oldMax);
+        window.project().commands().replaceComponentInstance("original-instance",project::GraphComponent(copy));
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        const auto updated=window.execution().result()->steps.at("original-instance").output;
+        QCOMPARE(dynamic_cast<const SceneMember*>(updated->members().front().get())->objects.front().geometry.getMinMax().second.x,oldMax);
+        auto bounded=copy; bounded["id"]="incompatible-bound";
+        for(const auto& item : bounded["graph"]["nodes"]) if(item["typeId"]=="material")
+            bounded["controls"][0]["target"]={{"nodeId",item["id"]},{"parameter","red"}};
+        const auto preserved=window.project().retained();
+        QVERIFY_EXCEPTION_THROWN(window.project().commands().replaceComponentInstance("original-instance",project::GraphComponent(bounded)),project::FileError);
+        QVERIFY(window.project().retained()==preserved);
         QTemporaryDir directory; const auto path=directory.filePath("scene-copy.smartflow"); window.saveProject(path);
         WorkspaceWindow reopened(sceneConfiguration()); reopened.execution().setLive(false); reopened.openProject(path);
         QVERIFY(reopened.project().retained()["project"]["components"][1]==copy);

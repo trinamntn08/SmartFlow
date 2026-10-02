@@ -56,6 +56,45 @@ double total(const DocumentSession& session, const WorkspaceConfiguration& confi
 class ComponentTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void explicitReplacementPreservesOverridesOtherInstancesAndUndo()
+    {
+        const auto config=data::dataConfiguration();
+        DocumentHistory history(source(config),"graph",config.delegates,config.nodes);
+        const auto first=history.instantiateComponent(GraphComponent(definition()),"first",{{"minimum",30}},input(),true);
+        const auto second=history.instantiateComponent(GraphComponent(definition()),"second",{{"minimum",20}},input(),true);
+        auto replacement=definition(); replacement["id"]="stricter-summary";
+        replacement["graph"]["nodes"].push_back({{"id","extra"},{"packageId","smartflow.data"},{"typeId","filter"},{"version",1},{"parameters",{{"minimum",40}}}});
+        replacement["graph"]["connections"][0]["target"]["nodeId"]="extra";
+        replacement["graph"]["connections"].push_back({{"id","extra-edge"},{"source",{{"nodeId","extra"},{"portId","out"}}},{"target",{{"nodeId","summary"},{"portId","in"}}}});
+        const auto before=history.session().document();
+        history.replaceComponentInstance("first",GraphComponent(replacement));
+        QCOMPARE(total(history.session(),config,first),48.0);
+        QCOMPARE(total(history.session(),config,second),104.0);
+        const auto after=history.session().document();
+        const auto& updated=after["project"]["graphs"][0]["nodes"][1];
+        QVERIFY(updated["parameters"]["minimum"]==30); QVERIFY(updated["component"]==replacement);
+        QVERIFY(after["project"]["components"]==before["project"]["components"]);
+        QVERIFY(after["project"]["graphs"][0]["nodes"][2]==before["project"]["graphs"][0]["nodes"][2]);
+        history.setWorkspaceField("latest","preserved"); history.undoStack().undo();
+        QVERIFY(history.session().document()["project"]==before["project"]);
+        QVERIFY(history.session().document()["workspace"]["latest"]=="preserved");
+        QVERIFY(history.undoStack().canRedo());
+        auto incompatible=replacement; incompatible["outputs"][0]["id"]="renamed";
+        QVERIFY_EXCEPTION_THROWN(history.replaceComponentInstance("first",GraphComponent(incompatible)),FileError);
+        QVERIFY(history.undoStack().canRedo()); QVERIFY(history.session().document()["project"]==before["project"]);
+        incompatible=replacement; incompatible["graph"]["nodes"][2]["parameters"]["minimum"]="bad";
+        QVERIFY_EXCEPTION_THROWN(history.replaceComponentInstance("first",GraphComponent(incompatible)),FileError);
+        incompatible=replacement; incompatible["id"]=definition()["id"];
+        QVERIFY_EXCEPTION_THROWN(history.replaceComponentInstance("first",GraphComponent(incompatible)),FileError);
+        QVERIFY_EXCEPTION_THROWN(history.replaceComponentInstance("sample",GraphComponent(replacement)),FileError);
+        history.undoStack().redo(); QVERIFY(history.session().document()["project"]==after["project"]);
+        const auto count=history.undoStack().count(); history.replaceComponentInstance("first",GraphComponent(replacement));
+        QCOMPARE(history.undoStack().count(),count);
+        QTemporaryDir directory; const auto path=directory.filePath("updated.smartflow"); write(path,history.session().document());
+        DocumentSession reopened(read(path),"graph",config.delegates,config.nodes);
+        QCOMPARE(total(reopened,config,first),48.0); QCOMPARE(total(reopened,config,second),104.0);
+    }
+
     void catalogRemovalPreservesInstancesOpaqueEntriesAndHistory()
     {
         const auto config=data::dataConfiguration();

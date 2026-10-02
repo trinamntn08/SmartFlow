@@ -362,6 +362,44 @@ void DocumentSession::validateComponent(const GraphComponent& component) const
     }
 }
 
+void DocumentSession::replaceComponentInstance(const std::string& nodeId, const GraphComponent& component)
+{
+    const auto& nodes=selectedGraph()["nodes"];
+    const auto node=findId(nodes,nodeId);
+    if(node==nodes.end() || !GraphComponent::isInstance(*node) || (*node)["version"]!=1 || !node->contains("component"))
+        throw FileError("Select a supported collapsed component instance");
+    const GraphComponent original((*node)["component"]);
+    if(original.definition()["id"]==component.definition()["id"] && original.definition()!=component.definition())
+        throw FileError("Changed component content requires a fresh definition identity");
+    validateComponent(original); validateComponent(component);
+    for(const auto* section : {"inputs","outputs","controls"}) {
+        std::set<std::string> before, after;
+        for(const auto& entry : original.definition()[section]) before.insert(entry["id"]);
+        for(const auto& entry : component.definition()[section]) after.insert(entry["id"]);
+        if(before!=after) throw FileError("Component update requires the same exposed input, output and control names");
+    }
+    auto replacement=source;
+    replacement["project"]["graphs"][graphIndex]["nodes"][size_t(std::distance(nodes.begin(),node))]["component"]=component.definition();
+    DocumentSession candidate(std::move(replacement),selectedGraph()["id"],delegates,registrations);
+    const auto before=inspectNode(nodeId), after=candidate.inspectNode(nodeId);
+    if(!before || !after) throw FileError("Component update contains an unsupported interface");
+    auto samePorts=[](const auto& before, const auto& after) {
+        for(const auto& port : before) {
+            const auto found=std::find_if(after.begin(),after.end(),[&](const auto& next) { return next.portName==port.portName; });
+            if(found==after.end() || found->portType!=port.portType) throw FileError("Component update changes an exposed port type");
+        }
+    };
+    samePorts(before->inputMapping(),after->inputMapping());
+    samePorts(before->outputMapping(),after->outputMapping());
+    for(const auto& [name,parameter] : before->parameters())
+        if(parameter.type!=after->parameter(name).type) throw FileError("Component update changes an exposed control type");
+    const std::set<std::string> previous(issues.begin(),issues.end());
+    for(const auto& issue : candidate.issues)
+        if(!previous.count(issue)) throw FileError("Component update is incompatible with the current graph or control values: "+issue);
+    source.swap(candidate.source); compiled.swap(candidate.compiled); issues.swap(candidate.issues);
+    components.swap(candidate.components); groups.swap(candidate.groups);
+}
+
 void DocumentSession::removeCatalogComponent(size_t index)
 {
     const auto& project=source["project"];

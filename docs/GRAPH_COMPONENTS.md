@@ -1,6 +1,6 @@
 # Native graph components
 
-Status: implemented through N6g: authoring, collapsed instances, file exchange
+Status: implemented through N6h: authoring, collapsed instances, file exchange
 and undoable library removal. Components
 insert as one node by default, with ordinary-node insertion also available.
 
@@ -138,7 +138,7 @@ in workspace `selectedPort`/`pinnedPort`, separately from project parameters.
 
 Nested components, definition migration and live updates remain future work.
 [Editing scope](architecture/decisions/0015-component-editing-scope.md) implements
-fresh-ID copies; explicit compatible snapshot replacement remains pending.
+fresh-ID copies and explicit compatible snapshot replacement.
 This is a native migration feature, not a production
 plugin system. See [decision 0013](architecture/decisions/0013-collapsed-native-components.md).
 
@@ -196,3 +196,20 @@ stale destination revisions reject without changing the destination project.
 Version fields remain 1; a saved copy does not migrate an existing definition.
 Unknown fields on retained body objects and the definition survive, as does
 metadata on interface entries whose endpoints remain exposed.
+
+## Update one instance
+
+Select one collapsed node and use **Components > Update selected instance...**.
+Choose a library definition and review the current/chosen body nodes, defaults,
+connections and interface. **Apply** replaces only this instance's snapshot as
+one undoable command. Other instances, library entries and expanded copies are
+unchanged. Existing control values, external connections, node identity and
+viewer output aliases remain in place; new saved defaults do not reset overrides.
+
+Both definitions must be supported and expose the same input/output/control
+names. Port/control types must match, current values must fit the new parameter
+bounds, and the updated graph must validate. Incompatible choices show an inline
+error and disable Apply. Changed content needs a different definition ID. Cancel
+and rejected/stale edits preserve the project and redo branch; identical content
+is a command no-op. There are no automatic, bulk or interface-remapping updates.
+`DocumentHistory::replaceComponentInstance(nodeId, component)` is the command API.

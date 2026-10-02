@@ -19,6 +19,9 @@ Components support extraction, saved catalogs, collapsed snapshot instances,
 exposed ports/controls, output selection/pinning, optional expanded insertion,
 standalone import/export and undoable library removal. They are native source-level
 features, not a production runtime or dynamically loaded plugin system.
+Definitions can be edited as fresh-ID copies in isolated draft workspaces.
+Compatible collapsed instances can explicitly adopt a chosen definition, with
+preserved control values/connections and undo of the exact previous snapshot.
 
 VS Code CMake Tools configure/build/test presets and launch configurations are
 ready for manual use. A CMake install folder bundles both executables, Qt/MSVC
@@ -69,16 +72,15 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 | N6e                 | Standalone component import/export                                 | [N6e](agents/handoffs/2026-10-02-native-checkpoint-n6e.md)    |
 | N6f                 | Undoable catalog-entry removal, preserving instances               | [N6f](agents/handoffs/2026-10-02-native-checkpoint-n6f.md)    |
 | N6g                 | Isolated component editing saved as immutable copies               | [N6g](agents/handoffs/2026-10-02-native-checkpoint-n6g.md)    |
+| N6h                 | Explicit compatible snapshot update for one collapsed instance     | [N6h](agents/handoffs/2026-10-02-native-checkpoint-n6h.md)    |
 | IDE setup           | VS Code CMake Tools presets and native launch configurations       | [IDE](agents/handoffs/2026-10-02-vscode-cmake-tools.md)       |
 
 ## Next work
 
 1. Collect manual packaged scene/data/component interaction and file round-trip
    results before marking full N5 accepted.
-2. Add explicit compatible instance replacement under the
-   [editing scope](architecture/decisions/0015-component-editing-scope.md).
-   Editing copies is implemented; replacement remains pending. Preserve snapshot
-   reproducibility and keep general revision/migration policy separate.
+2. Refresh the packaged Windows test folder with N6g/N6h and verify its startup,
+   shipped examples and runtime dependencies before handing it over for testing.
 3. Address demonstrated usability or correctness issues from manual testing in
    separate verified checkpoints.
 
