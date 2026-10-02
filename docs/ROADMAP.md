@@ -89,6 +89,12 @@ verification and limitations. Later checkpoints supersede earlier pending items.
    results before marking full N5 accepted.
 2. Address demonstrated usability or correctness issues from manual testing in
    separate verified checkpoints.
+3. Implement configurable sequential/parallel execution and live chain progress
+   in separately verified checkpoints after establishing scheduler ownership,
+   immutable input and node/resource safety contracts. The current executor is
+   sequential on one background worker; parallel node processing is not delivered.
+   See the [execution review](architecture/execution-review-2026-10-02.md) for the
+   required design and tests. The review itself makes no runtime changes.
 
 Nested components, input fan-out interfaces, asset import/bundling/relocation,
 production 3D rendering, broader scene hierarchies, richer table schemas and

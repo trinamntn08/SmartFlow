@@ -43,3 +43,4 @@ results; automated native computer-use is deferred by the user.
 - [N6h: explicit compatible instance replacement](2026-10-02-native-checkpoint-n6h.md)
 - [First Windows version ready for testing](2026-10-02-first-test-version.md)
 - [N7: selectable workspace widgets](2026-10-02-native-checkpoint-n7.md)
+- [Native execution architecture review](2026-10-02-execution-architecture-review.md)

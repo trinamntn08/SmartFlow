@@ -48,8 +48,12 @@ No domain object is required in an empty project.
 
 The executor validates an acyclic graph, runs off the UI thread, propagates failures
 and discards cancelled output. Revision checks prevent stale runs replacing current
-results. Streaming, simulation, remote execution and production scheduling remain
-future decisions.
+results. Nodes currently execute sequentially on one background worker. There is
+no parallel-mode/worker-count setting or live per-node progress API; mutable shared
+data and scheduler ownership require explicit contracts before concurrency is safe.
+See the [execution architecture review](execution-review-2026-10-02.md) for evidence,
+required changes and acceptance tests. Streaming, simulation, remote execution and
+production scheduling remain future decisions.
 
 ## Reusable components
 
