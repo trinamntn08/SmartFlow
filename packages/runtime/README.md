@@ -1,9 +1,12 @@
 # Runtime
 
-Status: reserved TypeScript runtime; no implementation or package manifest.
+Status: local browser preview runtime (W3a), with a private package manifest.
 The working native execution adapter is separately owned by `native/app/pipeline`.
 
 Own graph validation, scheduling, cancellation, execution status, and result management through core and SDK contracts. Do not import concrete domains or UI components.
 
-Add a private package manifest and behavior tests when implementation begins. TypeScript execution remains deferred; see the [current architecture](../../docs/architecture/README.md)
-and [roadmap](../../docs/ROADMAP.md) before choosing a future browser slice.
+Typed DAG validation and deterministic execution use immutable SDK registration.
+The host supplies cloning, cancellation, yielding and status publication. Failed
+or cancelled runs return no outputs. Run identities reject superseded completion.
+See [decision 0021](../../docs/architecture/decisions/0021-browser-worker-execution.md).
+This is not a production runtime or dynamic plugin loader.

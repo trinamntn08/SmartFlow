@@ -94,7 +94,7 @@ See [the component guide](../GRAPH_COMPONENTS.md) and decisions
 `apps/web` now contains a retained graph editor with React Flow, parameter inspection
 and strict file import/download (W2b). Core owns persistence/commands/history and
 SDK owns immutable bundled registration. The data and scene source workspaces own
-editor metadata. `packages/runtime` is reserved; browser execution/rendering and
+editor metadata and data execution. `packages/runtime` provides typed DAG execution; browser rendering and
 component authoring are pending. The intended dependency direction
 is application composition to core/SDK/runtime/extensions, with SDK depending only
 on core and runtime depending only on core plus SDK. Concrete extensions never
@@ -110,7 +110,7 @@ rejection under [decision 0019](decisions/0019-browser-json-transport.md).
 W2a adds retained core commands/history and immutable SDK extension lookup.
 Workspace updates stay outside semantic undo/redo. W2b editing/file actions are
 implemented under [decision 0020](decisions/0020-browser-canvas.md). W3a worker
-execution is next. See [the web guide](../WEB_DEVELOPMENT.md).
+execution is implemented; W3b controls and viewers are next. See [the web guide](../WEB_DEVELOPMENT.md).
 
 ## Verification and open work
 

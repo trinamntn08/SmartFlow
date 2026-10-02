@@ -1,0 +1,9 @@
+{
+  "cases": [
+    { "multiplier": 1, "minimum": 20, "count": 3, "total": 104, "mean": 34.666666666666664 },
+    { "multiplier": 1, "minimum": 30, "count": 2, "total": 79, "mean": 39.5 },
+    { "multiplier": 1, "minimum": 1000, "count": 0, "total": 0, "mean": 0 },
+    { "multiplier": 2, "minimum": 30, "count": 4, "total": 246, "mean": 61.5 },
+    { "multiplier": 0, "minimum": 0, "count": 6, "total": 0, "mean": 0 }
+  ]
+}

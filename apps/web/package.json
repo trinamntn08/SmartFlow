@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@smartflow/core": "0.0.0",
+    "@smartflow/runtime": "0.0.0",
     "@smartflow/extension-sdk": "0.0.0",
     "@smartflow/data": "0.0.0",
     "@smartflow/scene-3d": "0.0.0",

@@ -46,7 +46,7 @@ workspaces only when their implementation begins.
 | W1b (complete) | Strict browser file transport and shared compatibility fixtures | Duplicate keys, depth/size boundaries and unsafe numeric tokens cannot silently corrupt imports; native and TypeScript agree on the supported subset; all shipped projects retain opaque content |
 | W2a (complete) | Retained commands/history and extension lookup                  | Add/remove/connect/parameter edits undo and redo exactly; unknown fields and inactive graphs survive; workspace navigation is independent of semantic history                                    |
 | W2b (complete) | Browser library, canvas, inspector and file actions             | Create/edit/connect/delete, dirty-state indication, undo/redo and import/download/reopen work through browser interaction; unsupported nodes display placeholders                                |
-| W3a            | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
+| W3a (complete) | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
 | W3b            | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
 | W4             | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
 | W5a            | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
@@ -101,6 +101,6 @@ explicitly implemented nodes and versions. Audience and application field stay o
 
 W2a commands/history and immutable bundled extension lookup are complete;
 see [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md).
-W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). Next: W3a worker runtime and independent data extension.
+W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; next: W3b execution controls and table viewer.
 [W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
-tests; browser execution and rendering remain unimplemented.
+tests; worker data execution is implemented and browser rendering remains pending.

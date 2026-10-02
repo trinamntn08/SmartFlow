@@ -22,8 +22,11 @@ export interface ParameterDefinition {
   options?: readonly JsonValue[];
 }
 export interface ExecutionContext {
+  readonly nodeId: string;
   readonly cancelled: boolean;
   throwIfCancelled(): void;
+  /** Yield to the host event loop and check cancellation before resuming work. */
+  yield(): Promise<void>;
 }
 export interface NodeDefinition {
   id: string;

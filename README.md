@@ -87,7 +87,7 @@ npm run preview
 | `apps/web`               | Browser interface and application composition              | Retained editor     |
 | `packages/core`          | Domain-independent project and graph model                 | Persistence/history |
 | `packages/extension-sdk` | Public extension contracts                                 | Initial contracts   |
-| `packages/runtime`       | Validation, scheduling, execution state                    | Reserved            |
+| `packages/runtime`       | Validation, scheduling, execution state                    | Browser preview     |
 | `extensions/scene-3d`    | Included native 3D types, nodes, and viewer                | Primitive preview   |
 | `extensions/data`        | Independent native table/filter/summary workflow           | Validation preview  |
 | `docs`                   | Product, decisions, development, and agent context         | Available           |

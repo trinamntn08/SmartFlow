@@ -117,13 +117,13 @@ clean-machine Windows compatibility remain future work.
 
 `apps/web` now provides a retained graph editor, library, inspector and strict file import/download (W2b). `packages/core`
 implements schema-v1 document persistence; `packages/extension-sdk` contains
-provisional contracts. `packages/runtime` is reserved, and the domain extensions
-provide browser editor metadata; execution remains pending. Browser graph execution, rendering, extension
+provisional contracts. `packages/runtime` provides typed DAG execution, and the domain extensions
+provide browser editor metadata and independent data execution. Browser viewers, extension
 loading and delivery remain unimplemented. W1 planning/audit and W1b strict JSON
 transport are complete; [the web plan](WEB_IMPLEMENTATION_PLAN.md) defines W2 through W6.
 W2a retained commands/history and immutable extension lookup are complete; see
 [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md). W2b browser editor
-and file actions are complete; see [the W2b checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is next. W1b rejects duplicate
+and file actions are complete; see [the W2b checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b controls/viewer are next. W1b rejects duplicate
 keys, unsafe numeric values, invalid Unicode and native-aligned size/depth violations;
 all shipped projects retain opaque content. See
 [the W1b checkpoint](agents/handoffs/2026-10-02-web-w1b-transport.md),

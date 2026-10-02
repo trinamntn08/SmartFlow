@@ -1,12 +1,15 @@
 #include <DataExtension.h>
 #include <TableViewer.h>
 #include "workspace/WorkspaceWindow.h"
+#include "project/ProjectFile.h"
 #include <QTableWidget>
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QTemporaryDir>
 #include <QUndoStack>
 #include <QFontDatabase>
+#include <QFileInfo>
+#include <QDir>
 #include <QtTest/QtTest>
 
 using namespace smartflow;
@@ -37,6 +40,29 @@ void minimum(WorkspaceWindow& window, double value)
 class DataTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void sharedBrowserDataExpectations()
+    {
+        const auto path=QFileInfo(QString::fromUtf8(SMARTFLOW_DATA_EXAMPLE)).dir().filePath("../tests/fixtures/data-results-v1.json");
+        const auto fixture=project::jsonFile::read(path);
+        WorkspaceWindow window(dataConfiguration());
+        QTRY_VERIFY(window.execution().result());
+        window.execution().setLive(false);
+        for(const auto& expected : fixture["cases"]) {
+            const auto source=window.canvas().projectId(node(window,"sample"));
+            auto parameter=window.project().step(source)->parameter("multiplier");
+            parameter.value=expected["multiplier"].get<double>();
+            window.project().setParameter(source,parameter);
+            minimum(window,expected["minimum"].get<double>());
+            window.execution().run();
+            QTRY_VERIFY(!window.execution().busy());
+            QVERIFY(window.execution().result());
+            QVERIFY(window.execution().result()->succeeded());
+            const auto& rows=output(window,"summary").rows;
+            QCOMPARE(rows[0].value,expected["count"].get<double>());
+            QCOMPARE(rows[1].value,expected["total"].get<double>());
+            QVERIFY(std::abs(rows[2].value-expected["mean"].get<double>())<1e-10);
+        }
+    }
     void parallelDataMatchesSequential() {
         WorkspaceWindow window(dataConfiguration());
         QTRY_VERIFY(window.execution().result());
