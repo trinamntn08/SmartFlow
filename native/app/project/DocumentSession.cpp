@@ -1,4 +1,6 @@
 #include "DocumentSession.h"
+#include "ComponentProjection.h"
+#include <QCryptographicHash>
 #include <tp_pipeline/StepDelegate.h>
 #include <cmath>
 #include <map>
@@ -110,7 +112,8 @@ void DocumentSession::compile()
     auto candidate=std::make_unique<tp_pipeline::PipelineDetails>();
     std::vector<std::string> problems;
     std::map<std::string,tp_pipeline::StepDetails*> steps;
-    const auto& graph=source["project"]["graphs"][graphIndex];
+    std::vector<ExpandedComponent> instances;
+    const auto graph=expandComponents(selectedGraph(),instances,problems);
     for(const auto& node : graph["nodes"]) {
         const auto id=node["id"].get<std::string>();
         const auto* entry=registration(node,registrations);
@@ -161,6 +164,45 @@ void DocumentSession::compile()
     for(const auto* step : candidate->steps())
         for(const auto& input : step->inputMapping())
             if(!input.dataName.isValid()) problems.push_back(step->id().toString() + ": missing required input " + input.portName.toString());
+    components.clear(); groups.clear();
+    for(const auto& instance : instances) {
+        const auto id=instance.node["id"].get<std::string>();
+        try {
+            auto visible=std::make_unique<StepDetails>();
+            const auto hash=QCryptographicHash::hash(QByteArray::fromStdString(instance.node["component"].dump()),QCryptographicHash::Sha256).toHex().toStdString();
+            visible->loadBinary({{"id",id},{"delegateName","smartflow.component/"+hash+"/"+id}},{});
+            auto findStep=[&](const Document& endpoint) {
+                auto* step=candidate->findStepFromStepId(endpoint["nodeId"].get<std::string>());
+                if(!step) throw FileError("Component contains an unavailable node");
+                return step;
+            };
+            for(auto control=instance.body.bindings.controls.begin(); control!=instance.body.bindings.controls.end(); ++control) {
+                auto parameter=findStep(control.value())->parameter(control.value()["parameter"].get<std::string>());
+                if(!parameter.name.isValid()) throw FileError("Component control is invalid or unavailable");
+                parameter.name=control.key(); visible->setParamerter(parameter);
+            }
+            std::vector<PortMapping> inputs,outputs;
+            auto mapPorts=[&](const Document& endpoints, bool input, auto& mappings) {
+                // Retain definition order for stable canvas port indexes.
+                const auto& interface=instance.node["component"][input ? "inputs" : "outputs"];
+                for(const auto& entry : interface) {
+                    const auto alias=entry["id"].get<std::string>();
+                    const auto& endpoint=endpoints[alias];
+                    auto* step=findStep(endpoint);
+                    const auto& ports=input ? step->inputMapping() : step->outputMapping();
+                    const auto found=std::find_if(ports.begin(),ports.end(),[&](const auto& p) { return p.portName.toString()==endpoint["portId"]; });
+                    if(found==ports.end()) throw FileError("Component exposed port is unavailable");
+                    auto mapping=*found; mapping.portName=alias; mappings.push_back(mapping);
+                }
+            };
+            mapPorts(instance.body.inputs,true,inputs); mapPorts(instance.body.bindings.outputs,false,outputs);
+            visible->setInputMapping(inputs); visible->setOutputMapping(outputs);
+            ResultGroup group; group.nodeId=id;
+            for(const auto& node : instance.body.graph["nodes"]) group.steps.emplace_back(node["id"].get<std::string>());
+            for(const auto& output : outputs) group.outputs.push_back(output.dataName);
+            groups.push_back(std::move(group)); components.emplace(id,std::move(visible));
+        } catch(const std::exception& error) { problems.push_back(id+": "+error.what()); }
+    }
     compiled=std::move(candidate);
     issues=std::move(problems);
 }
@@ -173,6 +215,8 @@ const tp_pipeline::PipelineDetails& DocumentSession::executableGraph() const
 
 std::unique_ptr<tp_pipeline::StepDetails> DocumentSession::inspectNode(const std::string& id) const
 {
+    const auto component=components.find(id);
+    if(component!=components.end()) return std::make_unique<tp_pipeline::StepDetails>(*component->second);
     const auto* node=compiled->findStepFromStepId(id);
     return node ? std::make_unique<tp_pipeline::StepDetails>(*node) : nullptr;
 }
@@ -182,10 +226,17 @@ void DocumentSession::setParameter(const std::string& nodeId, const std::string&
     auto& nodes=source["project"]["graphs"][graphIndex]["nodes"];
     const auto node=std::find_if(nodes.begin(),nodes.end(),[&](const auto& item) { return item["id"]==nodeId; });
     if(node==nodes.end()) throw FileError("Node does not exist: " + nodeId);
-    const auto* entry=registration(*node,registrations);
-    if(!entry) throw FileError("Cannot edit an unavailable node type");
-    auto definition=prototype(*delegates->stepDelegate(entry->type.toStdString()));
-    auto parameter=definition.parameter(name);
+    Parameter parameter;
+    if(GraphComponent::isInstance(*node)) {
+        auto inspection=inspectNode(nodeId);
+        if(!inspection) throw FileError("Cannot edit an unavailable component");
+        parameter=inspection->parameter(name);
+    } else {
+        const auto* entry=registration(*node,registrations);
+        if(!entry) throw FileError("Cannot edit an unavailable node type");
+        auto definition=prototype(*delegates->stepDelegate(entry->type.toStdString()));
+        parameter=definition.parameter(name);
+    }
     if(!parameter.name.isValid() || !decode(parameter,value)) throw FileError("Unsupported parameter edit: " + name);
     auto replacement=source;
     replacement["project"]["graphs"][graphIndex]["nodes"][size_t(std::distance(nodes.begin(),node))]["parameters"][name]=value;
@@ -200,6 +251,7 @@ void DocumentSession::replace(Document replacement)
     source.swap(candidate.source);
     compiled.swap(candidate.compiled);
     issues.swap(candidate.issues);
+    components.swap(candidate.components); groups.swap(candidate.groups);
 }
 
 void DocumentSession::createNode(const std::string& nodeId, const std::string& registeredType)
@@ -242,15 +294,14 @@ void DocumentSession::connect(const std::string& connectionId,
     const auto& nodes=graph["nodes"];
     const auto from=findId(nodes,sourceNode), to=findId(nodes,targetNode);
     if(from==nodes.cend() || to==nodes.cend()) throw FileError("Connection endpoint node does not exist");
-    const auto* fromType=registration(*from,registrations);
-    const auto* toType=registration(*to,registrations);
-    if(!fromType || !toType) throw FileError("Cannot connect an unavailable node type");
-    const auto& outputs=delegates->stepDelegate(fromType->type.toStdString())->outPorts();
-    const auto& inputs=delegates->stepDelegate(toType->type.toStdString())->inPorts();
-    const auto output=std::find_if(outputs.begin(),outputs.end(),[&](const auto& p) { return p.name.toString()==sourcePort; });
-    const auto input=std::find_if(inputs.begin(),inputs.end(),[&](const auto& p) { return p.name.toString()==targetPort; });
+    const auto fromStep=inspectNode(sourceNode), toStep=inspectNode(targetNode);
+    if(!fromStep || !toStep) throw FileError("Cannot connect an unavailable node type");
+    const auto& outputs=fromStep->outputMapping();
+    const auto& inputs=toStep->inputMapping();
+    const auto output=std::find_if(outputs.begin(),outputs.end(),[&](const auto& p) { return p.portName.toString()==sourcePort; });
+    const auto input=std::find_if(inputs.begin(),inputs.end(),[&](const auto& p) { return p.portName.toString()==targetPort; });
     if(output==outputs.end() || input==inputs.end()) throw FileError("Connection endpoint port does not exist");
-    if(output->type!=input->type) throw FileError("Incompatible connection port types");
+    if(output->portType!=input->portType) throw FileError("Incompatible connection port types");
     for(const auto& edge : graph["connections"])
         if(edge["target"]["nodeId"]==targetNode && edge["target"]["portId"]==targetPort)
             throw FileError("Connection input already has a producer");
@@ -286,10 +337,11 @@ void DocumentSession::catalogComponent(const GraphComponent& component)
 }
 
 ComponentBindings DocumentSession::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
-    const Document& controls, const Document& inputSources)
+    const Document& controls, const Document& inputSources, bool collapsed)
 {
     const auto graphId=selectedGraph()["id"].get<std::string>();
-    auto expanded=component.instantiate(source,graphId,instanceId,controls,inputSources);
+    auto expanded=collapsed ? component.instantiateCollapsed(source,graphId,instanceId,controls,inputSources) :
+        component.instantiate(source,graphId,instanceId,controls,inputSources);
     DocumentSession candidate(std::move(expanded.document),graphId,delegates,registrations);
     // Existing unsupported content remains retained. Reject only new problems
     // introduced by this command, before changing the active document.
@@ -298,15 +350,14 @@ ComponentBindings DocumentSession::instantiateComponent(const GraphComponent& co
         if(!previous.count(issue)) throw FileError("Component cannot instantiate: "+issue);
     for(const auto& endpoint : expanded.bindings.outputs) {
         const auto id=endpoint["nodeId"].get<std::string>();
-        const auto& nodes=candidate.selectedGraph()["nodes"];
-        const auto found=findId(nodes,id);
-        const auto* entry=found==nodes.end() ? nullptr : registration(*found,registrations);
-        if(!entry) throw FileError("Component output node is unavailable");
-        const auto& ports=delegates->stepDelegate(entry->type.toStdString())->outPorts();
-        if(std::none_of(ports.begin(),ports.end(),[&](const auto& port) { return port.name.toString()==endpoint["portId"]; }))
+        const auto node=candidate.inspectNode(id);
+        if(!node) throw FileError("Component output node is unavailable");
+        const auto& ports=node->outputMapping();
+        if(std::none_of(ports.begin(),ports.end(),[&](const auto& port) { return port.portName.toString()==endpoint["portId"]; }))
             throw FileError("Component output port is unavailable");
     }
     source.swap(candidate.source); compiled.swap(candidate.compiled); issues.swap(candidate.issues);
+    components.swap(candidate.components); groups.swap(candidate.groups);
     return expanded.bindings;
 }
 } // namespace smartflow::project

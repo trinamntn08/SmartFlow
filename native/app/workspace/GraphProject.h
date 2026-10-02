@@ -14,6 +14,7 @@ public:
     QString title(const tp_utils::StringID& type) const;
     QString category(const tp_utils::StringID& type) const;
     const auto& graph() const { return history.session().executableGraph(); }
+    const auto& resultGroups() const { return history.session().resultGroups(); }
     const auto& retained() const { return history.session().document(); }
     const auto& selectedGraph() const { return history.session().selectedGraph(); }
     const auto& diagnostics() const { return history.session().diagnostics(); }

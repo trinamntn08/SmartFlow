@@ -46,6 +46,7 @@ GraphComponent::GraphComponent(Document definition) : retained(std::move(definit
     std::map<std::string,size_t> indegree;
     std::map<std::string,std::vector<std::string>> consumers;
     for(const auto& node : graph["nodes"]) {
+        if(isInstance(node)) throw FileError("Nested graph components are unsupported");
         const auto id=node["id"].get<std::string>();
         nodes.emplace(id,&node); indegree[id]=0;
     }
@@ -139,6 +140,83 @@ Document GraphComponent::catalog(const Document& source) const
         }
     if(!cataloged) catalog.push_back(retained);
     validate(result);
+    return result;
+}
+
+bool GraphComponent::isInstance(const Document& node)
+{
+    return node.is_object() && node.value("packageId",Document())=="smartflow.components" &&
+        node.value("typeId",Document())=="instance";
+}
+
+ComponentExpansion GraphComponent::expandBody(const std::string& instanceId, const Document& controls) const
+{
+    name(instanceId);
+    if(!controls.is_object()) throw FileError("Component controls must be an object");
+    ComponentExpansion result{retained["graph"]};
+    std::set<std::string> known;
+    for(const auto& control : retained["controls"]) {
+        const auto id=control["id"].get<std::string>(); known.insert(id);
+        const auto& target=control["target"];
+        for(auto& node : result.graph["nodes"])
+            if(node["id"]==target["nodeId"] && controls.contains(id))
+                node["parameters"][target["parameter"].get<std::string>()]=controls[id];
+        result.bindings.controls[id]=remapEndpoint(target,instanceId);
+    }
+    for(auto entry=controls.begin(); entry!=controls.end(); ++entry)
+        if(!known.count(entry.key())) throw FileError("Unknown exposed component control: "+entry.key());
+    for(auto& node : result.graph["nodes"]) node["id"]=scoped(instanceId,"node",node["id"]);
+    for(auto& edge : result.graph["connections"]) {
+        edge["id"]=scoped(instanceId,"edge",edge["id"]);
+        edge["source"]=remapEndpoint(edge["source"],instanceId);
+        edge["target"]=remapEndpoint(edge["target"],instanceId);
+    }
+    for(const auto& input : retained["inputs"])
+        result.inputs[input["id"].get<std::string>()]=remapEndpoint(input["target"],instanceId);
+    for(const auto& output : retained["outputs"])
+        result.bindings.outputs[output["id"].get<std::string>()]=remapEndpoint(output["source"],instanceId);
+    return result;
+}
+
+ComponentInstantiation GraphComponent::instantiateCollapsed(const Document& source, const std::string& graphId,
+    const std::string& instanceId, const Document& controls, const Document& inputSources) const
+{
+    const auto expanded=expandBody(instanceId,controls);
+    if(!inputSources.is_object()) throw FileError("Component inputs must be an object");
+    ComponentInstantiation result{catalog(source),{}};
+    auto& graphs=result.document["project"]["graphs"];
+    const auto graph=std::find_if(graphs.begin(),graphs.end(),[&](const auto& item) { return item["id"]==graphId; });
+    if(graph==graphs.end()) throw FileError("Component destination graph is missing");
+    if(std::any_of((*graph)["nodes"].begin(),(*graph)["nodes"].end(),[&](const auto& node) { return node["id"]==instanceId; }))
+        throw FileError("Component instance node ID collision");
+    auto parameters=Document::object();
+    for(const auto& control : retained["controls"]) {
+        const auto id=control["id"].get<std::string>();
+        for(const auto& node : retained["graph"]["nodes"])
+            if(node["id"]==control["target"]["nodeId"])
+                parameters[id]=controls.contains(id) ? controls[id] : node["parameters"][control["target"]["parameter"].get<std::string>()];
+        result.bindings.controls[id]={{"nodeId",instanceId},{"parameter",id}};
+    }
+    std::set<std::string> edges;
+    for(const auto& edge : (*graph)["connections"]) edges.insert(edge["id"].get<std::string>());
+    for(auto input=inputSources.begin(); input!=inputSources.end(); ++input)
+        if(!expanded.inputs.contains(input.key())) throw FileError("Unknown exposed component input: "+input.key());
+    for(auto input=expanded.inputs.begin(); input!=expanded.inputs.end(); ++input) {
+        if(!inputSources.contains(input.key())) throw FileError("Missing exposed component input: "+input.key());
+        const auto& endpoint=inputSources[input.key()];
+        const auto from=name(field(endpoint,"nodeId")); name(field(endpoint,"portId"));
+        if(std::none_of((*graph)["nodes"].begin(),(*graph)["nodes"].end(),[&](const auto& node) { return node["id"]==from; }))
+            throw FileError("Component input source node is missing");
+        const auto edgeId=scoped(instanceId,"input",input.key());
+        if(!edges.insert(edgeId).second) throw FileError("Component instance edge ID collision");
+        (*graph)["connections"].push_back({{"id",edgeId},{"source",endpoint},
+            {"target",{{"nodeId",instanceId},{"portId",input.key()}}}});
+    }
+    (*graph)["nodes"].push_back({{"id",instanceId},{"packageId","smartflow.components"},
+        {"typeId","instance"},{"version",1},{"parameters",parameters},{"component",retained}});
+    for(const auto& output : retained["outputs"])
+        result.bindings.outputs[output["id"].get<std::string>()]={{"nodeId",instanceId},{"portId",output["id"]}};
+    validate(result.document);
     return result;
 }
 

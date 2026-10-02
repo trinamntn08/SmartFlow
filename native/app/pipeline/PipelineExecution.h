@@ -31,6 +31,13 @@ struct ExecutionHandle {
     std::future<ExecutionResult> result;
     void cancel() const { cancellation->store(true); }
 };
+// Immutable mapping from private expanded steps back to one visible node.
+// Output identities are shared without renaming domain members.
+struct ResultGroup {
+    tp_utils::StringID nodeId;
+    std::vector<tp_utils::StringID> steps;
+    std::vector<tp_utils::StringID> outputs;
+};
 
 // Migration adapter, not the persisted SmartFlow model or public extension API.
 // Submit from the graph's owning thread. Registry/factory must remain immutable
@@ -40,7 +47,8 @@ public:
     ExecutionHandle submit(
         const tp_pipeline::PipelineDetails& graph,
         std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates,
-        std::shared_ptr<const tp_data::CollectionFactory> factory);
+        std::shared_ptr<const tp_data::CollectionFactory> factory,
+        std::vector<ResultGroup> groups = {});
 
 private:
     tp_task_queue::TaskQueue queue{"SmartFlow pipeline", 1};

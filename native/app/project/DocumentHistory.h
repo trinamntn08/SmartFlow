@@ -28,7 +28,7 @@ public:
         const std::string& id, const std::string& title, const Document& inputs,
         const Document& outputs, const Document& controls);
     ComponentBindings instantiateComponent(const GraphComponent& component, const std::string& instanceId,
-        const Document& controls, const Document& inputSources);
+        const Document& controls, const Document& inputSources, bool collapsed = false);
     // One atomic command for multi-selection edits on a disposable candidate.
     void edit(const QString& label, const std::function<void(DocumentSession&)>& operation);
     void setWorkspaceField(const std::string& name, const Document& value);

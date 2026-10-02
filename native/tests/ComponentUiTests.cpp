@@ -13,6 +13,7 @@
 #include <QPushButton>
 #include <QTemporaryDir>
 #include <QTimer>
+#include <QTableWidget>
 #include <set>
 #include <QtNodes/internal/NodeGraphicsObject.hpp>
 #include <QtTest/QtTest>
@@ -42,6 +43,88 @@ double total(WorkspaceWindow& window, const std::string& summary)
 class ComponentUiTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void shippedCollapsedExampleRestoresSelectedOutputAndControl()
+    {
+        WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();
+        window.openProject(SMARTFLOW_COMPONENT_EXAMPLE);
+        QCOMPARE(window.canvas().allNodeIds().size(),size_t(2));
+        QCOMPARE(window.findChild<QComboBox*>("outputPort")->currentText(),QString("summary"));
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        QVERIFY(window.grab().save("component-example-smoke.png"));
+        const auto snapshot=window.project().retained()["project"]["graphs"][0]["nodes"][1]["component"];
+        window.findChild<QDoubleSpinBox*>("parameter_minimum")->setValue(45);
+        window.findChild<QPushButton*>("applyParameter")->click();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        QVERIFY(window.project().retained()["project"]["graphs"][0]["nodes"][1]["component"]==snapshot);
+        QCOMPARE(window.execution().result()->steps.size(),size_t(2));
+    }
+
+    void collapsedMenuCanvasInspectorViewerAndReopen()
+    {
+        WorkspaceWindow window(data::dataConfiguration());
+        window.execution().setLive(false); window.show(); QTest::qWait(30);
+        ComponentAuthorDialog author(window.project(),{nodeId(window,"filter"),nodeId(window,"summary")});
+        author.findChild<QLineEdit*>("componentTitle")->setText("Summary tool");
+        author.findChild<QLineEdit*>("inputsName0")->setText("table");
+        author.findChild<QLineEdit*>("outputsName1")->setText("summary");
+        author.findChild<QCheckBox*>("outputsExpose0")->setChecked(true);
+        author.findChild<QLineEdit*>("outputsName0")->setText("rows");
+        author.findChild<QCheckBox*>("controlsExpose0")->setChecked(true);
+        author.findChild<QLineEdit*>("controlsName0")->setText("minimum");
+        author.accept(); QCOMPARE(author.result(),int(QDialog::Accepted));
+        bool inserted=false;
+        QTimer::singleShot(0,&window,[&] {
+            auto* dialog=dynamic_cast<ComponentLibraryDialog*>(QApplication::activeModalWidget());
+            if(!dialog) return;
+            dialog->findChild<QComboBox*>("componentInput_table")->setCurrentIndex(1);
+            dialog->findChild<QDoubleSpinBox*>("componentControl_minimum")->setValue(30);
+            dialog->findChild<QPushButton*>("insertComponentConfirm")->click();
+            inserted=dialog->result()==QDialog::Accepted;
+            if(!inserted) dialog->reject();
+        });
+        window.findChild<QAction*>("insertComponent")->trigger(); QVERIFY(inserted);
+        QCOMPARE(window.canvas().allNodeIds().size(),size_t(4));
+        QCOMPARE(window.scene().selectedNodes().size(),size_t(1));
+        const auto canvasId=window.scene().selectedNodes().front();
+        const auto instance=window.canvas().projectId(canvasId).toString();
+        QCOMPARE(window.canvas().nodeData(canvasId,QtNodes::NodeRole::Caption).toString(),QString("Summary tool"));
+        QCOMPARE(window.canvas().nodeData(canvasId,QtNodes::NodeRole::InPortCount).toUInt(),1u);
+        QCOMPARE(window.canvas().nodeData(canvasId,QtNodes::NodeRole::OutPortCount).toUInt(),2u);
+        window.findChild<QComboBox*>("outputPort")->setCurrentText("summary");
+        window.findChild<QAction*>("pinOutput")->trigger();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(window.execution().result()->steps.size(),size_t(4));
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        window.findChild<QComboBox*>("outputPort")->setCurrentText("rows");
+        window.findChild<QAction*>("pinOutput")->trigger();
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->rowCount(),2);
+        window.findChild<QComboBox*>("outputPort")->setCurrentText("summary");
+        window.findChild<QAction*>("pinOutput")->trigger();
+        window.findChild<QDoubleSpinBox*>("parameter_minimum")->setValue(45);
+        window.findChild<QPushButton*>("applyParameter")->click();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        window.scene().undoStack().undo();
+        QCOMPARE(window.project().step(instance)->parameterValue<double>("minimum"),30.0);
+        window.scene().undoStack().redo();
+        QCOMPARE(window.project().step(instance)->parameterValue<double>("minimum"),45.0);
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.grab().save("component-collapsed-smoke.png"));
+        QTemporaryDir directory; const auto path=directory.filePath("collapsed.smartflow"); window.saveProject(path);
+        const auto saved=window.project().retained();
+        WorkspaceWindow reopened(data::dataConfiguration()); reopened.execution().setLive(false); reopened.show(); reopened.openProject(path);
+        QVERIFY(reopened.project().retained()==saved);
+        QCOMPARE(reopened.canvas().allNodeIds().size(),size_t(4));
+        reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
+        QCOMPARE(reopened.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        reopened.scene().deleteSelected(); QCOMPARE(reopened.canvas().allNodeIds().size(),size_t(3));
+        reopened.scene().undoStack().undo();
+        QVERIFY(reopened.project().retained()["project"]==saved["project"]);
+        QCOMPARE(reopened.canvas().allNodeIds().size(),size_t(4));
+    }
+
     void initTestCase()
     {
         const auto path=qEnvironmentVariable("SMARTFLOW_TEST_FONT");
@@ -93,6 +176,7 @@ private Q_SLOTS:
             QTimer::singleShot(0,&window,[&] {
                 auto* dialog=dynamic_cast<ComponentLibraryDialog*>(QApplication::activeModalWidget());
                 if(!dialog) return;
+                dialog->findChild<QCheckBox*>("componentCollapsed")->setChecked(false);
                 auto* input=dialog->findChild<QComboBox*>("componentInput_table");
                 const auto sample=nodeId(window,"sample");
                 for(int i=1;i<input->count();++i)
@@ -138,6 +222,7 @@ private Q_SLOTS:
         QVERIFY(reopened.project().retained()["project"]==expanded);
         QCOMPARE(reopened.canvas().allNodeIds().size(),size_t(7));
         ComponentLibraryDialog library(reopened.project());
+        library.findChild<QCheckBox*>("componentCollapsed")->setChecked(false);
         QCOMPARE(library.findChild<QComboBox*>("componentCatalog")->currentText(),QString("Reusable summary"));
         library.findChild<QComboBox*>("componentInput_table")->setCurrentIndex(1);
         library.accept(); QCOMPARE(library.result(),int(QDialog::Accepted));

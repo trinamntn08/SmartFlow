@@ -186,8 +186,8 @@ reopened extracted definitions executing through the data extension. See the
 `smartflow_components` is a project-codec/Qt Core library, without domain or
 canvas imports. DocumentSession/DocumentHistory expose atomic component
 instantiation with retained catalog insertion, typed binding validation and undo.
-This is a model/command API; the N6c workspace UI below invokes it. Collapsed
-component nodes remain pending.
+The N6c workspace UI invokes this model/command API. N6d extends it with
+collapsed instances.
 `native_components` checks independent data instances, save/reopen, opaque-field
 retention, undo/redo and failed-command isolation. Report:
 `build/native/native/component-results.xml`. Read the
@@ -211,3 +211,16 @@ Report: `build/native/native/component-ui-results.xml`. With optional
 Offscreen tests/render inspection do not establish real desktop interaction
 acceptance. See [the guide](GRAPH_COMPONENTS.md) and
 [N6c handoff](agents/handoffs/2026-10-02-native-checkpoint-n6c.md).
+
+## N6d collapsed component instances
+
+The library defaults to one retained snapshot node. Exposed ports/control edits
+use ordinary document commands; execution expands private body steps and groups
+results back to the instance. The toolbar selects and pins individual outputs.
+`native_components`, `native_pipeline`, `native_component_ui` and `native_scene`
+cover validation, dependency barriers, failure/cancellation, controls, viewers,
+undo and save/reopen. `native_component_example_startup` checks the shipped data-only
+example. UI tests write `component-collapsed-smoke.png`,
+`component-example-smoke.png` and `component-collapsed-scene-smoke.png`.
+Set `SMARTFLOW_TEST_FONT=C:/Windows/Fonts/segoeui.ttf` for readable offscreen
+component and scene screenshots. See the [component guide](GRAPH_COMPONENTS.md).

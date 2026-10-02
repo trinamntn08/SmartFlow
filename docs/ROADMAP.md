@@ -94,6 +94,12 @@ when inserting separate node copies. Qt menu/dialog tests cover execution,
 undo/redo and save/reopen reuse; real desktop acceptance remains pending. See the
 [N6c handoff](agents/handoffs/2026-10-02-native-checkpoint-n6c.md).
 
+N6d adds collapsed snapshot instances, exposed controls and typed ports, grouped
+execution/results, multi-output pinning and table/scene round trips. The shipped
+component example runs in the separate data-only app. Full N5 desktop interaction
+acceptance remains pending. See the
+[N6d handoff](agents/handoffs/2026-10-02-native-checkpoint-n6d.md).
+
 The list below records the earlier TypeScript plan. It is superseded for current
 implementation by this native migration sequence:
 
@@ -121,7 +127,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 - Completed N5h: add a native table workflow through the same SDK.
 - Completed N5h: run it in a separate executable without linking/initializing the 3D package.
-- N6a/N6b/N6c: reusable graph definitions, extraction/catalog commands and native authoring/library UI implemented; collapsed-node execution remains pending.
+- N6a?N6d: reusable definitions, extraction/catalog commands, native authoring/library UI and collapsed-node execution implemented. Nested components and library editing/export remain pending.
 - Check missing package and unsupported backend behavior.
 
 ## Later, when justified

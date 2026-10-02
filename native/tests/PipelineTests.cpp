@@ -115,6 +115,65 @@ double value(const ExecutionResult& result, StepDetails* step, const char* outpu
 class PipelineTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void failedUnexposedComponentBranchBlocksConsumers()
+    {
+        Fixture f;
+        auto* failing = new StepDetails("test.number@1");
+        failing->setOutputMapping({{tp_data::doubleSID(), "out", "private-data", {}}});
+        addParameter(failing, "mode", std::string("false"));
+        f.graph.addStep(failing);
+        PipelineExecution executor;
+        auto handle = executor.submit(f.graph, f.delegates, f.factory,
+            {{"component", {f.source->id(), failing->id()}, {"source-data"}}});
+        QVERIFY(handle.result.wait_for(10s) == std::future_status::ready);
+        const auto result = handle.result.get();
+        QVERIFY(!result.succeeded());
+        QCOMPARE(result.steps.at("component").state, StepState::Failed);
+        QVERIFY(!result.steps.at("component").output);
+        QCOMPARE(result.steps.at(f.target->id()).state, StepState::Skipped);
+        QVERIFY(!result.steps.at(f.target->id()).output);
+    }
+
+    void componentGroupsPreserveOutputIdentitiesAndFailures()
+    {
+        Fixture f;
+        PipelineExecution executor;
+        const auto sourceName=f.source->outputMapping().front().dataName;
+        const auto targetName=f.target->outputMapping().front().dataName;
+        std::vector<ResultGroup> groups={{"component",{f.source->id(),f.target->id()},{sourceName,targetName,sourceName}}};
+        auto handle=executor.submit(f.graph,f.delegates,f.factory,groups);
+        groups.clear(); // Submitted mapping is a snapshot too.
+        QVERIFY(handle.result.wait_for(10s)==std::future_status::ready);
+        const auto result=handle.result.get();
+        QVERIFY(result.succeeded()); QCOMPARE(result.steps.size(),size_t(1));
+        const auto& output=result.steps.at("component").output;
+        QCOMPARE(output->members().size(),size_t(2));
+        QCOMPARE(output->memberCast<tp_data::DoubleMember>(sourceName)->data,41.0);
+        QCOMPARE(output->memberCast<tp_data::DoubleMember>(targetName)->data,42.0);
+        QCOMPARE(output->member(sourceName)->name(),sourceName);
+        addParameter(f.source,"mode",std::string("false"));
+        auto failing=executor.submit(f.graph,f.delegates,f.factory,{{"component",{f.source->id(),f.target->id()},{targetName}}});
+        QVERIFY(failing.result.wait_for(10s)==std::future_status::ready);
+        const auto failed=failing.result.get();
+        QVERIFY(!failed.succeeded()); QCOMPARE(failed.steps.size(),size_t(1));
+        QCOMPARE(failed.steps.at("component").state,StepState::Failed);
+        QVERIFY(!failed.steps.at("component").output);
+        QVERIFY(failed.steps.at("component").error.find("Upstream step failed")!=std::string::npos);
+    }
+
+    void cancellingGroupedWorkNeverPublishesPartialResults()
+    {
+        auto probe=std::make_shared<Probe>();
+        auto entered=probe->entered.get_future();
+        Fixture f(probe); PipelineExecution executor;
+        auto handle=executor.submit(f.graph,f.delegates,f.factory,
+            {{"component",{f.source->id(),f.target->id()},{f.target->outputMapping().front().dataName}}});
+        QVERIFY(entered.wait_for(10s)==std::future_status::ready);
+        handle.cancel(); QVERIFY(handle.result.wait_for(10s)==std::future_status::ready);
+        const auto result=handle.result.get();
+        QVERIFY(result.cancelled); QVERIFY(result.steps.empty()); QVERIFY(probe->observedCancellation);
+    }
+
     void executesDependenciesAndRecomputes()
     {
         Fixture f;

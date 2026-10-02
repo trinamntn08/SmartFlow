@@ -116,11 +116,11 @@ GraphComponent DocumentHistory::extractComponent(const std::vector<std::string>&
 }
 
 ComponentBindings DocumentHistory::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
-    const Document& controls, const Document& inputSources)
+    const Document& controls, const Document& inputSources, bool collapsed)
 {
     ComponentBindings result;
     edit("Instantiate component",[&](auto& candidate) {
-        result=candidate.instantiateComponent(component,instanceId,controls,inputSources);
+        result=candidate.instantiateComponent(component,instanceId,controls,inputSources,collapsed);
     });
     return result;
 }

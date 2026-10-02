@@ -9,6 +9,7 @@
 #include <QTemporaryDir>
 #include <QJsonArray>
 #include <QAction>
+#include <QFontDatabase>
 #include <QtNodes/GraphicsView>
 #include <QtNodes/internal/NodeGraphicsObject.hpp>
 #include <QtTest/QtTest>
@@ -40,6 +41,63 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void initTestCase()
+    {
+        const auto path = qEnvironmentVariable("SMARTFLOW_TEST_FONT");
+        if(!path.isEmpty()) {
+            const auto id = QFontDatabase::addApplicationFont(path);
+            QVERIFY(id >= 0);
+            QApplication::setFont(QFont(QFontDatabase::applicationFontFamilies(id).first()));
+        }
+    }
+
+    void collapsedSceneComponentMapsViewerControlsAndReopen()
+    {
+        WorkspaceWindow window(sceneConfiguration()); window.execution().setLive(false); window.show();
+        std::vector<std::string> selection;
+        std::string cube, terminal;
+        for(const auto& item : window.project().selectedGraph()["nodes"]) {
+            const auto id=item["id"].get<std::string>(); selection.push_back(id);
+            if(item["typeId"]=="cube") cube=id;
+            if(item["typeId"]=="scene") terminal=id;
+        }
+        const auto component=window.project().commands().extractComponent(selection,"scene-tool","Scene tool",
+            project::Document::array(),project::Document::array({{{"id","scene"},{"source",{{"nodeId",terminal},{"portId","out"}}}}}),
+            project::Document::array({{{"id","size"},{"target",{{"nodeId",cube},{"parameter","size"}}}}}));
+        window.project().commands().instantiateComponent(component,"scene-instance",project::Document::object(),project::Document::object(),true);
+        QtNodes::NodeId instance=QtNodes::InvalidNodeId;
+        for(const auto id : window.canvas().allNodeIds()) if(window.canvas().projectId(id)=="scene-instance") instance=id;
+        QVERIFY(instance!=QtNodes::InvalidNodeId);
+        window.canvas().setNodeData(instance, QtNodes::NodeRole::Position, QPointF(300, 150));
+        window.findChild<QtNodes::GraphicsView*>()->fitInView(window.scene().itemsBoundingRect(), Qt::KeepAspectRatio);
+        window.selectNode(instance);
+        window.findChild<QAction*>("pinOutput")->trigger();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        auto* viewer=dynamic_cast<SceneViewer*>(window.findChild<QWidget*>("sceneViewer"));
+        QCOMPARE(viewer->objectCount(),size_t(1));
+        const auto original=window.execution().result()->steps.at("scene-instance").output;
+        const auto originalMax=dynamic_cast<const SceneMember*>(original->members().front().get())->objects.front().geometry.getMinMax().second.x;
+        window.findChild<QDoubleSpinBox*>("parameter_size")->setValue(4);
+        window.findChild<QPushButton*>("applyParameter")->click();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        const auto changed=window.execution().result()->steps.at("scene-instance").output;
+        const auto changedMax=dynamic_cast<const SceneMember*>(changed->members().front().get())->objects.front().geometry.getMinMax().second.x;
+        QVERIFY(changedMax>originalMax);
+        window.scene().undoStack().undo();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        const auto undone=window.execution().result()->steps.at("scene-instance").output;
+        QCOMPARE(dynamic_cast<const SceneMember*>(undone->members().front().get())->objects.front().geometry.getMinMax().second.x,originalMax);
+        QCOMPARE(dynamic_cast<const SceneMember*>(original->members().front().get())->objects.front().geometry.getMinMax().second.x,originalMax);
+        window.scene().undoStack().redo();
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.grab().save("component-collapsed-scene-smoke.png"));
+        QTemporaryDir directory; const auto path=directory.filePath("collapsed-scene.smartflow"); window.saveProject(path);
+        WorkspaceWindow reopened(sceneConfiguration()); reopened.execution().setLive(false); reopened.show(); reopened.openProject(path);
+        reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
+        QCOMPARE(dynamic_cast<SceneViewer*>(reopened.findChild<QWidget*>("sceneViewer"))->objectCount(),size_t(1));
+        QCOMPARE(reopened.project().step("scene-instance")->parameterValue<double>("size"),4.0);
+    }
+
     void shippedExampleRestoresSceneAndCamera()
     {
         WorkspaceWindow window(sceneConfiguration());

@@ -79,10 +79,11 @@ and layout restoration. This is a bundled sample, without CSV import.
 Select Filter rows and Summary, then use Components > Create from selection.
 Name the component, expose its minimum control and name its table input and
 summary output. Open Components > Component library, bind the input to Sample
-table / out and set minimum to 30. Insert the component and inspect its copied
-Summary node: expect total 79. Undo/Redo should remove/restore the copied subgraph
+table / out and set minimum to 30. Leave **Insert as one node** checked, insert it, select the component and pin
+its summary output: expect total 79. Undo/Redo should remove/restore the instance
 as one command. Save, relaunch and Open; confirm the saved component is available
-in the library and its inserted nodes still execute. See
+in the library and its saved instances still execute. Try the shipped `components.smartflow` example
+and use the toolbar Output selector to switch between rows and summary. See
 [the component guide](GRAPH_COMPONENTS.md) for the full workflow.
 
 ## Current limitations
@@ -95,7 +96,8 @@ in the library and its inserted nodes still execute. See
 - The 3D view is a primitive software preview, not a production GPU renderer.
 - The independent data extension is available; packaged interaction acceptance
   for both workflows is the next checkpoint.
-- Components insert ordinary node copies; collapsed nodes, definition editing,
-  library deletion/export and automatic updates of existing instances are pending.
+- Components support collapsed snapshots and optional ordinary node copies. Nested
+  components, definition editing, library deletion/export and automatic updates
+  of existing instances are pending.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.

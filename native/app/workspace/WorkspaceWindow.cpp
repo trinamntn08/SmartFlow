@@ -28,6 +28,8 @@
 #include <QScrollBar>
 #include <QJsonDocument>
 #include <QScopedValueRollback>
+#include <QSignalBlocker>
+#include <tp_data/AbstractMember.h>
 #include <cmath>
 #include <set>
 
@@ -123,7 +125,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
                 }
         view->fitInView(canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30),Qt::KeepAspectRatio);
         captureWorkspace();
-        statusBar()->showMessage("Inserted component as "+QString::number(index)+" separate nodes.",5000);
+        statusBar()->showMessage("Inserted component.",5000);
     });
     connect(components,&QMenu::aboutToShow,this,[this,createComponent] {
         createComponent->setEnabled(!canvasScene.selectedNodes().empty());
@@ -173,9 +175,19 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         viewer = configuration.createViewer();
         views->addWidget(viewer);
         views->setSizes({300, 430});
+        toolbar->addWidget(new QLabel("Output:"));
+        outputPorts=new QComboBox;
+        outputPorts->setObjectName("outputPort");
+        toolbar->addWidget(outputPorts);
+        connect(outputPorts,qOverload<int>(&QComboBox::currentIndexChanged),this,[this] {
+            selectedPort=outputPorts->currentText();
+            refreshResults(); scheduleWorkspaceCapture();
+        });
         auto* pin = toolbar->addAction("Pin output");
+        pin->setObjectName("pinOutput");
         connect(pin, &QAction::triggered, this, [this] {
             pinned = selected;
+            pinnedPort=selectedPort;
             refreshResults();
             captureWorkspace();
         });
@@ -315,6 +327,8 @@ void WorkspaceWindow::captureWorkspace()
     current["selection"]=project::Document::array();
     for(const auto id : canvasScene.selectedNodes()) current["selection"].push_back(canvasModel.projectId(id).toString());
     current["pinned"]=pinned.toString();
+    current["pinnedPort"]=pinnedPort.toStdString();
+    current["selectedPort"]=selectedPort.toStdString();
     auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
     const auto center=view->mapToScene(view->viewport()->rect().center());
     auto navigation=current.value("navigation",project::Document::object());
@@ -362,6 +376,8 @@ void WorkspaceWindow::restoreWorkspace()
                     if(selectedId==stable) canvasScene.nodeGraphicsObject(id)->setSelected(true);
         }
         if(current.contains("pinned") && current["pinned"].is_string()) pinned=current["pinned"].get<std::string>();
+        if(current.contains("pinnedPort") && current["pinnedPort"].is_string()) pinnedPort=QString::fromStdString(current["pinnedPort"]);
+        if(current.contains("selectedPort") && current["selectedPort"].is_string()) selectedPort=QString::fromStdString(current["selectedPort"]);
         const auto nav=current.value("navigation",project::Document::object());
         if(nav.is_object() && nav.contains("scale") && nav.contains("x") && nav.contains("y") &&
            finiteNumber(nav["scale"],0.01,2) && finiteNumber(nav["x"],-1000000,1000000) && finiteNumber(nav["y"],-1000000,1000000)) {
@@ -418,6 +434,7 @@ void WorkspaceWindow::openProject(const QString& path)
     document.commands().replace(std::move(source), graph);
     selected = {};
     pinned = {};
+    selectedPort.clear(); pinnedPort.clear();
     canvasModel.resetLayout();
     restoreWorkspace();
     filePath = QFileInfo(path).absoluteFilePath();
@@ -499,6 +516,16 @@ void WorkspaceWindow::refreshInspector()
     auto* layout = new QVBoxLayout(inspectorBody);
     layout->setContentsMargins(0, 0, 0, 12);
     auto* step = document.step(selected);
+    if(outputPorts) {
+        QSignalBlocker guard(outputPorts);
+        outputPorts->clear();
+        if(step) for(const auto& port : step->outputMapping())
+            outputPorts->addItem(QString::fromStdString(port.portName.toString()));
+        auto index=outputPorts->findText(selectedPort);
+        outputPorts->setCurrentIndex(index>=0 ? index : (outputPorts->count() ? 0 : -1));
+        selectedPort=outputPorts->currentText();
+        outputPorts->setEnabled(outputPorts->count()>1);
+    }
     if(!step) {
         auto* message=new QLabel(selected.isValid() ? "Node unavailable. Saved content is retained; execution is blocked."
                                                    : "Select one node to edit its parameters.");
@@ -507,6 +534,7 @@ void WorkspaceWindow::refreshInspector()
         return;
     }
     auto* title = new QLabel(document.title(step->delegateName()));
+    title->setTextFormat(Qt::PlainText);
     auto font = title->font();
     font.setBold(true);
     font.setPointSize(15);
@@ -550,8 +578,19 @@ void WorkspaceWindow::refreshResults()
         std::shared_ptr<const tp_data::Collection> output;
         if(result) {
             const auto found = result->steps.find(pinned.isValid() ? pinned : selected);
-            if(found != result->steps.end() && found->second.state == StepState::Succeeded)
+            if(found != result->steps.end() && found->second.state == StepState::Succeeded) {
                 output = found->second.output;
+                const auto* step=document.step(pinned.isValid() ? pinned : selected);
+                const auto port=pinned.isValid() ? pinnedPort : selectedPort;
+                if(step && !port.isEmpty() && output) {
+                    for(const auto& mapping : step->outputMapping()) if(mapping.portName.toString()==port.toStdString()) {
+                        auto single=std::make_shared<tp_data::Collection>();
+                        if(const auto& member=output->member(mapping.dataName)) single->addMember(member);
+                        output=std::move(single);
+                        break;
+                    }
+                }
+            }
         }
         viewer->present(std::move(output));
     }
@@ -567,7 +606,9 @@ void WorkspaceWindow::refreshResults()
         for(const auto& error : result->diagnostics) errors << QString::fromStdString(error);
         outputLabel->setText(errors.join("\n"));
     }
-    for(auto* step : document.graph().steps()) {
+    for(const auto& node : document.selectedGraph()["nodes"]) {
+        auto* step=document.step(node["id"].get<std::string>());
+        if(!step) continue;
         const auto found = result->steps.find(step->id());
         if(found == result->steps.end()) continue;
         const auto& value = found->second;

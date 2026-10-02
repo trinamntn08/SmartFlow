@@ -41,7 +41,7 @@ Document input()
 double total(const DocumentSession& session, const WorkspaceConfiguration& config, const ComponentBindings& bindings)
 {
     PipelineExecution executor;
-    auto handle=executor.submit(session.executableGraph(),config.delegates,config.factory);
+    auto handle=executor.submit(session.executableGraph(),config.delegates,config.factory,session.resultGroups());
     if(handle.result.wait_for(std::chrono::seconds(10))!=std::future_status::ready) throw FileError("Component test execution timeout");
     const auto result=handle.result.get();
     if(!result.succeeded()) throw FileError("Component graph execution failed");
@@ -54,6 +54,107 @@ double total(const DocumentSession& session, const WorkspaceConfiguration& confi
 class ComponentTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void collapsedInstancesExposeControlsAndConnectThroughOutputs()
+    {
+        const auto config=data::dataConfiguration();
+        const auto original=source(config);
+        DocumentHistory history(original,"graph",config.delegates,config.nodes);
+        const GraphComponent component(definition());
+        const auto first=history.instantiateComponent(component,"first",{{"minimum",30}},input(),true);
+        const auto second=history.instantiateComponent(component,"second",Document::object(),input(),true);
+        QCOMPARE(history.session().selectedGraph()["nodes"].size(),size_t(3));
+        QCOMPARE(history.session().resultGroups().size(),size_t(2));
+        QCOMPARE(history.session().executableGraph().steps().size(),size_t(5));
+        QVERIFY(first.outputs["summary"]["nodeId"]=="first");
+        QVERIFY(first.controls["minimum"]["nodeId"]=="first");
+        QCOMPARE(total(history.session(),config,first),79.0);
+        QCOMPARE(total(history.session(),config,second),104.0);
+        const auto facade=history.session().inspectNode("first");
+        QCOMPARE(facade->inputMapping().front().portName.toString(),std::string("table"));
+        QCOMPARE(facade->outputMapping().front().portName.toString(),std::string("summary"));
+        QCOMPARE(facade->parameterValue<double>("minimum"),30.0);
+        history.setParameter("first","minimum",45);
+        QCOMPARE(total(history.session(),config,first),48.0);
+        QCOMPARE(total(history.session(),config,second),104.0);
+        history.undoStack().undo(); QCOMPARE(total(history.session(),config,first),79.0);
+        history.undoStack().redo();
+        history.createNode("downstream","smartflow.data.summary@1");
+        history.connect("component-output","first","summary","downstream","in");
+        const auto chained=history.instantiateComponent(component,"chained",{{"minimum",0}},
+            {{"table",{{"nodeId","first"},{"portId","summary"}}}},true);
+        QVERIFY(history.session().diagnostics().empty());
+        QCOMPARE(total(history.session(),config,chained),97.0); // Summary rows: count 1, total 48, mean 48.
+        auto saved=history.session().document();
+        QVERIFY(saved["project"]["graphs"][0]["nodes"][1]["component"]==definition());
+        QVERIFY(saved["workspace"]==original["workspace"]);
+        QTemporaryDir directory; const auto path=directory.filePath("collapsed.smartflow");
+        write(path,saved);
+        DocumentSession reopened(read(path),"graph",config.delegates,config.nodes);
+        QVERIFY(reopened.document()==saved);
+        QCOMPARE(total(reopened,config,first),48.0);
+        history.removeNode("first");
+        history.undoStack().undo(); QVERIFY(history.session().document()==saved);
+    }
+
+    void collapsedValidationPreservesOpaqueInstancesAndRedo()
+    {
+        const auto config=data::dataConfiguration();
+        DocumentHistory history(source(config),"graph",config.delegates,config.nodes);
+        const GraphComponent component(definition());
+        history.instantiateComponent(component,"one",Document::object(),input(),true);
+        const auto saved=history.session().document();
+        history.undoStack().undo(); const auto before=history.session().document();
+        QVERIFY_EXCEPTION_THROWN(history.instantiateComponent(component,"bad",{{"minimum",-1}},input(),true),FileError);
+        QVERIFY(history.session().document()==before); QVERIFY(history.undoStack().canRedo());
+        history.undoStack().redo();
+        QVERIFY_EXCEPTION_THROWN(history.setParameter("one","private",1),FileError);
+        QVERIFY_EXCEPTION_THROWN(history.connect("bad","one","missing","sample","in"),FileError);
+        QVERIFY(history.session().document()==saved);
+        auto missing=saved;
+        auto& instance=missing["project"]["graphs"][0]["nodes"][1];
+        instance["component"]["graph"]["nodes"][0]["packageId"]="future";
+        instance["futureInstance"]={{"large",uint64_t(18446744073709551615ULL)}};
+        DocumentSession unknown(missing,"graph",config.delegates,config.nodes);
+        QVERIFY(!unknown.diagnostics().empty()); QVERIFY(!unknown.inspectNode("one"));
+        QVERIFY_EXCEPTION_THROWN(unknown.executableGraph(),FileError);
+        QVERIFY(parse(serialize(unknown.document()))==missing);
+        auto malformed=saved; malformed["project"]["graphs"][0]["nodes"][1]["component"]=Document::array();
+        DocumentSession invalid(malformed,"graph",config.delegates,config.nodes);
+        QVERIFY(!invalid.diagnostics().empty()); QVERIFY(invalid.document()==malformed);
+        auto nested=definition();
+        nested["graph"]["nodes"][0]=saved["project"]["graphs"][0]["nodes"][1];
+        QVERIFY_EXCEPTION_THROWN(GraphComponent{nested},FileError);
+        auto collision=source(config);
+        collision["project"]["graphs"][0]["nodes"][0]["id"]="component/node/3/one/filter";
+        DocumentSession colliding(collision,"graph",config.delegates,config.nodes);
+        const auto collisionBefore=colliding.document();
+        QVERIFY_EXCEPTION_THROWN(colliding.instantiateComponent(component,"one",Document::object(),
+            {{"table",{{"nodeId","component/node/3/one/filter"},{"portId","out"}}}},true),FileError);
+        QVERIFY(colliding.document()==collisionBefore);
+    }
+
+    void visibleComponentCyclesRejectIndependentBodyBranches()
+    {
+        const auto config=data::dataConfiguration();
+        auto independent=definition(); independent["id"]="independent-output";
+        independent["graph"]["nodes"].push_back({{"id","constant"},{"packageId","smartflow.data"},
+            {"typeId","sample"},{"version",1},{"parameters",{{"multiplier",1}}}});
+        independent["outputs"][0]["source"]={{"nodeId","constant"},{"portId","out"}};
+        DocumentSession session(source(config),"graph",config.delegates,config.nodes);
+        session.instantiateComponent(GraphComponent(independent),"a",Document::object(),input(),true);
+        session.instantiateComponent(GraphComponent(independent),"b",Document::object(),input(),true);
+        auto cyclic=session.document();
+        for(auto& edge : cyclic["project"]["graphs"][0]["connections"]) {
+            const auto to=edge["target"]["nodeId"].get<std::string>();
+            edge["source"]={{"nodeId",to=="a" ? "b" : "a"},{"portId","summary"}};
+        }
+        DocumentSession rejected(cyclic,"graph",config.delegates,config.nodes);
+        QVERIFY(std::any_of(rejected.diagnostics().begin(),rejected.diagnostics().end(),
+            [](const auto& issue) { return issue.find("cycle")!=std::string::npos; }));
+        QVERIFY_EXCEPTION_THROWN(rejected.executableGraph(),FileError);
+        QVERIFY(rejected.document()==cyclic);
+    }
+
     void extractionCatalogUndoAndReopen()
     {
         const auto config=data::dataConfiguration();

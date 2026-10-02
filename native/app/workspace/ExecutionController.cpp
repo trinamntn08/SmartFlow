@@ -74,7 +74,7 @@ void ExecutionController::startRequested()
         return;
     }
     try {
-        pending = executor.submit(project.graph(), project.registry(), factory);
+        pending = executor.submit(project.graph(), project.registry(), factory, project.resultGroups());
         message = "Running...";
         completion.start();
     } catch(const std::exception& error) {

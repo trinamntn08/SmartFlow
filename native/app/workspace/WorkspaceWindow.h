@@ -9,6 +9,7 @@ class QLabel;
 class QVBoxLayout;
 class QTreeWidget;
 class QPushButton;
+class QComboBox;
 
 namespace smartflow {
 class WorkspaceWindow : public QMainWindow {
@@ -54,6 +55,9 @@ private:
     QLabel* outputLabel = nullptr;
     QTreeWidget* results = nullptr;
     QPushButton* cancelButton = nullptr;
+    QComboBox* outputPorts = nullptr;
+    QString selectedPort;
+    QString pinnedPort;
     OutputViewer* viewer = nullptr;
     tp_utils::StringID pinned;
     tp_utils::StringID selected;

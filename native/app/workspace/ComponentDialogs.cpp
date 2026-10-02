@@ -104,7 +104,7 @@ ComponentAuthorDialog::ComponentAuthorDialog(GraphProject& project, std::vector<
         const auto id=node["id"].get<std::string>();
         if(!selected.count(id)) continue;
         auto* step=project.step(id);
-        if(!step) { unavailable << nodeLabel(project,id); continue; }
+        if(!step || project::GraphComponent::isInstance(node)) { unavailable << nodeLabel(project,id); continue; }
         const auto* delegate=project.registry()->stepDelegate(step->delegateName());
         for(const auto& port : delegate->inPorts()) {
             const Document endpoint={{"nodeId",id},{"portId",port.name.toString()}};
@@ -136,7 +136,7 @@ ComponentAuthorDialog::ComponentAuthorDialog(GraphProject& project, std::vector<
     connect(buttons,&QDialogButtonBox::accepted,this,&ComponentAuthorDialog::accept);
     connect(buttons,&QDialogButtonBox::rejected,this,&QDialog::reject);
     if(selected.empty() || !unavailable.empty()) {
-        error->setText(selected.empty() ? "Select at least one node." : "Selected nodes include unavailable types. Install their packages before creating a component.");
+        error->setText(selected.empty() ? "Select at least one node." : "Select available ordinary nodes. Nested components are not supported.");
         buttons->button(QDialogButtonBox::Save)->setEnabled(false);
     }
 }
@@ -164,11 +164,13 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
     setObjectName("componentLibrary"); setWindowTitle("Component library"); resize(660,500);
     auto* layout=new QVBoxLayout(this);
     auto* hint=message(this,"componentLibraryHint");
-    hint->setText("Choose a saved component, connect its inputs and adjust its controls. Inserting adds a separate copy of its nodes. Outputs can be connected or pinned on the canvas.");
+    hint->setText("Choose a saved component, connect its inputs and adjust its controls. Insert it as one node, or expand its ordinary nodes. Select the inserted node to inspect or pin its output.");
     layout->addWidget(hint);
     auto* form=new QFormLayout;
     library=new QComboBox; library->setObjectName("componentCatalog"); form->addRow("Component",library);
     identity=freshId().toStdString(); layout->addLayout(form);
+    collapsed=new QCheckBox("Insert as one node");
+    collapsed->setObjectName("componentCollapsed"); collapsed->setChecked(true); layout->addWidget(collapsed);
     if(catalog.is_array()) for(const auto& definition : catalog) {
         QString label="Unavailable component";
         if(definition.is_object() && definition.contains("title") && definition["title"].is_string()) label=text(definition["title"]);
@@ -212,10 +214,10 @@ void ComponentLibraryDialog::refreshBindings()
             for(const auto& node : graphProject.selectedGraph()["nodes"]) {
                 const auto nodeId=node["id"].get<std::string>();
                 const auto* source=graphProject.step(nodeId); if(!source) continue;
-                for(const auto& output : graphProject.registry()->stepDelegate(source->delegateName())->outPorts())
-                    if(output.type==port->type) {
-                        Document endpoint={{"nodeId",nodeId},{"portId",output.name.toString()}};
-                        combo->addItem(nodeLabel(graphProject,nodeId)+" / "+text(output.name.toString()),text(endpoint.dump()));
+                for(const auto& output : source->outputMapping())
+                    if(output.portType==port->type) {
+                        Document endpoint={{"nodeId",nodeId},{"portId",output.portName.toString()}};
+                        combo->addItem(nodeLabel(graphProject,nodeId)+" / "+text(output.portName.toString()),text(endpoint.dump()));
                     }
             }
             if(combo->count()==1) complete=false;
@@ -259,7 +261,7 @@ void ComponentLibraryDialog::accept()
         for(const auto& [id,spin,initial] : controls)
             if(spin->value()!=initial) values[id]=spin->value();
         graphProject.commands().instantiateComponent(project::GraphComponent(catalog[size_t(library->currentIndex())]),
-            identity,values,sources);
+            identity,values,sources,collapsed->isChecked());
         QDialog::accept();
     } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
 }

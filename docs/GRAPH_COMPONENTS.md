@@ -1,8 +1,7 @@
 # Native graph components
 
-Status: native authoring/library UI, N6c. Collapsed component nodes are not
-available yet. A component currently inserts a reusable subgraph as
-ordinary nodes through an atomic document command.
+Status: native authoring/library UI and collapsed instances, N6d. Components
+insert as one node by default, with ordinary-node insertion also available.
 
 ## Desktop workflow
 
@@ -17,17 +16,19 @@ ordinary nodes through an atomic document command.
 4. Open **Components > Component library**, choose a saved component, select a
    compatible source output for each input, and adjust exposed numeric controls.
    Other parameter types retain their saved defaults.
-5. Click **Insert component**. A separate copy of its ordinary nodes appears beside
-   the existing graph, selected and framed in the canvas. Connect its output nodes,
-   select them to inspect results or pin their output in the viewer. Insertion is
+5. Leave **Insert as one node** checked and click **Insert component**. The
+   component appears beside the graph with its exposed ports and controls. Select
+   it, choose an **Output** in the toolbar and click **Pin output**. Connect its
+   exposed ports like ordinary nodes. Uncheck the option to insert separate body
+   nodes instead. Insertion is
    one semantic undo command; positions and navigation are workspace state.
 6. Save and reopen the project to retain both the library and inserted copies.
 
 Identifiers are generated automatically. Validation errors stay in the dialog,
 allowing correction without changing the project. Cancellation makes no edit.
 Unavailable or malformed catalog entries stay visible/retained and report errors;
-they cannot be inserted. Creating a component from unavailable selected nodes is
-disabled. Dialogs reject edits if the graph changes while they are open.
+they cannot be inserted. Creating a component from unavailable nodes or existing component instances is
+disabled; nested definitions are unsupported. Dialogs reject edits if the graph changes while they are open.
 
 ## Definition contract
 
@@ -57,14 +58,14 @@ instead of dropping it. Do not modify a definition under an existing ID/version.
 ## Command API
 
 Construct `project::GraphComponent` with a retained definition. Then call
-`DocumentHistory::instantiateComponent(component, instanceId, controls, inputs)`.
+`DocumentHistory::instantiateComponent(component, instanceId, controls, inputs, collapsed)`.
 `controls` is an object mapping exposed IDs to override values. Omitted controls
 use body defaults. `inputs` maps every required exposed input ID to an external
 `{nodeId, portId}` endpoint in the original destination graph.
 
 The result supplies `outputs` and `controls` objects containing remapped endpoints.
-Use existing connection/parameter commands for subsequent edits. The inserted
-nodes receive stable IDs in an instance namespace. A second instance has separate
+Use existing connection/parameter commands for subsequent edits. The API defaults `collapsed` to false for compatibility; the desktop library
+defaults it to true. Expanded body nodes receive stable IDs in an instance namespace. A second instance has separate
 parameters/results. Reusing an instance identity fails if it collides with nodes
 or edges already in the destination graph. Catalog insertion and body expansion
 undo as a single semantic command.
@@ -112,7 +113,28 @@ independent data app. It verifies exposed endpoints, separate control values,
 execution, non-overlapping placement, undo/redo, save/reopen/library reuse,
 compatible-input filtering, cancellation and unavailable-content retention.
 
-Next: a collapsed instance
-node with exposed parameter controls and execution/result mapping. Recursive
-components, definition migration, live catalog updates and external distribution
-remain later work. See [decision 0012](architecture/decisions/0012-native-graph-component-foundation.md).
+N6d tests collapsed table and scene instances, exposed controls and output aliases,
+chained connections, grouped failures/cancellation, cycle rejection, undo/redo,
+opaque unavailable instances and save/reopen. The shipped `components.smartflow`
+example restores the summary output and minimum control in the data-only app.
+
+## Collapsed instance contract
+
+A schema-v1 project retains one node with `packageId: smartflow.components`,
+`typeId: instance`, `version: 1`, exposed control values in `parameters`, and the
+complete definition snapshot in `component`. The saved snapshot governs execution,
+independently of catalog availability or later catalog changes. Unknown fields
+and unavailable/malformed instances remain retained, with diagnostics blocking
+execution. Editing a control changes its instance parameters, not its snapshot.
+
+The session expands a disposable execution graph and presents a facade for exposed
+ports and controls to the canvas/inspector. Results collapse back to visible node
+identities and share exposed members without renaming their data. All exposed
+inputs gate the body; downstream nodes wait for all body steps, including branches
+that do not provide an exposed output. A failed body publishes no instance output.
+Both visible and expanded graphs must be acyclic. Output choice/pinning is saved
+in workspace `selectedPort`/`pinnedPort`, separately from project parameters.
+
+Nested components, definition migration/editing, library deletion/export and live
+updates remain future work. This is a native migration feature, not a production
+plugin system. See [decision 0013](architecture/decisions/0013-collapsed-native-components.md).

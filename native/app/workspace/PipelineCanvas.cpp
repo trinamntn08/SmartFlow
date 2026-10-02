@@ -10,11 +10,27 @@ class CanvasNode final : public tp_qt_pipeline_widgets::StepDelegateNodeDelegate
 public:
     CanvasNode(const tp_pipeline::StepDelegate* definition, QString title)
         : StepDelegateNodeDelegateModel(definition), title(std::move(title)) {}
+    CanvasNode(std::shared_ptr<const tp_pipeline::StepDelegate> definition, QString title)
+        : StepDelegateNodeDelegateModel(definition.get()), title(std::move(title)), owner(std::move(definition)) {}
     QString caption() const override { return title; }
     // Routing points belong exclusively to the canvas workspace state.
     void setConnectionAnchors(QtNodes::PortType, QtNodes::PortIndex, const std::vector<QPointF>&) override {}
 private:
     QString title;
+    std::shared_ptr<const tp_pipeline::StepDelegate> owner;
+};
+
+class ComponentInterface final : public tp_pipeline::StepDelegate {
+public:
+    explicit ComponentInterface(const tp_pipeline::StepDetails& step)
+        : StepDelegate(step.delegateName(),{},ports(step.inputMapping()),ports(step.outputMapping())) {}
+    bool executeStep(tp_pipeline::StepContext*) const override { return false; } // Display metadata only.
+private:
+    static std::vector<tp_pipeline::PortDetails> ports(const std::vector<tp_pipeline::PortMapping>& mappings) {
+        std::vector<tp_pipeline::PortDetails> result;
+        for(const auto& port : mappings) result.push_back({port.portName,port.portType});
+        return result;
+    }
 };
 
 class MissingNode final : public QtNodes::NodeDelegateModel {
@@ -115,6 +131,15 @@ std::string PipelineCanvas::edgeId(QtNodes::ConnectionId connection) const
 void PipelineCanvas::synchronize()
 {
     QScopedValueRollback<bool> guard(syncing,true);
+    for(const auto& node : project.selectedGraph()["nodes"]) if(project::GraphComponent::isInstance(node)) {
+        const auto* step=project.step(node["id"].get<std::string>());
+        if(!step) continue;
+        auto definition=std::make_shared<ComponentInterface>(*step);
+        const auto title=project.title(step->delegateName());
+        dataModelRegistry()->registerModel<CanvasNode>([definition,title] {
+            return std::make_unique<CanvasNode>(definition,title);
+        },"Components");
+    }
     std::set<std::string> wanted;
     for(const auto& node : project.selectedGraph()["nodes"]) wanted.insert(node["id"].get<std::string>());
     for(const auto id : allNodeIds()) {

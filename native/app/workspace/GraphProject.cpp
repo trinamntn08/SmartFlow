@@ -73,6 +73,10 @@ GraphProject::GraphProject(std::shared_ptr<const StepDelegateMap> delegates,
 }
 QString GraphProject::title(const StringID& type) const
 {
+    for(const auto& node : selectedGraph()["nodes"]) if(project::GraphComponent::isInstance(node)) {
+        const auto* facade=step(node["id"].get<std::string>());
+        if(facade && facade->delegateName()==type) return QString::fromStdString(node["component"]["title"]);
+    }
     for(const auto& item : presentations)
         if(item.type.toStdString() == type.toString()) return item.title;
     return nodeTitle(type);

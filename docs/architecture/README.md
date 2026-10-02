@@ -40,7 +40,9 @@ N6a adds a registry-independent graph-component definition/expansion library,
 with retained-session instantiation and one-command undo. It depends on the
 project codec; active registrations validate domain types in the session adapter.
 N6b adds extraction/catalog commands; N6c adds native authoring/library dialogs.
-This is subgraph insertion, with collapsed execution still pending.
+N6d adds retained instance snapshots, disposable execution expansion and exposed
+canvas/inspector facades, without domain imports. See
+[decision 0013](decisions/0013-collapsed-native-components.md).
 See [decision 0012](decisions/0012-native-graph-component-foundation.md).
 
 ## Product invariant

@@ -11,9 +11,14 @@ struct ComponentInstantiation {
     Document document;
     ComponentBindings bindings;
 };
+struct ComponentExpansion {
+    Document graph;
+    Document inputs = Document::object();
+    ComponentBindings bindings;
+};
 
-// Registry-independent retained template. Instantiation expands ordinary nodes;
-// collapsed component nodes and nested component execution are not implemented.
+// Registry-independent retained template. Instances may be ordinary subgraph
+// copies or one retained snapshot node. Nested definitions are unsupported.
 class GraphComponent {
 public:
     explicit GraphComponent(Document definition);
@@ -24,6 +29,10 @@ public:
         const std::vector<std::string>& nodeIds, const std::string& id, const std::string& title,
         const Document& inputs, const Document& outputs, const Document& controls);
     Document catalog(const Document& source) const;
+    static bool isInstance(const Document& node);
+    ComponentExpansion expandBody(const std::string& instanceId, const Document& controls) const;
+    ComponentInstantiation instantiateCollapsed(const Document& source, const std::string& graphId,
+        const std::string& instanceId, const Document& controls, const Document& inputSources) const;
     ComponentInstantiation instantiate(const Document& source, const std::string& graphId,
         const std::string& instanceId, const Document& controls, const Document& inputSources) const;
 private:

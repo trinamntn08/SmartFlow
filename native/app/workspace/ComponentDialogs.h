@@ -45,6 +45,7 @@ private:
     std::string identity;
     QLabel* error;
     QPushButton* insert;
+    QCheckBox* collapsed;
     QFormLayout* bindings;
     std::vector<std::pair<std::string,QComboBox*>> inputs;
     std::vector<std::tuple<std::string,QDoubleSpinBox*,double>> controls;

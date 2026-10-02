@@ -1,0 +1,240 @@
+{
+  "format": "smartflow",
+  "schemaVersion": 1,
+  "project": {
+    "id": "example-components",
+    "packages": [
+      {
+        "id": "smartflow.data",
+        "version": "1"
+      },
+      {
+        "id": "smartflow.components",
+        "version": "1"
+      }
+    ],
+    "assets": [],
+    "graphs": [
+      {
+        "id": "graph",
+        "nodes": [
+          {
+            "id": "sample",
+            "packageId": "smartflow.data",
+            "typeId": "sample",
+            "version": 1,
+            "parameters": {
+              "multiplier": 1
+            }
+          },
+          {
+            "id": "summary-tool",
+            "packageId": "smartflow.components",
+            "typeId": "instance",
+            "version": 1,
+            "parameters": {
+              "minimum": 30
+            },
+            "component": {
+              "format": "smartflow.graph-component",
+              "schemaVersion": 1,
+              "id": "filtered-summary",
+              "title": "Filtered summary",
+              "version": 1,
+              "graph": {
+                "id": "body",
+                "nodes": [
+                  {
+                    "id": "filter",
+                    "packageId": "smartflow.data",
+                    "typeId": "filter",
+                    "version": 1,
+                    "parameters": {
+                      "minimum": 30
+                    }
+                  },
+                  {
+                    "id": "summary",
+                    "packageId": "smartflow.data",
+                    "typeId": "summary",
+                    "version": 1,
+                    "parameters": {}
+                  }
+                ],
+                "connections": [
+                  {
+                    "id": "edge-2",
+                    "source": {
+                      "nodeId": "filter",
+                      "portId": "out"
+                    },
+                    "target": {
+                      "nodeId": "summary",
+                      "portId": "in"
+                    }
+                  }
+                ]
+              },
+              "inputs": [
+                {
+                  "id": "table",
+                  "target": {
+                    "nodeId": "filter",
+                    "portId": "in"
+                  }
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "rows",
+                  "source": {
+                    "nodeId": "filter",
+                    "portId": "out"
+                  }
+                },
+                {
+                  "id": "summary",
+                  "source": {
+                    "nodeId": "summary",
+                    "portId": "out"
+                  }
+                }
+              ],
+              "controls": [
+                {
+                  "id": "minimum",
+                  "target": {
+                    "nodeId": "filter",
+                    "parameter": "minimum"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "connections": [
+          {
+            "id": "table-input",
+            "source": {
+              "nodeId": "sample",
+              "portId": "out"
+            },
+            "target": {
+              "nodeId": "summary-tool",
+              "portId": "table"
+            }
+          }
+        ]
+      }
+    ],
+    "components": [
+      {
+        "format": "smartflow.graph-component",
+        "schemaVersion": 1,
+        "id": "filtered-summary",
+        "title": "Filtered summary",
+        "version": 1,
+        "graph": {
+          "id": "body",
+          "nodes": [
+            {
+              "id": "filter",
+              "packageId": "smartflow.data",
+              "typeId": "filter",
+              "version": 1,
+              "parameters": {
+                "minimum": 30
+              }
+            },
+            {
+              "id": "summary",
+              "packageId": "smartflow.data",
+              "typeId": "summary",
+              "version": 1,
+              "parameters": {}
+            }
+          ],
+          "connections": [
+            {
+              "id": "edge-2",
+              "source": {
+                "nodeId": "filter",
+                "portId": "out"
+              },
+              "target": {
+                "nodeId": "summary",
+                "portId": "in"
+              }
+            }
+          ]
+        },
+        "inputs": [
+          {
+            "id": "table",
+            "target": {
+              "nodeId": "filter",
+              "portId": "in"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "rows",
+            "source": {
+              "nodeId": "filter",
+              "portId": "out"
+            }
+          },
+          {
+            "id": "summary",
+            "source": {
+              "nodeId": "summary",
+              "portId": "out"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "id": "minimum",
+            "target": {
+              "nodeId": "filter",
+              "parameter": "minimum"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "workspace": {
+    "smartflow.native-editor@1": {
+      "graph": {
+        "positions": {
+          "sample": {
+            "x": 0,
+            "y": 0
+          },
+          "summary-tool": {
+            "x": 280,
+            "y": 0
+          }
+        },
+        "selection": [
+          "summary-tool"
+        ],
+        "pinned": "summary-tool",
+        "navigation": {
+          "scale": 0.9,
+          "x": 160,
+          "y": 0
+        },
+        "viewers": {
+          "smartflow.data.table-viewer@1": {
+            "selectedRow": 1
+          }
+        },
+        "pinnedPort": "summary",
+        "selectedPort": "summary"
+      }
+    }
+  }
+}
