@@ -82,8 +82,8 @@ Browser test binaries live in ignored `.cache/playwright`; results, downloads,
 screenshots and failure traces are under `build/web-tests`. Tests launch isolated
 Chromium on loopback, with no existing browser profile. The connected computer-use
 browser runtime is currently unavailable on this machine. Initial automated
-browser verification uses Chromium 153 on Windows; broader supported versions
-and production delivery checks are recorded in W6.
+browser verification uses Chromium 153 on Windows. W6 production checks and
+native/browser/native exchange pass for the [documented support set](WEB_DELIVERY.md).
 
 Native packaged desktop acceptance stays separate and remains pending manual
 results. Browser tests do not establish native desktop interaction acceptance.

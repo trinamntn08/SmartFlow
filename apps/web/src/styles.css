@@ -232,6 +232,7 @@ p {
   border-top: 1px solid #304244;
 }
 .graph-panel {
+  overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -247,7 +248,7 @@ p {
 .canvas {
   position: relative;
   flex: 1;
-  min-height: 300px;
+  min-height: 0;
   background: #101a1c;
 }
 .graph-node {

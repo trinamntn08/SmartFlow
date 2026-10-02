@@ -24,6 +24,7 @@
   ],
   "scripts": {
     "test:browser": "node tools/browser-tests.mjs test",
+    "test:browser:production": "node tools/browser-tests.mjs --production test",
     "test:browser:install": "node tools/browser-tests.mjs install chromium",
     "dev": "npm run dev --workspace @smartflow/web",
     "build": "npm run build --workspace @smartflow/web",

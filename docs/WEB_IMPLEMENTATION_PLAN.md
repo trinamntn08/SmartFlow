@@ -1,8 +1,9 @@
 # Parallel web implementation plan
 
-Updated: 2026-10-02. W1 planning/audit, W1b transport and W2a commands/registry are complete. Browser
-W2b editor/file actions are complete; W3 data execution and table outputs are complete; remaining milestones are pending. Native C++17/Qt6 remains the primary
-implementation and the first user test delivery remains packaged Windows desktop.
+Updated: 2026-10-02. W1–W6 are complete, including production browser acceptance
+and native/browser/native file exchange. Native C++17/Qt6 remains primary and the
+first user test delivery remains packaged Windows desktop; its manual acceptance
+is independent and pending.
 
 ## Goal and initial scope
 
@@ -51,7 +52,7 @@ workspaces only when their implementation begins.
 | W4 (complete)  | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
 | W5a (complete) | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
 | W5b (complete) | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
-| W6             | Browser acceptance and delivery instructions                    | Both workflows pass interaction and file exchange checks in the documented supported browser set; production build and deployment instructions are verified                                      |
+| W6 (complete)  | Browser acceptance and delivery instructions                    | Both workflows pass interaction and file exchange checks in the documented supported browser set; production build and deployment instructions are verified                                      |
 
 W2 depends on W1b. W3 follows W2, W4 follows W3, and W5 requires the retained
 commands/runtime foundations. W6 requires both domains and the agreed component
@@ -99,8 +100,6 @@ collaboration, production asset import/rendering and a public deployment provide
 remain outside this initial plan. Browser/desktop execution parity is limited to
 explicitly implemented nodes and versions. Audience and application field stay open.
 
-W2a commands/history and immutable bundled extension lookup are complete;
-see [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md).
-W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b execution controls and table viewer are complete; W4 scene capability is complete; W5a snapshot execution is complete; W5b authoring is complete; next: W6 delivery acceptance.
-[W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
-tests; worker data execution is implemented and browser primitive scene rendering is implemented.
+All checkpoints are complete; see [W6 evidence and commit index](agents/handoffs/2026-10-02-web-w6-delivery.md)
+and [delivery/support instructions](WEB_DELIVERY.md). Future work requires separate
+scope and does not imply production runtime/plugin readiness or desktop acceptance.

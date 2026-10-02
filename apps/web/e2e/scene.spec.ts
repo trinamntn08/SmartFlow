@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+test.use({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 2 });
 test('scene orbit, framing, deliberate source edit, undo and camera reopen', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));

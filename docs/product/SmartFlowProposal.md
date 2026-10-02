@@ -25,8 +25,11 @@ The automated baseline passes Release builds, 24 CTest entries, packaged startup
 and web checks. Full N5 desktop interaction acceptance is pending the user's
 manual results; automated computer-use is deferred. Production rendering, asset
 import/bundling, dynamic plugin loading, nested components, definition migration and
-public distribution remain unimplemented. The TypeScript browser/core/SDK material
-below describes a preserved prototype or future options, not a shipped web app.
+public distribution remain unimplemented. The parallel TypeScript browser preview
+now implements the approved W1–W6 scope: editing, worker data/scene execution,
+viewers, components and local file exchange. Production Chromium and fresh native
+file exchange are verified; see [browser delivery](../WEB_DELIVERY.md). Earlier
+candidate sections remain historical where current decisions supersede them.
 See [the roadmap](../ROADMAP.md) for authoritative delivered status. The vision and
 acceptance criteria below remain product goals, not claims of completed release.
 
@@ -217,11 +220,11 @@ The diagram describes planned package dependencies. Execution backends communica
 
 The first version delivered for user testing is the **Windows desktop app**, built with native C++17 and Qt6. This is an explicit delivery requirement, confirmed on 2026-10-01. Provide a runnable local app with its dependencies and verify editing, execution, undo, native file dialogs and save/reopen on the desktop. See [decision 0009](../architecture/decisions/0009-desktop-test-release.md) and [desktop testing](../DESKTOP_TESTING.md).
 
-| Environment    | Proposed role                                                                   |
-| -------------- | ------------------------------------------------------------------------------- |
-| Browser        | Planned parallel track; W1 plan/audit complete, browser implementation pending. |
-| Desktop        | First user test release: local graph editing, files, execution and 3D preview.  |
-| Remote service | Optional execution for workloads requiring servers or specialized hardware.     |
+| Environment    | Proposed role                                                                         |
+| -------------- | ------------------------------------------------------------------------------------- |
+| Browser        | Local parallel preview through W6; editing, worker execution, viewers and components. |
+| Desktop        | First user test release: local graph editing, files, execution and 3D preview.        |
+| Remote service | Optional execution for workloads requiring servers or specialized hardware.           |
 
 The interface and project format can be shared, but execution capabilities will differ. Each node declares where it can run, and the app explains missing capabilities.
 
@@ -231,7 +234,9 @@ Project portability does not guarantee execution parity: a project may open ever
 
 ### Browser implementation candidates
 
-React and TypeScript with React Flow remain candidates for a future browser interface. The initial desktop interface uses Qt Widgets and the copied QtNodes canvas.
+React and TypeScript with React Flow implement the parallel browser preview under
+[decision 0020](../architecture/decisions/0020-browser-canvas.md). The initial
+desktop interface uses Qt Widgets and the copied QtNodes canvas.
 
 Reference: [React Flow custom nodes](https://reactflow.dev/learn/customization/custom-nodes).
 

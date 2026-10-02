@@ -29,6 +29,8 @@ what runs today; this index is not a claim of completed production delivery.
 - [0016: Selectable workspace widgets in split regions](0016-selectable-workspace-widgets.md)
 - [0019: Strict browser JSON transport and numeric rejection](0019-browser-json-transport.md)
 - [0020: Retained browser editor with React Flow](0020-browser-canvas.md)
+- [0021: Revision-gated browser worker execution](0021-browser-worker-execution.md)
+- [0022: Bounded browser primitive scene preview](0022-browser-scene-preview.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
 0018 activates web planning alongside native development, updating 0003's web

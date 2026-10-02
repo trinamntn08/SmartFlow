@@ -23,11 +23,13 @@ and explicit compatible instance updates (N6a through N6h).
 
 Release build, 24 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;
-automated computer-use is deferred. The TypeScript browser starter, persistence
-and SDK contracts are the foundation for the parallel web track, not the
-delivered desktop app. W2b adds a browser graph editor with strict import/download,
-retained undo/redo and data/scene metadata; browser execution/rendering remain
-pending. See [the web guide](docs/WEB_DEVELOPMENT.md) and [web plan](docs/WEB_IMPLEMENTATION_PLAN.md).
+automated computer-use is deferred. The parallel browser preview is implemented
+through W6: retained editing, strict import/download, worker execution, table and
+primitive scene viewers, component authoring and saved browser workspace. Native
+and browser file exchange is verified through fresh native window processes.
+See [the web guide](docs/WEB_DEVELOPMENT.md), [browser delivery](docs/WEB_DELIVERY.md)
+and [web plan](docs/WEB_IMPLEMENTATION_PLAN.md). This does not establish packaged
+desktop interaction acceptance or a production plugin runtime.
 See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
 
 The refreshed `build/desktop-test` folder is ready for first manual testing.
@@ -84,7 +86,7 @@ npm run preview
 | `native/app`             | Native C++/Qt shell and adapters                           | Migration preview   |
 | `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses      | Native dependencies |
 | `native/tests`           | Graph, execution, file, component, panel and viewer checks | 24 CTest entries    |
-| `apps/web`               | Browser interface and application composition              | Retained editor     |
+| `apps/web`               | Browser interface and application composition              | Local web preview   |
 | `packages/core`          | Domain-independent project and graph model                 | Persistence/history |
 | `packages/extension-sdk` | Public extension contracts                                 | Initial contracts   |
 | `packages/runtime`       | Validation, scheduling, execution state                    | Browser preview     |
@@ -92,7 +94,8 @@ npm run preview
 | `extensions/data`        | Independent native table/filter/summary workflow           | Validation preview  |
 | `docs`                   | Product, decisions, development, and agent context         | Available           |
 
-Reserved folders contain ownership notes, not working libraries. Add their package manifests when implementation starts. The root npm workspace configuration already covers these locations.
+TypeScript workspaces are private preview libraries with local manifests and
+behavior tests; they do not implement dynamic third-party plugin loading.
 
 ## Repository status
 

@@ -94,8 +94,9 @@ See [the component guide](../GRAPH_COMPONENTS.md) and decisions
 `apps/web` now contains a retained graph editor with React Flow, parameter inspection
 and strict file import/download (W2b). Core owns persistence/commands/history and
 SDK owns immutable bundled registration. The data and scene source workspaces own
-editor metadata and data execution. `packages/runtime` provides typed DAG execution; browser rendering and
-component authoring are pending. The intended dependency direction
+editor metadata and domain execution. `packages/runtime` provides typed DAG and
+collapsed snapshot execution; browser viewers and component authoring are implemented.
+The dependency direction
 is application composition to core/SDK/runtime/extensions, with SDK depending only
 on core and runtime depending only on core plus SDK. Concrete extensions never
 become core/runtime dependencies.
@@ -110,7 +111,11 @@ rejection under [decision 0019](decisions/0019-browser-json-transport.md).
 W2a adds retained core commands/history and immutable SDK extension lookup.
 Workspace updates stay outside semantic undo/redo. W2b editing/file actions are
 implemented under [decision 0020](decisions/0020-browser-canvas.md). W3a worker
-execution is implemented; W3b controls and table viewer are implemented; W4 scene capability is complete; W5a snapshot execution is complete; W5b authoring is complete; W6 delivery acceptance is next. See [the web guide](../WEB_DEVELOPMENT.md).
+execution, W3b table output, W4 primitive scene capability, W5 components and W6
+production/file exchange acceptance are complete. See [the web guide](../WEB_DEVELOPMENT.md),
+[worker decision](decisions/0021-browser-worker-execution.md),
+[scene preview decision](decisions/0022-browser-scene-preview.md) and
+[delivery evidence](../WEB_DELIVERY.md).
 
 ## Verification and open work
 

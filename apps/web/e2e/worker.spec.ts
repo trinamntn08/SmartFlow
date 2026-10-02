@@ -4,6 +4,10 @@ const file = JSON.parse(
   readFileSync(new URL('../../../examples/data.smartflow', import.meta.url), 'utf8'),
 );
 test('real browser worker executes independent data and reports progress', async ({ page }) => {
+  test.skip(
+    process.env.SMARTFLOW_WEB_PRODUCTION === '1',
+    'Development worker entry probe; production worker is exercised through Run graph controls.',
+  );
   await page.goto('/');
   const result = await page.evaluate(async (file) => {
     const worker = new Worker('/src/execution.worker.ts', { type: 'module' });

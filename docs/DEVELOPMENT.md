@@ -38,8 +38,9 @@ npm run dev
 
 Visit http://127.0.0.1:5173. Vite uses a strict loopback port and fails if occupied.
 Use `npm.cmd` on PowerShell when execution policy blocks `npm.ps1`. The browser
-workspace implements graph editing and strict file actions. Execution/scene rendering
-are pending. See [the browser guide](WEB_DEVELOPMENT.md).
+workspace implements retained graph editing, strict file actions, worker data/scene
+execution, viewers and component authoring. See [the browser guide](WEB_DEVELOPMENT.md)
+and [production preview delivery](WEB_DELIVERY.md).
 
 ```sh
 npm run check

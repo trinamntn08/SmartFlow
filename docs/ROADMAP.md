@@ -115,21 +115,22 @@ clean-machine Windows compatibility remain future work.
 
 ## Parallel web development
 
-`apps/web` now provides a retained graph editor, library, inspector and strict file import/download (W2b). `packages/core`
-implements schema-v1 document persistence; `packages/extension-sdk` contains
-provisional contracts. `packages/runtime` provides typed DAG execution, and the domain extensions
-provide browser editor metadata and independent data execution. Browser viewers, extension
-loading and delivery remain unimplemented. W1 planning/audit and W1b strict JSON
-transport are complete; [the web plan](WEB_IMPLEMENTATION_PLAN.md) defines W2 through W6.
-W2a retained commands/history and immutable extension lookup are complete; see
-[the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md). W2b browser editor
-and file actions are complete; see [the W2b checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b controls/table viewer are complete; W4 scene capability is complete; W5a snapshot execution is complete; W5b authoring is complete; W6 delivery acceptance is next. W1b rejects duplicate
-keys, unsafe numeric values, invalid Unicode and native-aligned size/depth violations;
-all shipped projects retain opaque content. See
-[the W1b checkpoint](agents/handoffs/2026-10-02-web-w1b-transport.md),
-[the audit](architecture/web-compatibility-audit-2026-10-02.md) and
-[decision 0018](architecture/decisions/0018-parallel-web-development.md).
-Desktop testing and demonstrated fixes continue independently.
+The approved [web plan](WEB_IMPLEMENTATION_PLAN.md) is complete through W6.
+`apps/web` provides retained editing/history, strict import/download, worker
+execution and statuses, table/primitive scene viewers, collapsed component
+execution/authoring, and browser layout restoration. Core remains domain-independent;
+SDK registration and runtime use public contracts; bundled extensions own domain
+behavior. This remains a local preview with provisional contracts, not a production
+plugin loader.
+
+Production Chromium acceptance covers both domains, components, cancellation,
+file reopening and native save → browser edit/download → fresh native reopen.
+Unknown extension content, inactive graphs, assets and separate workspace namespaces
+survive that exchange. Browser numeric transport restrictions remain explicit under
+[decision 0019](architecture/decisions/0019-browser-json-transport.md).
+See [delivery and supported-browser evidence](WEB_DELIVERY.md) and
+[W6 handoff](agents/handoffs/2026-10-02-web-w6-delivery.md).
+Native packaged manual acceptance continues independently and remains pending.
 
 ## Open decisions
 

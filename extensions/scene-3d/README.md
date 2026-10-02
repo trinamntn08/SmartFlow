@@ -3,8 +3,10 @@
 Status: native primitive preview introduced at N4, integrated with project/workspace
 persistence and collapsed components through N6f.
 
-W2b adds TypeScript browser editor metadata in `src/`, with native persisted
-IDs/ports/parameter ranges. Browser execution and rendering are pending W4.
+`src/` implements cloneable browser scene values, type validation and the five
+primitive operations, with native persisted IDs/ports/parameter ranges. Shared
+fixtures compare transform coordinates. `apps/web` composes a bounded orthographic
+canvas viewer; see [decision 0022](../../docs/architecture/decisions/0022-browser-scene-preview.md).
 
 The required included domain package. `native/` implements Cube, Transform,
 Material, Scene and Merge nodes, a versioned scene output type, and an interactive

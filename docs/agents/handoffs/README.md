@@ -8,11 +8,20 @@ For today's behavior, start with [the roadmap](../../ROADMAP.md),
 [current architecture](../../architecture/README.md),
 [native development](../../NATIVE_DEVELOPMENT.md) and
 [component guide](../../GRAPH_COMPONENTS.md). Implementation is delivered through
-N7, execution E1-E4 and VS Code setup. Full N5 packaged interaction acceptance is pending manual
+N7, execution E1-E4, VS Code setup and the parallel web plan W1–W6. Full N5 packaged interaction acceptance is pending manual
 results; automated native computer-use is deferred by the user.
 
 ## Records
 
+- [W6: production browser acceptance and native file exchange](2026-10-02-web-w6-delivery.md)
+- [W5b: component authoring and browser workspace](2026-10-02-web-w5b-authoring.md)
+- [W5a: component contracts and collapsed execution](2026-10-02-web-w5a-components.md)
+- [W4: scene workflow and primitive viewer](2026-10-02-web-w4-scene.md)
+- [W3b: execution controls and table output](2026-10-02-web-w3b-output.md)
+- [W3a: worker runtime and independent data](2026-10-02-web-w3a-runtime.md)
+- [W2b: browser graph editor and files](2026-10-02-web-w2b-editor.md)
+- [W2a: retained commands and registry](2026-10-02-web-w2a-history.md)
+- [W1b: strict browser transport](2026-10-02-web-w1b-transport.md)
 - [W1: parallel web plan and compatibility audit](2026-10-02-web-w1-plan-audit.md)
 
 - [Task handoff: checkpoint 1 — project persistence and SDK contracts](2026-09-27-contract-checkpoint.md)
