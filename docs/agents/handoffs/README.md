@@ -38,3 +38,4 @@ results; automated native computer-use is deferred by the user.
 - [Task handoff: VS Code CMake Tools native launch setup](2026-10-02-vscode-cmake-tools.md)
 
 - [2026-10-02 documentation synchronization](2026-10-02-documentation-sync.md)
+- [2026-10-02 component editing scope (proposal)](2026-10-02-component-editing-scope.md)

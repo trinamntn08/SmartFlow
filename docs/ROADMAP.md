@@ -74,8 +74,11 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 
 1. Collect manual packaged scene/data/component interaction and file round-trip
    results before marking full N5 accepted.
-2. Scope component definition editing, version/migration policy and any explicit
-   instance update mechanism before implementation. Preserve snapshot reproducibility.
+2. Implement component editing only after settling the
+   [proposed scope](architecture/decisions/0015-component-editing-scope.md): first
+   edit a copy under a fresh ID, then explicit compatible instance replacement.
+   Both remain unimplemented; preserve snapshot reproducibility and keep general
+   revision/migration policy separate.
 3. Address demonstrated usability or correctness issues from manual testing in
    separate verified checkpoints.
 

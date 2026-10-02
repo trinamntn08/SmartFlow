@@ -137,7 +137,9 @@ Both visible and expanded graphs must be acyclic. Output choice/pinning is saved
 in workspace `selectedPort`/`pinnedPort`, separately from project parameters.
 
 Nested components, definition migration/editing and live
-updates remain future work. This is a native migration feature, not a production
+updates remain future work. [Proposed editing scope](architecture/decisions/0015-component-editing-scope.md)
+starts with a fresh-ID copy and later explicit compatible snapshot replacement;
+these actions are not yet available. This is a native migration feature, not a production
 plugin system. See [decision 0013](architecture/decisions/0013-collapsed-native-components.md).
 
 ## Import and export
