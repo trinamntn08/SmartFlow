@@ -1,7 +1,7 @@
 # Browser workspace development
 
 Updated: 2026-10-02. W3b data execution and table outputs are implemented alongside
-the native Windows app. W4 scene execution/rendering is implemented; component authoring is pending.
+the native Windows app. W4 scene execution/rendering and W5 component authoring are implemented.
 
 ## Run and edit
 
@@ -18,7 +18,7 @@ a node and edit its parameters in Inspector, then press Enter or leave the field
 to apply. Delete selection removes nodes and incident edges in one command.
 Use Undo/Redo or Ctrl+Z/Ctrl+Shift+Z (Ctrl+Y also works). Input fields retain normal
 text-editing shortcuts. Dragging/navigation changes workspace rather than semantic
-history. Examples include a scene and a preserved unsupported component instance.
+history. Examples include a scene and a collapsed reusable component workflow.
 
 Run graph executes in a worker. Cancel run terminates work and discards partial
 outputs. Node states appear on the canvas. Choose a named output in the Output
@@ -31,6 +31,24 @@ Click an object to select it. Increase source size is an explicit undoable cube
 parameter edit. Camera and object selection are workspace edits. This primitive
 preview uses fixed lighting/depth-sorted faces, with at most 64 boxes; it does not
 render imported assets, transparency or intersecting surfaces accurately.
+
+## Components and layout
+
+Create component opens an isolated draft of the current selection. Choose public
+input/output/control names, keeping required graph boundaries exposed, then Save
+component. Import/Export component exchanges standalone definitions. Choose matching
+input sources and Insert component; each instance retains its own snapshot.
+Remove component removes the library entry while instances continue to run.
+
+Edit copy opens the body graph with ordinary commands and draft undo/redo. Save
+creates a fresh immutable definition. Select a collapsed instance and a replacement
+library definition, review its body/defaults, then Apply compatible update. The
+public interface must match; current control values carry over. Undo restores the
+exact old snapshot. Opening, importing or editing a library never updates instances.
+
+Workspace layout can hide/show the library or inspector and set their widths.
+Reset layout restores the browser arrangement. These settings, output choice,
+camera and selection restore from downloaded projects independently of graph undo.
 
 New project starts domain-independent. The graph selector switches among retained
 graphs. Projects with no graphs can explicitly add one. Unknown nodes/edges are

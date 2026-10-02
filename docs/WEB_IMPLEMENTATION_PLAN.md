@@ -50,7 +50,7 @@ workspaces only when their implementation begins.
 | W3b (complete) | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
 | W4 (complete)  | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
 | W5a (complete) | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
-| W5b            | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
+| W5b (complete) | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
 | W6             | Browser acceptance and delivery instructions                    | Both workflows pass interaction and file exchange checks in the documented supported browser set; production build and deployment instructions are verified                                      |
 
 W2 depends on W1b. W3 follows W2, W4 follows W3, and W5 requires the retained
@@ -101,6 +101,6 @@ explicitly implemented nodes and versions. Audience and application field stay o
 
 W2a commands/history and immutable bundled extension lookup are complete;
 see [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md).
-W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b execution controls and table viewer are complete; W4 scene capability is complete; W5a snapshot execution is complete; next: W5b authoring.
+W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b execution controls and table viewer are complete; W4 scene capability is complete; W5a snapshot execution is complete; W5b authoring is complete; next: W6 delivery acceptance.
 [W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
 tests; worker data execution is implemented and browser primitive scene rendering is implemented.

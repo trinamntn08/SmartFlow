@@ -14,11 +14,12 @@ import sceneText from '../../../examples/scene.smartflow?raw';
 import componentText from '../../../examples/components.smartflow?raw';
 import { parseProjectBytes } from './project-files.ts';
 import { EditorSession, emptyProject } from './editor-session.ts';
-import { patchWorkspace, readWorkspace } from './workspace.ts';
+import { patchWorkspace, readWorkspace, record, WEB_WORKSPACE } from './workspace.ts';
 import { GraphCanvas } from './GraphCanvas.tsx';
 import { ParameterEditor } from './ParameterEditor.tsx';
 import { ExecutionClient, createExecutionWorker, type ExecutionState } from './execution-client.ts';
 import { OutputPanel } from './OutputPanel.tsx';
+import { ComponentLibrary } from './ComponentLibrary.tsx';
 
 const registry = new ExtensionRegistry([dataExtension, sceneExtension]);
 const examples: Record<string, string> = {
@@ -56,6 +57,24 @@ export function App() {
   );
   const graph = file.project.graphs.find((graph) => graph.id === graphId);
   const workspace = readWorkspace(file, graphId);
+  const rawLayout = record(record(file.workspace[WEB_WORKSPACE])[graphId]).layout;
+  const layout = record(rawLayout);
+  const width = (key: string, fallback: number) =>
+    typeof layout[key] === 'number' && layout[key] >= 180 && layout[key] <= 440
+      ? layout[key]
+      : fallback;
+  const showLibrary = layout.library !== false,
+    showInspector = layout.inspector !== false;
+  const layoutPatch = (patch: import('@smartflow/core').JsonObject, reset = false) =>
+    action(() => {
+      if (
+        !reset &&
+        rawLayout !== undefined &&
+        (rawLayout === null || typeof rawLayout !== 'object' || Array.isArray(rawLayout))
+      )
+        throw new Error('Unsupported saved layout; use Reset layout to replace it explicitly');
+      patchWorkspace(session.history, graphId, { layout: { ...layout, ...patch } });
+    });
   useEffect(() => {
     executor.invalidate(session.history.revision, graphId);
   }, [executor, session, file, graphId]);
@@ -75,6 +94,7 @@ export function App() {
   }, [action, graph, graphId, session, workspace.selection, selectedEdges]);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
       if (
         event.target instanceof HTMLElement &&
         (event.target.matches('input,textarea,select') || event.target.isContentEditable)
@@ -209,6 +229,64 @@ export function App() {
           Delete selection
         </button>
         <div className="toolbar-spacer" />
+        <details className="layout-controls">
+          <summary>Workspace layout</summary>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={showLibrary}
+                onChange={(event) => layoutPatch({ library: event.target.checked })}
+              />
+              Node library
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={showInspector}
+                onChange={(event) => layoutPatch({ inspector: event.target.checked })}
+              />
+              Inspector
+            </label>
+            <label>
+              Library width{' '}
+              <input
+                aria-label="Library width"
+                type="range"
+                min="180"
+                max="440"
+                value={width('libraryWidth', 225)}
+                onChange={(event) => layoutPatch({ libraryWidth: Number(event.target.value) })}
+              />
+            </label>
+            <label>
+              Inspector width{' '}
+              <input
+                aria-label="Inspector width"
+                type="range"
+                min="180"
+                max="440"
+                value={width('inspectorWidth', 280)}
+                onChange={(event) => layoutPatch({ inspectorWidth: Number(event.target.value) })}
+              />
+            </label>
+            <button
+              onClick={() =>
+                layoutPatch(
+                  {
+                    library: true,
+                    inspector: true,
+                    libraryWidth: 225,
+                    inspectorWidth: 280,
+                  },
+                  true,
+                )
+              }
+            >
+              Reset layout
+            </button>
+          </div>
+        </details>
         <label className="compact-label">
           Examples
           <select
@@ -257,8 +335,13 @@ export function App() {
           </button>
         </div>
       )}
-      <div className="workspace-grid">
-        <aside className="library panel">
+      <div
+        className="workspace-grid"
+        style={{
+          gridTemplateColumns: `${showLibrary ? `${width('libraryWidth', 225)}px ` : ''}minmax(300px,1fr)${showInspector ? ` ${width('inspectorWidth', 280)}px` : ''}`,
+        }}
+      >
+        <aside className="library panel" hidden={!showLibrary}>
           <div className="panel-title">
             <h2>Node library</h2>
             <span>
@@ -298,6 +381,13 @@ export function App() {
           <div className="library-note">
             Connect an output to an input. Select a node to edit its parameters.
           </div>
+          <ComponentLibrary
+            editor={session}
+            file={file}
+            graphId={graphId}
+            selection={workspace.selection}
+            action={action}
+          />
         </aside>
         <section className="graph-panel">
           <div className="panel-title graph-title">
@@ -370,7 +460,7 @@ export function App() {
             </div>
           )}
         </section>
-        <aside className="inspector panel">
+        <aside className="inspector panel" hidden={!showInspector}>
           <div className="panel-title">
             <h2>Inspector</h2>
             <span>
