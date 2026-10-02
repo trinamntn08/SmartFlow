@@ -1,4 +1,5 @@
 #pragma once
+#include <ExecutionPolicy.h>
 
 #include <tp_pipeline/PipelineDetails.h>
 #include <tp_pipeline/StepDelegateMap.h>
@@ -41,14 +42,14 @@ struct ResultGroup {
 
 // Migration adapter, not the persisted SmartFlow model or public extension API.
 // Submit from the graph's owning thread. Registry/factory must remain immutable
-// after submission. Delegates execute serially on the queue's worker thread.
+// after submission. The coordinator owns dependencies and result publication.
 class PipelineExecution {
 public:
     ExecutionHandle submit(
         const tp_pipeline::PipelineDetails& graph,
         std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates,
         std::shared_ptr<const tp_data::CollectionFactory> factory,
-        std::vector<ResultGroup> groups = {});
+        std::vector<ResultGroup> groups = {}, ExecutionOptions options = {});
 
 private:
     tp_task_queue::TaskQueue queue{"SmartFlow pipeline", 1};

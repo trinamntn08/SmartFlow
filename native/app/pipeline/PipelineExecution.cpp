@@ -1,9 +1,7 @@
 #include "PipelineExecution.h"
-#include "ExecutionData.h"
+#include "DependencyScheduler.h"
 
-#include <tp_pipeline/PipelineManager.h>
 #include <tp_pipeline/StepDelegate.h>
-#include <tp_utils/Progress.h>
 #include <tp_data/Collection.h>
 #include <algorithm>
 #include <queue>
@@ -116,99 +114,6 @@ std::vector<std::string> validate(const PipelineDetails& graph, const StepDelega
     return errors;
 }
 
-void bindComponentDependencies(PipelineManager& manager, const PipelineDetails& graph,
-    const std::vector<ResultGroup>& groups)
-{
-    // Public mutable contexts let the adapter add dependency barriers without
-    // changing vendor code or inventing data ports. No output escapes a failed
-    // component, and its body waits for all exposed inputs before starting.
-    for(const auto& group : groups) {
-        std::unordered_set<StepContext*> members, inputs;
-        for(auto* step : graph.steps())
-            if(std::find(group.steps.begin(),group.steps.end(),step->id())!=group.steps.end()) members.insert(manager.stepContext(step));
-        for(auto* member : members) for(auto* parent : member->dependsOn) if(!members.count(parent)) inputs.insert(parent);
-        for(auto* member : members) member->dependsOn.insert(inputs.begin(),inputs.end());
-        for(auto* step : graph.steps()) {
-            auto* context=manager.stepContext(step);
-            if(members.count(context)) continue;
-            if(std::any_of(context->dependsOn.begin(),context->dependsOn.end(),[&](auto* parent) { return members.count(parent); }))
-                context->dependsOn.insert(members.begin(),members.end());
-        }
-    }
-}
-
-ExecutionResult execute(PipelineDetails& graph, const StepDelegateMap& delegates,
-                        const tp_data::CollectionFactory& factory,
-                        const std::atomic_bool& cancellation, tp_task_queue::Task& task,
-                        const std::vector<ResultGroup>& groups)
-{
-    ExecutionResult result;
-    auto cancelled = [&] { return cancellation.load() || task.shouldFinish(); };
-    if(cancelled()) { result.cancelled = true; return result; }
-    result.diagnostics = validate(graph, delegates, groups);
-    if(!result.diagnostics.empty()) return result;
-
-    // Do not fix up parameters or prune connections during execution.
-    PipelineManager manager(&graph, &delegates, &factory, false);
-    tp_utils::Progress progress(std::function<bool()>([&] { return !cancelled(); }), "Run graph");
-    progress.setPrintToConsole(false);
-    tp_utils::ParrallelProgress parallel(&progress);
-    manager.startExecution();
-    bindComponentDependencies(manager,graph,groups);
-    while(auto* context = manager.takeNextAvailableStep(&parallel)) {
-        if(cancelled()) break;
-        // The copied parallel progress child reads only the parent's cached
-        // stop flag. Refresh its cancellation callback whenever a delegate polls,
-        // including polls from nested progress children.
-        context->progress->pollCallbacks.addCallback([&progress] { progress.poll(); });
-        StepResult stepResult;
-        const bool upstreamFailed = std::any_of(context->dependsOn.begin(), context->dependsOn.end(),
-                                               [](auto* parent) { return !parent->runOk; });
-        if(upstreamFailed) {
-            stepResult.error = "Upstream step failed";
-        } else {
-            try {
-                context->stepInput = cloneExecutionData(*context->stepInput, factory);
-                context->runOk = context->stepDelegate->executeStep(context);
-                const auto& output = context->stepOutput->output();
-                for(const auto& mapping : context->stepDetails->outputMapping()) {
-                    const auto& member = output->member(mapping.dataName);
-                    if(!member || member->type() != mapping.portType) {
-                        context->progress->addError("Missing or incompatible output: " + mapping.portName.toString());
-                        context->runOk = false;
-                    }
-                }
-                stepResult.error = context->progress->compileErrors();
-                context->runOk = context->runOk && stepResult.error.empty();
-            } catch(const std::exception& error) {
-                context->runOk = false;
-                stepResult.error = error.what();
-            } catch(...) {
-                context->runOk = false;
-                stepResult.error = "Unknown delegate exception";
-            }
-            stepResult.state = context->runOk ? StepState::Succeeded : StepState::Failed;
-            if(context->runOk) {
-                try { stepResult.output = cloneExecutionData(*context->stepOutput->output(), factory); }
-                catch(const std::exception& error) {
-                    context->runOk = false;
-                    stepResult.state = StepState::Failed;
-                    stepResult.error = error.what();
-                }
-            }
-            else if(stepResult.error.empty()) stepResult.error = "Delegate returned failure";
-        }
-        manager.returnCompletedStep(context);
-        result.steps.emplace(context->stepDetails->id(), std::move(stepResult));
-    }
-    if(cancelled()) {
-        result.cancelled = true;
-        result.steps.clear(); // Never publish partial output from a cancelled run.
-    } else if(result.steps.size() != graph.steps().size()) {
-        result.diagnostics.push_back("Execution stopped before all steps completed");
-    }
-    return result;
-}
 } // namespace
 
 namespace {
@@ -253,18 +158,33 @@ bool ExecutionResult::succeeded() const
 
 ExecutionHandle PipelineExecution::submit(const tp_pipeline::PipelineDetails& graph,
     std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates,
-    std::shared_ptr<const tp_data::CollectionFactory> factory, std::vector<ResultGroup> groups)
+    std::shared_ptr<const tp_data::CollectionFactory> factory, std::vector<ResultGroup> groups, ExecutionOptions options)
 {
+    if(options.maxThreads < 1 || options.maxThreads > 64)
+        throw std::invalid_argument("Execution thread budget must be between 1 and 64");
+    for(const auto& entry : options.policies) {
+        if(entry.second.threadLimit < 1 || entry.second.threadLimit > 64)
+            throw std::invalid_argument("Node thread limit must be between 1 and 64");
+        for(const auto& resource : entry.second.exclusiveResources)
+            if(resource.empty()) throw std::invalid_argument("Empty exclusive resource name");
+    }
     // Snapshot on the owner thread before the worker can see the graph.
     auto snapshot = std::make_shared<tp_pipeline::PipelineDetails>(graph);
     auto cancellation = std::make_shared<std::atomic_bool>(false);
     auto promise = std::make_shared<std::promise<ExecutionResult>>();
     auto future = promise->get_future();
     queue.addTask(new tp_task_queue::Task("Run graph",
-        [snapshot, delegates, factory, cancellation, promise, groups=std::move(groups)](tp_task_queue::Task& task) {
+        [snapshot, delegates, factory, cancellation, promise, groups=std::move(groups), options=std::move(options)](tp_task_queue::Task& task) {
             try {
                 if(!delegates || !factory) throw std::invalid_argument("Missing execution registry or factory");
-                auto result=execute(*snapshot, *delegates, *factory, *cancellation, task,groups);
+                ExecutionResult result;
+                auto cancelled=[&] { return cancellation->load() || task.shouldFinish(); };
+                if(cancelled()) result.cancelled=true;
+                else {
+                    result.diagnostics=validate(*snapshot,*delegates,groups);
+                    if(result.diagnostics.empty())
+                        result=executeScheduled(*snapshot,*delegates,*factory,groups,options,cancelled);
+                }
                 groupResults(result,groups);
                 promise->set_value(std::move(result));
             } catch(...) {

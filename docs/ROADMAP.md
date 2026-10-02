@@ -85,9 +85,11 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 
 ## Next work
 
-Execution implementation has begun with E1: source-level safety/options contracts
-and private invocation input/output clones. Scheduling remains sequential at this
-checkpoint. See [E1](agents/handoffs/2026-10-02-execution-e1.md) and
+Execution implementation includes E1 input/output isolation and E2 bounded
+sequential/parallel scheduling. The native UI still uses sequential defaults;
+controls/progress and managed internal work follow. See
+[E2](agents/handoffs/2026-10-02-execution-e2.md),
+[E1](agents/handoffs/2026-10-02-execution-e1.md) and
 [decision 0017](architecture/decisions/0017-native-execution-concurrency.md).
 
 1. Collect manual packaged scene/data/component interaction and file round-trip
@@ -97,7 +99,8 @@ checkpoint. See [E1](agents/handoffs/2026-10-02-execution-e1.md) and
 3. Implement configurable sequential/parallel execution and live chain progress
    in separately verified checkpoints after establishing scheduler ownership,
    immutable input and node/resource safety contracts. The current executor is
-   sequential on one background worker; parallel node processing is not delivered.
+   using sequential defaults in the UI; parallel scheduling is available through
+   the native adapter options, while controls/progress remain pending.
    See the [execution review](architecture/execution-review-2026-10-02.md) for the
    required design and tests. The review itself makes no runtime changes.
 

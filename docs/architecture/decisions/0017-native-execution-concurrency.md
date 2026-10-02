@@ -34,8 +34,9 @@ exhausted graph pool. Unmanaged third-party threads are outside that guarantee.
 ## Checkpoint status
 
 - E1: policy/options contracts and invocation input/output isolation implemented.
-- Bounded scheduling, native controls/progress and internal-work facilities follow
-  in separate verified checkpoints. E1 alone still executes sequentially.
+- E2: bounded dependency scheduling, sequential/parallel options, resource locks
+  and cancellation drain implemented. Native controls/progress and internal-work
+  facilities follow in separate verified checkpoints.
 
 ## Consequences
 
