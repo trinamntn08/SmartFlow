@@ -6,7 +6,10 @@ import {
   type GraphDocument,
   type JsonObject,
   type ProjectFile,
+  type Endpoint,
 } from '@smartflow/core';
+import { resolveDefinition } from './components.ts';
+export { resolveDefinition } from './components.ts';
 import {
   ExtensionRegistry,
   validateParameter,
@@ -29,6 +32,7 @@ export function compileGraph(
   file: ProjectFile,
   graphId: string,
   registry: ExtensionRegistry,
+  options?: Partial<RuntimeOptions>,
 ): CompiledGraph {
   const graph = graphById(file.project, graphId);
   const diagnostics: Diagnostic[] = [];
@@ -42,8 +46,22 @@ export function compileGraph(
     const packageVersion = file.project.packages.find(
       (item) => item.id === node.packageId,
     )?.version;
-    const definition = registry.node(node);
-    if (!packageVersion || !registry.extension(node.packageId, packageVersion) || !definition) {
+    let definition: NodeDefinition | undefined;
+    try {
+      definition = resolveDefinition(file, node, registry, options as RuntimeOptions | undefined);
+    } catch (error) {
+      diagnostics.push({
+        nodeId: node.id,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      continue;
+    }
+    if (
+      !packageVersion ||
+      (node.packageId !== 'smartflow.components' &&
+        !registry.extension(node.packageId, packageVersion)) ||
+      !definition
+    ) {
       diagnostics.push({
         nodeId: node.id,
         message: `Unavailable contract: ${node.packageId}/${node.typeId}@${node.version}`,
@@ -81,6 +99,17 @@ export function compileGraph(
     parameters.set(node.id, values);
   }
   const occupied = new Set<string>();
+  for (const binding of options?.externalInputs ?? []) {
+    const definition = definitions.get(binding.target.nodeId);
+    if (!definition?.inputs.some((port) => port.id === binding.target.portId))
+      diagnostics.push({
+        nodeId: binding.target.nodeId,
+        message: 'Unavailable external input binding',
+      });
+    const key = JSON.stringify([binding.target.nodeId, binding.target.portId]);
+    if (occupied.has(key)) diagnostics.push({ message: 'Input has multiple producers' });
+    occupied.add(key);
+  }
   const dependencies = new Map(graph.nodes.map((node) => [node.id, new Set<string>()]));
   const consumers = new Map(graph.nodes.map((node) => [node.id, new Set<string>()]));
   const endpointKey = (id: string, port: string) => JSON.stringify([id, port]);
@@ -128,6 +157,7 @@ export function compileGraph(
   return { graph, definitions, parameters, order, diagnostics };
 }
 export interface RuntimeOptions {
+  externalInputs?: { target: Endpoint; value: unknown }[];
   clone(value: unknown): unknown;
   cancelled?(): boolean;
   yield?(): Promise<void>;
@@ -168,7 +198,7 @@ export async function runGraph(
   try {
     check();
     const snapshot = parseProject(serializeProject(file));
-    const plan = compileGraph(snapshot, graphId, registry);
+    const plan = compileGraph(snapshot, graphId, registry, options);
     for (const node of plan.graph.nodes) status(node.id, 'waiting');
     if (plan.diagnostics.length)
       return {
@@ -185,6 +215,13 @@ export async function runGraph(
       status(id, 'running');
       const definition = plan.definitions.get(id)!;
       const inputs: Record<string, unknown> = Object.create(null) as Record<string, unknown>;
+      for (const binding of options.externalInputs ?? [])
+        if (binding.target.nodeId === id) {
+          const port = definition.inputs.find((port) => port.id === binding.target.portId)!;
+          if (!registry.type(port.typeId)!.accepts(binding.value))
+            throw new Error(`Invalid component input: ${port.id}`);
+          inputs[port.id] = options.clone(binding.value);
+        }
       for (const edge of plan.graph.connections.filter((edge) => edge.target.nodeId === id)) {
         const value = outputs[edge.source.nodeId]![edge.source.portId];
         const port = definition.inputs.find((port) => port.id === edge.target.portId)!;

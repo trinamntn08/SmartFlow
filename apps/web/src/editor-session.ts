@@ -12,9 +12,11 @@ import {
   type JsonValue,
   type NodeDocument,
   type ProjectFile,
+  isComponentInstance,
 } from '@smartflow/core';
 import { ExtensionRegistry, validateParameter } from '@smartflow/extension-sdk';
 import { writeWorkspace, readWorkspace } from './workspace.ts';
+import { resolveDefinition } from '@smartflow/runtime';
 
 export function emptyProject(id: string): ProjectFile {
   const file = createProject(id);
@@ -29,7 +31,12 @@ export class EditorSession {
     this.registry = registry;
   }
   definition(node: NodeDocument) {
-    return this.registry.node(node);
+    if (!isComponentInstance(node)) return this.registry.node(node);
+    try {
+      return resolveDefinition(this.history.snapshot, node, this.registry);
+    } catch {
+      return undefined;
+    }
   }
   add(graphId: string, packageId: string, typeId: string, id: string): void {
     const extension = this.registry.extension(packageId);
@@ -82,11 +89,11 @@ export class EditorSession {
     const graph = graphById(this.history.snapshot.project, graphId);
     const source = graph.nodes.find((node) => node.id === edge.source.nodeId);
     const target = graph.nodes.find((node) => node.id === edge.target.nodeId);
-    if (
-      !source ||
-      !target ||
-      !this.registry.compatible(source, edge.source.portId, target, edge.target.portId)
-    )
+    const output =
+      source && this.definition(source)?.outputs.find((port) => port.id === edge.source.portId);
+    const input =
+      target && this.definition(target)?.inputs.find((port) => port.id === edge.target.portId);
+    if (!source || !target || !output || !input || output.typeId !== input.typeId)
       throw new Error('Ports are unavailable or have incompatible types');
     const pending = [target.id];
     const seen = new Set<string>();

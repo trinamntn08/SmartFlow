@@ -7,6 +7,14 @@ import {
 } from './json-transport.ts';
 export { MAXIMUM_FILE_BYTES, MAXIMUM_NESTING } from './json-transport.ts';
 export {
+  validateComponent,
+  parseComponent,
+  serializeComponent,
+  extractComponent,
+  isComponentInstance,
+  type ComponentDefinition,
+} from './components.ts';
+export {
   ProjectHistory,
   addNode,
   removeNodes,
