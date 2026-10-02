@@ -10,6 +10,7 @@ class QVBoxLayout;
 class QTreeWidget;
 class QPushButton;
 class QComboBox;
+class QProgressBar;
 
 namespace smartflow {
 class PanelWorkspace;
@@ -61,6 +62,7 @@ private:
     QVBoxLayout* inspectorLayout = nullptr;
     QLabel* outputLabel = nullptr;
     QTreeWidget* results = nullptr;
+    QProgressBar* executionProgress = nullptr;
     QPushButton* cancelButton = nullptr;
     QComboBox* outputPorts = nullptr;
     QString selectedPort;

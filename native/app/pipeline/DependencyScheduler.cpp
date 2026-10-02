@@ -90,7 +90,8 @@ std::vector<std::shared_ptr<std::mutex>> resourceMutexes(const NodeExecutionPoli
     return output;
 }
 
-StepResult runNode(StepContext& context, const std::function<bool()>& cancelled)
+StepResult runNode(StepContext& context, const std::function<bool()>& cancelled,
+    const std::shared_ptr<ExecutionProgress>& status)
 {
     StepResult result;
     result.state=StepState::Failed;
@@ -98,6 +99,7 @@ StepResult runNode(StepContext& context, const std::function<bool()>& cancelled)
         tp_utils::Progress progress(cancelled ? std::function<bool()>([&] { return !cancelled(); }) :
             std::function<bool()>([] { return true; }), "Execute node");
         progress.setPrintToConsole(false);
+        progress.changed.addCallback([&] { status->fraction(context.stepDetails->id(),progress.progress()); });
         context.progress=&progress;
         if(cancelled()) { result.error="Cancelled"; context.progress=nullptr; return result; }
         bool ok=context.stepDelegate->executeStep(&context);
@@ -122,7 +124,8 @@ StepResult runNode(StepContext& context, const std::function<bool()>& cancelled)
 
 ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& delegates,
     const tp_data::CollectionFactory& factory, const std::vector<ResultGroup>& groups,
-    const ExecutionOptions& options, const std::function<bool()>& cancelled)
+    const ExecutionOptions& options, const std::function<bool()>& cancelled,
+    const std::shared_ptr<ExecutionProgress>& progress)
 {
     ExecutionResult result;
     const size_t count=graph.steps().size();
@@ -174,7 +177,9 @@ ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& 
     if(!count) { result.cancelled=cancelled(); return result; }
 
     std::set<size_t> ready;
-    for(size_t i=0; i<count; ++i) if(!remaining[i]) ready.insert(i);
+    for(size_t i=0; i<count; ++i) if(!remaining[i]) {
+        ready.insert(i); progress->state(contexts[i].stepDetails->id(),StepState::Ready);
+    }
     std::vector<StepResult> outputs(count);
     std::vector<std::vector<std::unique_lock<std::mutex>>> locks(count);
     size_t running=0, finished=0;
@@ -189,9 +194,12 @@ ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& 
         }
         contexts[index].runOk=value.state==StepState::Succeeded;
         contexts[index].runComplete=true;
+        progress->state(contexts[index].stepDetails->id(),value.state,value.error);
         outputs[index]=std::move(value);
         ++finished;
-        for(const auto child : next[index]) if(!--remaining[child]) ready.insert(child);
+        for(const auto child : next[index]) if(!--remaining[child]) {
+            ready.insert(child); progress->state(contexts[child].stepDetails->id(),StepState::Ready);
+        }
     };
     while(finished<count) {
         for(auto it=ready.begin(); it!=ready.end() && running<workers && !stopping();) {
@@ -229,13 +237,18 @@ ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& 
             if(stopping()) break;
             locks[index]=std::move(acquired);
             contexts[index].runStarted=true;
+            progress->state(contexts[index].stepDetails->id(),StepState::Running);
             ++running;
-            pool.enqueue([&,index,stopping] { return Completion{index,runNode(contexts[index],stopping)}; });
+            pool.enqueue([&,index,stopping,progress] { return Completion{index,runNode(contexts[index],stopping,progress)}; });
         }
         if(stopping() && !running) break;
         if(finished==count) break;
         for(auto& completion : pool.wait()) {
             --running;
+            if(stopping()) {
+                completion.result.state=StepState::Cancelled;
+                completion.result.output.reset(); completion.result.error="Cancelled";
+            }
             complete(completion.index,std::move(completion.result));
             locks[completion.index].clear();
         }

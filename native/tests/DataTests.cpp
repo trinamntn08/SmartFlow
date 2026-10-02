@@ -37,6 +37,15 @@ void minimum(WorkspaceWindow& window, double value)
 class DataTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void parallelDataMatchesSequential() {
+        WorkspaceWindow window(dataConfiguration());
+        QTRY_VERIFY(window.execution().result());
+        const auto total=output(window,"summary").rows[1].value;
+        window.execution().setScheduling(ExecutionMode::Parallel,4);
+        window.execution().run(); QTRY_VERIFY(window.execution().result());
+        QVERIFY(window.execution().result()->succeeded());
+        QCOMPARE(output(window,"summary").rows[1].value,total);
+    }
     void initTestCase()
     {
         const auto path=qEnvironmentVariable("SMARTFLOW_TEST_FONT");

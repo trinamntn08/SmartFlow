@@ -33,6 +33,7 @@ public:
     }
     bool executeStep(StepContext* context) const override {
         if(gate) {
+            context->progress->setProgress(0.25f);
             std::unique_lock<std::mutex> lock(gate->mutex);
             ++gate->active; ++gate->starts; gate->maximum=std::max(gate->maximum,gate->active);
             gate->changed.notify_all();
@@ -117,8 +118,14 @@ private Q_SLOTS:
         auto gate=std::make_shared<Gate>(); Graph f(gate); f.add("root","root");
         for(const auto* id : {"a","b","c","d","e","f"}) f.add(id,"branch",{"root"});
         PipelineExecution executor; auto handle=executor.submit(f.graph,f.delegates,f.factory,{},f.options());
-        const bool overlap=gate->waitFor(2); gate->open(); const auto result=get(handle);
+        const bool overlap=gate->waitFor(2);
+        const auto progress=handle.progress->snapshot();
+        gate->open(); const auto result=get(handle);
         QVERIFY(overlap); QVERIFY(result.succeeded()); QCOMPARE(gate->maximum,size_t(2)); QCOMPARE(gate->starts,size_t(6));
+        QCOMPARE(progress.completed,size_t(1)); QCOMPARE(progress.total,size_t(7));
+        QCOMPARE(progress.nodes.at("a").state,StepState::Running);
+        QCOMPARE(progress.nodes.at("a").fraction.value(),0.25);
+        const auto final=handle.progress->snapshot(); QVERIFY(final.finished); QCOMPARE(final.completed,final.total);
     }
     void policiesSerialize_data() {
         QTest::addColumn<QString>("kind");
@@ -170,6 +177,9 @@ private Q_SLOTS:
         QCOMPARE(result.steps.at("component").state,StepState::Failed);
         QCOMPARE(result.steps.at("consumer").state,StepState::Skipped);
         QCOMPARE(result.steps.at("independent").state,StepState::Succeeded);
+        const auto progress=handle.progress->snapshot();
+        QCOMPARE(progress.nodes.at("component").state,StepState::Failed);
+        QCOMPARE(progress.nodes.size(),size_t(4)); QCOMPARE(progress.completed,size_t(5));
     }
     void cancellationDrainsOverlappingWork() {
         auto gate=std::make_shared<Gate>(); Graph f(gate); f.add("root","root");
@@ -178,6 +188,8 @@ private Q_SLOTS:
         const bool started=gate->waitFor(2); handle.cancel(); const auto result=get(handle);
         QVERIFY(started); QVERIFY(result.cancelled); QVERIFY(result.steps.empty());
         QCOMPARE(gate->active,size_t(0)); QCOMPARE(gate->starts,size_t(2));
+        const auto progress=handle.progress->snapshot(); QVERIFY(progress.finished); QVERIFY(progress.cancelled);
+        QCOMPARE(progress.completed,progress.total); QCOMPARE(progress.nodes.at("c").state,StepState::Cancelled);
     }
     void adjacentComponentBarriersIgnoreGroupOrder() {
         Graph f;
@@ -192,6 +204,16 @@ private Q_SLOTS:
         QVERIFY_EXCEPTION_THROWN(executor.submit(f.graph,f.delegates,f.factory,{},options),std::invalid_argument);
         options.maxThreads=65;
         QVERIFY_EXCEPTION_THROWN(executor.submit(f.graph,f.delegates,f.factory,{},options),std::invalid_argument);
+    }
+    void progressFractionsAndRunIdentity() {
+        Graph f; f.add("root","root");
+        ExecutionProgress first(f.graph,{}),second(f.graph,{});
+        QVERIFY(first.snapshot().runId!=second.snapshot().runId);
+        first.state("root",StepState::Running); first.fraction("root",0.6); first.fraction("root",0.2);
+        QCOMPARE(first.snapshot().nodes.at("root").fraction.value(),0.6);
+        first.finish(true); first.fraction("root",0.9);
+        const auto snapshot=first.snapshot(); QCOMPARE(snapshot.completed,size_t(1));
+        QCOMPARE(snapshot.nodes.at("root").state,StepState::Cancelled);
     }
     void emptyAndLargeGraphs() {
         Graph f; PipelineExecution executor;

@@ -46,3 +46,4 @@ results; automated native computer-use is deferred by the user.
 - [Native execution architecture review](2026-10-02-execution-architecture-review.md)
 - [E1: execution contracts and data isolation](2026-10-02-execution-e1.md)
 - [E2: bounded native dependency scheduler](2026-10-02-execution-e2.md)
+- [E3: native execution controls and live progress](2026-10-02-execution-e3.md)

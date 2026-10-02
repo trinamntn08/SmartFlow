@@ -50,8 +50,9 @@ The executor validates an acyclic graph, runs off the UI thread, propagates fail
 and discards cancelled output. Revision checks prevent stale runs replacing current
 results. The adapter now supports bounded sequential/parallel scheduling through
 explicit options, with one coordinator, private cloned invocation data and
-conservative delegate/resource policies. The UI still uses sequential defaults;
-mode/thread controls and live per-node progress follow in the next checkpoint.
+conservative delegate/resource policies. Native controls select sequential/parallel
+mode and thread limits; synchronized live node/component progress is published on
+the Qt thread with stale-run rejection. See [execution](../EXECUTION.md).
 See the [execution architecture review](execution-review-2026-10-02.md) for evidence,
 required changes and acceptance tests. Streaming, simulation, remote execution and
 production scheduling remain future decisions.

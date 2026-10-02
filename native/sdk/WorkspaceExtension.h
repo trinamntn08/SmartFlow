@@ -1,4 +1,5 @@
 #pragma once
+#include "ExecutionPolicy.h"
 #include <tp_pipeline/StepDelegateMap.h>
 #include <tp_data/CollectionFactory.h>
 #include <tp_data/Collection.h>
@@ -41,6 +42,7 @@ struct PresetNode {
 struct PresetConnection { size_t source, output, target, input; };
 
 struct WorkspaceConfiguration {
+    NodeExecutionPolicies executionPolicies;
     std::shared_ptr<tp_pipeline::StepDelegateMap> delegates;
     std::shared_ptr<tp_data::CollectionFactory> factory;
     std::vector<NodePresentation> nodes;

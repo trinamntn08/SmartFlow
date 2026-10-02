@@ -94,6 +94,7 @@ void contribute(WorkspaceConfiguration& configuration)
     for(const auto& node : nodes) {
         const auto type=QString("smartflow.data.%1@1").arg(node.name);
         configuration.delegates->addStepDelegate(new DataDelegate(type.toStdString().c_str(),node.operation));
+        configuration.executionPolicies[type.toStdString()]={true,{}};
         configuration.nodes.push_back({type,node.title,"Data","smartflow.data",node.name,1});
     }
     configuration.factory->addMemberFactory(new TableFactory);

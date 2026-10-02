@@ -171,10 +171,11 @@ ExecutionHandle PipelineExecution::submit(const tp_pipeline::PipelineDetails& gr
     // Snapshot on the owner thread before the worker can see the graph.
     auto snapshot = std::make_shared<tp_pipeline::PipelineDetails>(graph);
     auto cancellation = std::make_shared<std::atomic_bool>(false);
+    auto progress = std::make_shared<ExecutionProgress>(*snapshot,groups);
     auto promise = std::make_shared<std::promise<ExecutionResult>>();
     auto future = promise->get_future();
     queue.addTask(new tp_task_queue::Task("Run graph",
-        [snapshot, delegates, factory, cancellation, promise, groups=std::move(groups), options=std::move(options)](tp_task_queue::Task& task) {
+        [snapshot, delegates, factory, cancellation, promise, progress, groups=std::move(groups), options=std::move(options)](tp_task_queue::Task& task) {
             try {
                 if(!delegates || !factory) throw std::invalid_argument("Missing execution registry or factory");
                 ExecutionResult result;
@@ -183,15 +184,17 @@ ExecutionHandle PipelineExecution::submit(const tp_pipeline::PipelineDetails& gr
                 else {
                     result.diagnostics=validate(*snapshot,*delegates,groups);
                     if(result.diagnostics.empty())
-                        result=executeScheduled(*snapshot,*delegates,*factory,groups,options,cancelled);
+                        result=executeScheduled(*snapshot,*delegates,*factory,groups,options,cancelled,progress);
                 }
                 groupResults(result,groups);
+                progress->finish(result.cancelled,result.diagnostics);
                 promise->set_value(std::move(result));
             } catch(...) {
+                progress->finish(cancellation->load(),{"Unexpected execution error"});
                 promise->set_exception(std::current_exception());
             }
             return tp_task_queue::RunAgain::No;
         }));
-    return {std::move(cancellation), std::move(future)};
+    return {std::move(cancellation), std::move(future), std::move(progress)};
 }
 } // namespace smartflow

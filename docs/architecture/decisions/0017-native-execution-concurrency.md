@@ -37,6 +37,8 @@ exhausted graph pool. Unmanaged third-party threads are outside that guarantee.
 - E2: bounded dependency scheduling, sequential/parallel options, resource locks
   and cancellation drain implemented. Native controls/progress and internal-work
   facilities follow in separate verified checkpoints.
+- E3: native controls and live node/component progress implemented; audited
+  bundled numeric/data/scene delegates opt into reentrancy.
 
 ## Consequences
 

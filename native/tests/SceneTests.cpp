@@ -42,6 +42,16 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void parallelSceneMatchesSequential() {
+        WorkspaceWindow window(sceneConfiguration());
+        QTRY_VERIFY(window.execution().result());
+        const auto previous=scene(window,"scene").objects.front().geometry.verts.front().vert;
+        window.execution().setScheduling(ExecutionMode::Parallel,4);
+        window.execution().run(); QTRY_VERIFY(window.execution().result());
+        QVERIFY(window.execution().result()->succeeded());
+        const auto actual=scene(window,"scene").objects.front().geometry.verts.front().vert;
+        QCOMPARE(actual.x,previous.x); QCOMPARE(actual.y,previous.y); QCOMPARE(actual.z,previous.z);
+    }
     void editedSceneCopyRetainsOriginalSnapshot()
     {
         WorkspaceWindow window(sceneConfiguration()); window.execution().setLive(false); window.show();

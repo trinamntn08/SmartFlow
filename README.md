@@ -10,6 +10,8 @@ with graph editing, background execution/cancellation, inspector controls,
 undo/redo, atomic project Save/Open and workspace/viewer restoration.
 Selectable widget regions support H/V splits, swapping, resizing and saved layouts.
 See [workspace widgets](docs/WORKSPACE_WIDGETS.md).
+Sequential/parallel execution controls and live node/component progress are
+available; see [execution](docs/EXECUTION.md). Node-internal work budgeting follows.
 
 The included 3D extension provides Cube/Transform/Material/Scene/Merge and a
 bounded interactive primitive viewer. The separate data app provides sample,
@@ -18,7 +20,7 @@ Reusable components support collapsed snapshots, exposed ports/controls,
 standalone import/export, undoable library removal and isolated editing copies
 and explicit compatible instance updates (N6a through N6h).
 
-Release build, 18 native CTest entries, packaged startup and web checks passed.
+Release build, native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;
 automated computer-use is deferred. The TypeScript browser starter, persistence
 and SDK contracts are preserved for a future extension, not the delivered app.

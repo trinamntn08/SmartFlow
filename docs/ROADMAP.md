@@ -85,9 +85,10 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 
 ## Next work
 
-Execution implementation includes E1 input/output isolation and E2 bounded
-sequential/parallel scheduling. The native UI still uses sequential defaults;
-controls/progress and managed internal work follow. See
+Execution implementation includes E1 input/output isolation, E2 bounded
+sequential/parallel scheduling and E3 native controls/live node/component progress.
+Managed internal work follows. See [execution](EXECUTION.md),
+[E3](agents/handoffs/2026-10-02-execution-e3.md),
 [E2](agents/handoffs/2026-10-02-execution-e2.md),
 [E1](agents/handoffs/2026-10-02-execution-e1.md) and
 [decision 0017](architecture/decisions/0017-native-execution-concurrency.md).
@@ -96,13 +97,10 @@ controls/progress and managed internal work follow. See
    results before marking full N5 accepted.
 2. Address demonstrated usability or correctness issues from manual testing in
    separate verified checkpoints.
-3. Implement configurable sequential/parallel execution and live chain progress
-   in separately verified checkpoints after establishing scheduler ownership,
-   immutable input and node/resource safety contracts. The current executor is
-   using sequential defaults in the UI; parallel scheduling is available through
-   the native adapter options, while controls/progress remain pending.
-   See the [execution review](architecture/execution-review-2026-10-02.md) for the
-   required design and tests. The review itself makes no runtime changes.
+3. Complete shared budgeting for node-internal parallel work and refresh the
+   desktop package. Bounded sequential/parallel modes and live progress are
+   implemented in the UI. See [execution](EXECUTION.md) and the
+   [original review](architecture/execution-review-2026-10-02.md).
 
 Nested components, input fan-out interfaces, asset import/bundling/relocation,
 production 3D rendering, broader scene hierarchies, richer table schemas and

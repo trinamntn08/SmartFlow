@@ -10,11 +10,15 @@ namespace smartflow {
 class ExecutionController : public QObject {
     Q_OBJECT
 public:
-    ExecutionController(GraphProject& project, std::shared_ptr<const tp_data::CollectionFactory> factory);
+    ExecutionController(GraphProject& project, std::shared_ptr<const tp_data::CollectionFactory> factory,
+        NodeExecutionPolicies policies = {});
     ~ExecutionController() override;
     void run();
     void cancel();
     void setLive(bool enabled);
+    void setScheduling(ExecutionMode mode, size_t maxThreads);
+    const ExecutionOptions& options() const { return executionOptions; }
+    const std::optional<ExecutionProgressSnapshot>& progress() const { return publishedProgress; }
     bool busy() const { return pending.has_value(); }
     const std::optional<ExecutionResult>& result() const { return published; }
     QString status() const { return message; }
@@ -31,6 +35,8 @@ private:
     QTimer completion;
     std::optional<ExecutionHandle> pending;
     std::optional<ExecutionResult> published;
+    std::optional<ExecutionProgressSnapshot> publishedProgress;
+    ExecutionOptions executionOptions;
     quint64 submittedRevision = 0;
     quint64 generation = 0;
     quint64 submittedGeneration = 0;

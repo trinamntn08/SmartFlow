@@ -11,6 +11,8 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QSpinBox>
+#include <QProgressBar>
 #include <QLabel>
 #include <QPushButton>
 #include <QSplitter>
@@ -57,6 +59,7 @@ WorkspaceConfiguration numericConfiguration()
     config.factory->finalize();
     config.nodes = {{"smartflow.numeric.number@1", "Number", "Numeric", "smartflow.numeric", "number", 1},
                     {"smartflow.numeric.add@1", "Add", "Numeric", "smartflow.numeric", "add", 1}};
+    for(const auto& node : config.nodes) config.executionPolicies[node.type.toStdString()]={true,{}};
     config.preset = {{"smartflow.numeric.number@1", {0,0}, {{"value",41}}},
                      {"smartflow.numeric.add@1", {300,0}, {}}};
     config.connections = {{0,0,1,0}};
@@ -81,7 +84,7 @@ WorkspaceWindow::WorkspaceWindow()
 
 WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     : workspaceConfiguration(configuration), delegates(configuration.delegates), document(delegates, configuration.nodes), canvasModel(document),
-      canvasScene(canvasModel,document), runner(document, configuration.factory)
+      canvasScene(canvasModel,document), runner(document, configuration.factory, configuration.executionPolicies)
 {
     setWindowTitle("SmartFlow - Graph workspace");
     resize(1180, 760);
@@ -177,6 +180,19 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     toolbar->addWidget(run);
     toolbar->addWidget(cancelButton);
     toolbar->addWidget(live);
+    auto* mode=new QComboBox;
+    mode->setObjectName("executionMode");
+    mode->addItems({"Sequential","Parallel"});
+    mode->setToolTip("Parallel runs independent ready nodes; consumers wait for their inputs.");
+    auto* threads=new QSpinBox;
+    threads->setObjectName("executionThreads"); threads->setRange(1,64); threads->setValue(1);
+    threads->setToolTip("Maximum number of processing threads. Sequential runs one node at a time.");
+    toolbar->addWidget(mode); toolbar->addWidget(new QLabel("Threads")); toolbar->addWidget(threads);
+    auto schedule=[this,mode,threads] {
+        runner.setScheduling(mode->currentIndex()==0 ? ExecutionMode::Sequential : ExecutionMode::Parallel,size_t(threads->value()));
+    };
+    connect(mode,&QComboBox::currentIndexChanged,this,[schedule](int) { schedule(); });
+    connect(threads,&QSpinBox::valueChanged,this,[schedule](int) { schedule(); });
     toolbar->addSeparator();
     auto* library = new QComboBox;
     library->setObjectName("nodeLibraryTypes");
@@ -231,6 +247,11 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     inspectorLayout->addStretch();
     auto* executionPanel=new QWidget;
     auto* executionLayout=new QVBoxLayout(executionPanel);
+    executionProgress=new QProgressBar;
+    executionProgress->setObjectName("executionProgress");
+    executionProgress->setRange(0,1); executionProgress->setValue(0);
+    executionProgress->setFormat("No active run");
+    executionLayout->addWidget(executionProgress);
     outputLabel = new QLabel("Select a node to inspect its result.");
     outputLabel->setObjectName("selectedOutput");
     outputLabel->setWordWrap(true);
@@ -631,6 +652,10 @@ void WorkspaceWindow::refreshResults()
     cancelButton->setEnabled(runner.busy());
     results->clear();
     outputLabel->setText("Output: " + runner.status());
+    const auto& progress=runner.progress();
+    executionProgress->setRange(0,progress ? int(std::max(size_t(1),progress->total)) : 1);
+    executionProgress->setValue(progress ? int(progress->completed) : 0);
+    executionProgress->setFormat(progress ? QString("%1/%2 steps finished").arg(qulonglong(progress->completed)).arg(qulonglong(progress->total)) : runner.status());
     const auto& result = runner.result();
     if(viewer) {
         std::shared_ptr<const tp_data::Collection> output;
@@ -658,7 +683,31 @@ void WorkspaceWindow::refreshResults()
         outputLabel->setText(diagnostics.join("\n"));
         return;
     }
-    if(!result) return;
+    if(!result) {
+        if(progress) for(const auto& node : document.selectedGraph()["nodes"]) {
+            const auto id=tp_utils::StringID(node["id"].get<std::string>());
+            const auto found=progress->nodes.find(id);
+            if(found==progress->nodes.end()) continue;
+            const auto& value=found->second;
+            QString state;
+            switch(value.state) {
+            case StepState::Waiting: state="Waiting"; break;
+            case StepState::Ready: state="Ready"; break;
+            case StepState::Running: state="Running"; break;
+            case StepState::Succeeded: state="Complete"; break;
+            case StepState::Failed: state="Failed"; break;
+            case StepState::Skipped: state="Skipped"; break;
+            case StepState::Cancelled: state="Cancelled"; break;
+            }
+            QString description=QString::fromStdString(value.error);
+            if(value.state==StepState::Running && value.fraction)
+                description=QString("%1%").arg(int(*value.fraction*100));
+            const auto* step=document.step(id);
+            auto* item=new QTreeWidgetItem(results,{step ? document.title(step->delegateName()) : QString::fromStdString(id.toString()),state,description});
+            item->setData(0,Qt::UserRole,QString::fromStdString(id.toString()));
+        }
+        return;
+    }
     if(!result->diagnostics.empty()) {
         QStringList errors;
         for(const auto& error : result->diagnostics) errors << QString::fromStdString(error);

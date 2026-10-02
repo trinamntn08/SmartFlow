@@ -3,9 +3,10 @@
 
 namespace smartflow {
 ExecutionController::ExecutionController(GraphProject& project,
-    std::shared_ptr<const tp_data::CollectionFactory> factory)
+    std::shared_ptr<const tp_data::CollectionFactory> factory, NodeExecutionPolicies policies)
     : project(project), factory(std::move(factory))
 {
+    executionOptions.policies=std::move(policies);
     debounce.setInterval(80);
     debounce.setSingleShot(true);
     completion.setInterval(15);
@@ -25,6 +26,7 @@ void ExecutionController::invalidate()
 {
     ++generation;
     published.reset();
+    publishedProgress.reset();
     if(pending) pending->cancel();
     requested = live;
     message = live ? "Waiting for latest edit..." : "Outdated - run to update";
@@ -39,10 +41,19 @@ void ExecutionController::setLive(bool enabled)
     else { debounce.stop(); requested = false; }
 }
 
+void ExecutionController::setScheduling(ExecutionMode mode, size_t maxThreads)
+{
+    if(maxThreads<1 || maxThreads>64) throw std::invalid_argument("Execution thread budget must be between 1 and 64");
+    if(executionOptions.mode==mode && executionOptions.maxThreads==maxThreads) return;
+    executionOptions.mode=mode; executionOptions.maxThreads=maxThreads;
+    invalidate();
+}
+
 void ExecutionController::run()
 {
     ++generation;
     published.reset();
+    publishedProgress.reset();
     requested = true;
     debounce.stop();
     if(pending) { pending->cancel(); message = "Waiting for previous run to stop..."; Q_EMIT updated(); }
@@ -51,12 +62,12 @@ void ExecutionController::run()
 
 void ExecutionController::cancel()
 {
-    ++generation;
     requested = false;
     debounce.stop();
     if(pending) pending->cancel();
     published.reset();
-    message = "Cancelled";
+    publishedProgress.reset();
+    message = pending ? "Cancelling..." : "Cancelled";
     Q_EMIT updated();
 }
 
@@ -74,7 +85,8 @@ void ExecutionController::startRequested()
         return;
     }
     try {
-        pending = executor.submit(project.graph(), project.registry(), factory, project.resultGroups());
+        pending = executor.submit(project.graph(), project.registry(), factory, project.resultGroups(),executionOptions);
+        publishedProgress=pending->progress->snapshot();
         message = "Running...";
         completion.start();
     } catch(const std::exception& error) {
@@ -85,11 +97,25 @@ void ExecutionController::startRequested()
 
 void ExecutionController::poll()
 {
-    if(!pending || pending->result.wait_for(std::chrono::seconds(0)) != std::future_status::ready) return;
+    if(!pending) return;
     const bool current = submittedRevision == project.revision() && submittedGeneration == generation;
+    if(current) {
+        auto snapshot=pending->progress->snapshot();
+        if(!publishedProgress || snapshot.sequence!=publishedProgress->sequence) {
+            publishedProgress=std::move(snapshot);
+            if(!pending->cancellation->load())
+                message=QString("Running: %1/%2 steps finished").arg(qulonglong(publishedProgress->completed)).arg(qulonglong(publishedProgress->total));
+            Q_EMIT updated();
+        }
+    }
+    if(pending->result.wait_for(std::chrono::seconds(0)) != std::future_status::ready) return;
     try {
         auto value = pending->result.get();
-        if(current && !value.cancelled) {
+        if(current) {
+            publishedProgress=pending->progress->snapshot();
+            if(pending->cancellation->load()) publishedProgress->cancelled=true;
+        }
+        if(current && !value.cancelled && !pending->cancellation->load()) {
             message = value.succeeded() ? "Complete" : "Graph has errors";
             published = std::move(value);
         } else if(current) message = "Cancelled";
