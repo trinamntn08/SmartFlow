@@ -89,7 +89,7 @@ See [the component guide](../GRAPH_COMPONENTS.md) and decisions
 [0013](decisions/0013-collapsed-native-components.md) and
 [0014](decisions/0014-native-component-files.md).
 
-## Preserved TypeScript prototype
+## TypeScript prototype and planned web track
 
 `apps/web` contains a standalone setup page. The workspace separately preserves
 `packages/core` persistence and provisional `packages/extension-sdk` contracts. `packages/runtime` is reserved; no browser graph
@@ -97,6 +97,12 @@ editor, runtime, renderer or extension loader exists. The intended future direct
 is application composition to core/SDK/runtime/extensions, with SDK depending only
 on core and runtime depending only on core plus SDK. Concrete extensions never
 become core/runtime dependencies.
+
+[Decision 0018](decisions/0018-parallel-web-development.md) activates a parallel
+web track without changing native delivery priority. W1 is documentation/audit
+only; [the plan](../WEB_IMPLEMENTATION_PLAN.md) defines implementation checkpoints
+and [the compatibility audit](web-compatibility-audit-2026-10-02.md) records
+transport gaps to resolve before editable import.
 
 ## Verification and open work
 

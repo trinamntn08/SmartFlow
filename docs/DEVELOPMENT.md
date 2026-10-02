@@ -1,7 +1,8 @@
 # Local development
 
 Updated: 2026-10-02. The primary app is native C++17/Qt6 on Windows. The TypeScript
-workspace is a preserved future prototype, maintained by its own checks.
+workspace is a prototype with a planned parallel web track, maintained by its
+own checks. See [the web implementation plan](WEB_IMPLEMENTATION_PLAN.md).
 
 ## Native application
 
@@ -24,7 +25,7 @@ manual acceptance. The development build needs Qt runtime discovery; the install
 test folder includes it. No Node.js, browser server, API key, old checkout or
 external service is required to run the desktop app.
 
-## Future web prototype
+## Web prototype and parallel implementation
 
 Use Node.js 24 and npm 11. `.node-version`, `.nvmrc` and the root `packageManager`
 record the tested versions; they do not install tools. Install dependencies in this

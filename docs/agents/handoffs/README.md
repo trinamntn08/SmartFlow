@@ -13,6 +13,8 @@ results; automated native computer-use is deferred by the user.
 
 ## Records
 
+- [W1: parallel web plan and compatibility audit](2026-10-02-web-w1-plan-audit.md)
+
 - [Task handoff: checkpoint 1 — project persistence and SDK contracts](2026-09-27-contract-checkpoint.md)
 - [Checkpoint N1: copied native canvas and C++/Qt shell](2026-09-27-native-checkpoint-n1.md)
 - [Checkpoint N2: copied pipeline foundation and background execution](2026-09-28-native-checkpoint-n2.md)

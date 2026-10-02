@@ -112,13 +112,18 @@ production 3D rendering, broader scene hierarchies, richer table schemas and
 CSV import remain unimplemented. Public installer/signing, distribution and
 clean-machine Windows compatibility remain future work.
 
-## Preserved future web prototype
+## Parallel web development
 
 `apps/web` is a React/TypeScript setup page, not a graph editor. `packages/core`
 implements schema-v1 document persistence; `packages/extension-sdk` contains
 provisional contracts. `packages/runtime` is reserved, and the domain extensions
 have no TypeScript implementation. Browser graph execution, rendering, extension
-loading and delivery remain deferred.
+loading and delivery remain unimplemented. W1 planning and compatibility audit
+are complete; [the web plan](WEB_IMPLEMENTATION_PLAN.md) defines W1b through W6.
+W1b strict file transport is next, before browser graph editing. See
+[the audit](architecture/web-compatibility-audit-2026-10-02.md) and
+[decision 0018](architecture/decisions/0018-parallel-web-development.md).
+Desktop testing and demonstrated fixes continue independently.
 
 ## Open decisions
 

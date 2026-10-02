@@ -24,7 +24,8 @@ and explicit compatible instance updates (N6a through N6h).
 Release build, 24 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;
 automated computer-use is deferred. The TypeScript browser starter, persistence
-and SDK contracts are preserved for a future extension, not the delivered app.
+and SDK contracts are the foundation for a planned parallel web track, not the
+delivered app. See [the web plan](docs/WEB_IMPLEMENTATION_PLAN.md).
 See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
 
 The refreshed `build/desktop-test` folder is ready for first manual testing.
@@ -45,7 +46,7 @@ dependencies are copied into that folder; Node.js and a browser server are not
 required to run it. Try the [scene, data and component examples](examples/README.md). This is a development preview with the limitations listed in
 the testing guide. The old repository is not required by the new build.
 
-### Future web prototype
+### Parallel web development
 
 Use Node.js 24 (the tested version is in `.node-version`) and npm 11.
 

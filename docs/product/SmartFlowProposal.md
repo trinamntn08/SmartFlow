@@ -217,19 +217,19 @@ The diagram describes planned package dependencies. Execution backends communica
 
 The first version delivered for user testing is the **Windows desktop app**, built with native C++17 and Qt6. This is an explicit delivery requirement, confirmed on 2026-10-01. Provide a runnable local app with its dependencies and verify editing, execution, undo, native file dialogs and save/reopen on the desktop. See [decision 0009](../architecture/decisions/0009-desktop-test-release.md) and [desktop testing](../DESKTOP_TESTING.md).
 
-| Environment    | Proposed role                                                                  |
-| -------------- | ------------------------------------------------------------------------------ |
-| Browser        | Deferred future extension; the current TypeScript starter is preserved.        |
-| Desktop        | First user test release: local graph editing, files, execution and 3D preview. |
-| Remote service | Optional execution for workloads requiring servers or specialized hardware.    |
+| Environment    | Proposed role                                                                   |
+| -------------- | ------------------------------------------------------------------------------- |
+| Browser        | Planned parallel track; W1 plan/audit complete, browser implementation pending. |
+| Desktop        | First user test release: local graph editing, files, execution and 3D preview.  |
+| Remote service | Optional execution for workloads requiring servers or specialized hardware.     |
 
 The interface and project format can be shared, but execution capabilities will differ. Each node declares where it can run, and the app explains missing capabilities.
 
-If a web version is developed later, its supported workflows and execution capabilities will be specified separately. It is not an acceptance requirement for the first desktop test version. Opening a project must not silently send its assets to a remote service.
+The parallel web track is defined in [the implementation plan](../WEB_IMPLEMENTATION_PLAN.md) and [decision 0018](../architecture/decisions/0018-parallel-web-development.md). Its supported workflows and execution capabilities are specified separately. It is not an acceptance requirement for the first desktop test version. Opening a project must not silently send its assets to a remote service.
 
 Project portability does not guarantee execution parity: a project may open everywhere while some nodes require an unavailable backend. Show these requirements before running it.
 
-### Deferred browser implementation candidates
+### Browser implementation candidates
 
 React and TypeScript with React Flow remain candidates for a future browser interface. The initial desktop interface uses Qt Widgets and the copied QtNodes canvas.
 

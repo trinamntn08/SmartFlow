@@ -7,6 +7,8 @@ what runs today; this index is not a claim of completed production delivery.
 
 ## Decisions
 
+- [0018: Parallel browser development alongside native desktop](0018-parallel-web-development.md)
+
 - [0017: Bounded native execution and owned invocation data](0017-native-execution-concurrency.md)
 
 - [0001: Independent browser development scaffold](0001-bootstrap.md)
@@ -27,6 +29,8 @@ what runs today; this index is not a claim of completed production delivery.
 - [0016: Selectable workspace widgets in split regions](0016-selectable-workspace-widgets.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
+0018 activates web planning alongside native development, updating 0003's web
+deferral while preserving native priority.
 0009 requires packaged Windows desktop acceptance, which remains pending manual
 results. N5f/N5g complete file actions/workspace persistence after their earlier
 foundation decisions. 0013 implements collapsed components after 0012's expanded
