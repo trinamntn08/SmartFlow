@@ -20,13 +20,13 @@ public:
     bool number_unsigned(number_unsigned_t) override { return true; }
     bool number_float(number_float_t number, const string_t& token) override
     {
-        if(!std::isfinite(number)) fail("Project contains a nonfinite number");
+        if(!std::isfinite(number)) fail("JSON contains a nonfinite number");
         if(token.find_first_of(".eE") == std::string::npos)
             fail("Integer is outside the supported 64-bit range");
         return true;
     }
     bool string(string_t&) override { return true; }
-    bool binary(binary_t&) override { fail("Binary JSON is not a project file"); }
+    bool binary(binary_t&) override { fail("Binary JSON is unsupported"); }
     bool start_object(std::size_t) override { return enter(); }
     bool start_array(std::size_t) override { return enter(); }
     bool key(string_t& key) override
@@ -37,11 +37,11 @@ public:
     bool end_object() override { keys.pop_back(); return true; }
     bool end_array() override { keys.pop_back(); return true; }
     bool parse_error(std::size_t, const std::string&, const nlohmann::detail::exception& error) override
-    { fail(std::string("Invalid project JSON: ") + error.what()); }
+    { fail(std::string("Invalid JSON: ") + error.what()); }
 private:
     bool enter()
     {
-        if(keys.size() >= MaximumNesting) fail("Project exceeds nesting limit");
+        if(keys.size() >= MaximumNesting) fail("JSON exceeds nesting limit");
         keys.emplace_back();
         return true;
     }
@@ -78,10 +78,10 @@ void identified(const Document& value, const std::string& path)
 }
 void jsonValues(const Document& value, int depth = 0)
 {
-    if(value.is_discarded() || value.is_binary()) fail("Project contains a non-JSON value");
-    if(value.is_number_float() && !std::isfinite(value.get<double>())) fail("Project contains a nonfinite number");
+    if(value.is_discarded() || value.is_binary()) fail("JSON contains a non-JSON value");
+    if(value.is_number_float() && !std::isfinite(value.get<double>())) fail("JSON contains a nonfinite number");
     if(value.is_structured()) {
-        if(depth >= MaximumNesting) fail("Project exceeds nesting limit");
+        if(depth >= MaximumNesting) fail("JSON exceeds nesting limit");
         for(const auto& child : value) jsonValues(child,depth+1);
     }
 }
@@ -144,29 +144,30 @@ void validate(const Document& document)
     }
 }
 
+namespace jsonFile {
 Document parse(const QByteArray& bytes)
 {
-    if(bytes.size() > MaximumFileBytes) fail("Project exceeds 16 MiB file limit");
+    if(bytes.size() > MaximumFileBytes) fail("JSON exceeds 16 MiB file limit");
     try {
         Preflight preflight;
         Document::sax_parse(bytes.begin(),bytes.end(),&preflight);
         auto document = Document::parse(bytes.begin(),bytes.end());
-        validate(document);
+        jsonValues(document);
         return document;
     } catch(const nlohmann::json::exception& error) {
-        fail(std::string("Invalid project JSON: ") + error.what());
+        fail(std::string("Invalid JSON: ") + error.what());
     }
 }
 
 QByteArray serialize(const Document& document)
 {
-    validate(document);
+    jsonValues(document);
     try {
         const auto text = document.dump(2) + "\n";
-        if(text.size() > size_t(MaximumFileBytes)) fail("Project exceeds 16 MiB file limit");
+        if(text.size() > size_t(MaximumFileBytes)) fail("JSON exceeds 16 MiB file limit");
         return QByteArray(text.data(),qsizetype(text.size()));
     } catch(const nlohmann::json::exception& error) {
-        fail(std::string("Cannot serialize project: ") + error.what());
+        fail(std::string("Cannot serialize JSON: ") + error.what());
     }
 }
 
@@ -176,12 +177,12 @@ Document read(const QString& path)
     if(!file.open(QIODevice::ReadOnly)) fail(ioMessage(path,file.errorString()));
     const auto bytes = file.read(MaximumFileBytes+1);
     if(file.error() != QFileDevice::NoError) fail(ioMessage(path,file.errorString()));
-    return parse(bytes);
+    return jsonFile::parse(bytes);
 }
 
 void write(const QString& path, const Document& document)
 {
-    const auto bytes = serialize(document);
+    const auto bytes = jsonFile::serialize(document);
     QSaveFile file(path);
     file.setDirectWriteFallback(false);
     if(!file.open(QIODevice::WriteOnly)) fail(ioMessage(path,file.errorString()));
@@ -190,5 +191,32 @@ void write(const QString& path, const Document& document)
         fail(ioMessage(path,file.errorString()));
     }
     if(!file.commit()) fail(ioMessage(path,file.errorString()));
+}
+} // namespace jsonFile
+
+Document parse(const QByteArray& bytes)
+{
+    auto document = jsonFile::parse(bytes);
+    validate(document);
+    return document;
+}
+
+QByteArray serialize(const Document& document)
+{
+    validate(document);
+    return jsonFile::serialize(document);
+}
+
+Document read(const QString& path)
+{
+    auto document = jsonFile::read(path);
+    validate(document);
+    return document;
+}
+
+void write(const QString& path, const Document& document)
+{
+    validate(document);
+    jsonFile::write(path, document);
 }
 } // namespace smartflow::project

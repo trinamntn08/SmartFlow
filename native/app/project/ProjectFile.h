@@ -15,6 +15,15 @@ public:
 constexpr qsizetype MaximumFileBytes = 16 * 1024 * 1024;
 constexpr int MaximumNesting = 128;
 
+// Shared strict JSON transport for project and component files. Domain/schema
+// validation belongs to the caller; duplicate keys and lossy numbers reject.
+namespace jsonFile {
+Document parse(const QByteArray& bytes);
+QByteArray serialize(const Document& document);
+Document read(const QString& path);
+void write(const QString& path, const Document& document);
+}
+
 // Schema v1 is shared with packages/core. These functions do not consult an
 // extension registry or repair unresolved graph connections.
 Document create(const std::string& projectId);

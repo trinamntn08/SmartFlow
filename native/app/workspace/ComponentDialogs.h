@@ -36,7 +36,12 @@ class ComponentLibraryDialog : public QDialog {
 public:
     explicit ComponentLibraryDialog(GraphProject& project, QWidget* parent = nullptr);
     void accept() override;
+    // Dialog-free file operations throw on failure. Import is one history edit;
+    // export does not alter project, workspace or undo state.
+    void importFile(const QString& path);
+    void exportFile(const QString& path) const;
 private:
+    void refreshCatalog(int selected = 0);
     void refreshBindings();
     GraphProject& graphProject;
     quint64 revision;
@@ -45,6 +50,7 @@ private:
     std::string identity;
     QLabel* error;
     QPushButton* insert;
+    QPushButton* exportButton;
     QCheckBox* collapsed;
     QFormLayout* bindings;
     std::vector<std::pair<std::string,QComboBox*>> inputs;

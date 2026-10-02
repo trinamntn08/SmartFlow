@@ -1,8 +1,10 @@
 #include "project/GraphComponent.h"
+#include "project/ComponentFile.h"
 #include "project/DocumentHistory.h"
 #include "pipeline/PipelineExecution.h"
 #include <DataExtension.h>
 #include <QTemporaryDir>
+#include <QFile>
 #include <QtTest/QtTest>
 
 using namespace smartflow;
@@ -54,6 +56,51 @@ double total(const DocumentSession& session, const WorkspaceConfiguration& confi
 class ComponentTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void standaloneFilesRoundTripAndReuseInAnotherProject()
+    {
+        QTemporaryDir directory;
+        const auto path=directory.filePath("tool.smartflow-component");
+        const auto original=definition();
+        writeComponent(path,GraphComponent(original));
+        const auto loaded=readComponent(path);
+        QVERIFY(loaded.definition()==original);
+        const auto config=data::dataConfiguration();
+        DocumentHistory destination(source(config),"graph",config.delegates,config.nodes);
+        destination.catalogComponent(loaded);
+        const auto instance=destination.instantiateComponent(loaded,"imported",{{"minimum",30}},input(),true);
+        QCOMPARE(total(destination.session(),config,instance),79.0);
+        QVERIFY(destination.session().document()["project"]["components"][0]==original);
+        auto unavailable=original;
+        unavailable["graph"]["nodes"][0]["packageId"]="missing.package";
+        writeComponent(path,GraphComponent(unavailable));
+        QVERIFY(readComponent(path).definition()==unavailable);
+        auto oversized=original;
+        oversized["largeOpaqueField"]=std::string(size_t(MaximumFileBytes),'x');
+        QVERIFY_EXCEPTION_THROWN(writeComponent(path,GraphComponent(oversized)),FileError);
+        QVERIFY(readComponent(path).definition()==unavailable); // Failed export cannot truncate.
+        QVERIFY_EXCEPTION_THROWN(writeComponent(directory.filePath("missing/tool.smartflow-component"),loaded),FileError);
+        QVERIFY(readComponent(path).definition()==unavailable);
+    }
+
+    void standaloneFilesRejectLossyAndUnsupportedContent()
+    {
+        QTemporaryDir directory;
+        const auto path=directory.filePath("invalid.smartflow-component");
+        auto rejects=[&](const QByteArray& bytes) {
+            QFile file(path); QVERIFY(file.open(QIODevice::WriteOnly));
+            QCOMPARE(file.write(bytes),qint64(bytes.size())); file.close();
+            QVERIFY_EXCEPTION_THROWN(readComponent(path),FileError);
+        };
+        rejects("{\"format\":\"smartflow.graph-component\",\"format\":\"duplicate\"}");
+        auto document=definition(); document["schemaVersion"]=2;
+        rejects(QByteArray::fromStdString(document.dump()));
+        rejects("{\"large\":18446744073709551616}");
+        rejects(QByteArray(MaximumFileBytes+1,' '));
+        rejects(QByteArray(MaximumNesting+1,'[')+"0"+QByteArray(MaximumNesting+1,']'));
+        rejects("{invalid");
+        QVERIFY_EXCEPTION_THROWN(readComponent(directory.filePath("absent")),FileError);
+    }
+
     void collapsedInstancesExposeControlsAndConnectThroughOutputs()
     {
         const auto config=data::dataConfiguration();

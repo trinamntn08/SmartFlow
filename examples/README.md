@@ -31,3 +31,8 @@ Save As to a separate local file while testing. The project path flag reports
 missing/unreadable files and exits with code 6. Append `--smoke-test` for a
 startup/execution check, which exits 5 when the loaded graph cannot execute.
 These checks do not replace real desktop interaction or clean-machine testing.
+
+`filtered-summary.smartflow-component` contains the standalone definition from
+`components.smartflow`. In the data app, open **Components > Component library**,
+click **Import component...**, choose this file, bind `table` to Sample table / out
+and insert it. Export saves the definition defaults, separately from instance edits.

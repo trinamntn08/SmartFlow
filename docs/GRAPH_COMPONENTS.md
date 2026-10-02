@@ -1,6 +1,6 @@
 # Native graph components
 
-Status: native authoring/library UI and collapsed instances, N6d. Components
+Status: native authoring/library UI and collapsed instances and file exchange, N6e. Components
 insert as one node by default, with ordinary-node insertion also available.
 
 ## Desktop workflow
@@ -135,6 +135,29 @@ that do not provide an exposed output. A failed body publishes no instance outpu
 Both visible and expanded graphs must be acyclic. Output choice/pinning is saved
 in workspace `selectedPort`/`pinnedPort`, separately from project parameters.
 
-Nested components, definition migration/editing, library deletion/export and live
+Nested components, definition migration/editing, library deletion and live
 updates remain future work. This is a native migration feature, not a production
 plugin system. See [decision 0013](architecture/decisions/0013-collapsed-native-components.md).
+
+## Import and export
+
+Open **Components > Component library** and click **Import component...** to read
+a `.smartflow-component` or `.json` file into this project's library. Import works
+when the library is empty. It adds no canvas nodes; choose bindings and insert the
+component afterward. A new catalog entry is one undoable edit. Importing identical
+content is a no-op; conflicting content under the same ID/version rejects.
+
+Select a definition and click **Export component...** to save its standalone file.
+Export does not change the project, active project path, dirty state or history.
+The file contains the definition's saved defaults and opaque fields; current
+instance control edits and workspace state are separate. Copying a file does not
+bundle external assets or relocate asset references. Try the shipped
+`examples/filtered-summary.smartflow-component` in another data project.
+
+Unavailable node packages do not prevent structural import/export. Their
+components remain in the library but cannot be inserted until supported. Malformed
+or future definition contracts report errors. Cancel and failed operations preserve
+project state; writes use atomic replacement. Closing the library does not undo
+imports already completed; use Undo for those catalog edits. Files have the same strict JSON,
+16 MiB and nesting limits as project files. See
+[decision 0014](architecture/decisions/0014-native-component-files.md).

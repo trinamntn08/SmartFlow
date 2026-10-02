@@ -1,10 +1,14 @@
 #include "ComponentDialogs.h"
+#include "project/ComponentFile.h"
 #include <tp_pipeline/StepDelegate.h>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QSignalBlocker>
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
@@ -171,11 +175,10 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
     identity=freshId().toStdString(); layout->addLayout(form);
     collapsed=new QCheckBox("Insert as one node");
     collapsed->setObjectName("componentCollapsed"); collapsed->setChecked(true); layout->addWidget(collapsed);
-    if(catalog.is_array()) for(const auto& definition : catalog) {
-        QString label="Unavailable component";
-        if(definition.is_object() && definition.contains("title") && definition["title"].is_string()) label=text(definition["title"]);
-        library->addItem(label);
-    }
+    auto* files=new QHBoxLayout;
+    auto* importButton=new QPushButton("Import component..."); importButton->setObjectName("importComponentFile");
+    exportButton=new QPushButton("Export component..."); exportButton->setObjectName("exportComponentFile");
+    files->addWidget(importButton); files->addWidget(exportButton); files->addStretch(); layout->addLayout(files);
     auto* scroll=new QScrollArea; scroll->setWidgetResizable(true);
     auto* body=new QWidget; bindings=new QFormLayout(body); scroll->setWidget(body); layout->addWidget(scroll,1);
     error=message(this,"componentError"); layout->addWidget(error);
@@ -185,17 +188,67 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
     connect(buttons,&QDialogButtonBox::accepted,this,&ComponentLibraryDialog::accept);
     connect(buttons,&QDialogButtonBox::rejected,this,&QDialog::reject);
     connect(library,qOverload<int>(&QComboBox::currentIndexChanged),this,[this] { refreshBindings(); });
+    connect(importButton,&QPushButton::clicked,this,[this] {
+        const auto path=QFileDialog::getOpenFileName(this,"Import component",{},"SmartFlow components (*.smartflow-component *.json);;All files (*)");
+        if(path.isEmpty()) return;
+        try { importFile(path); }
+        catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+    });
+    connect(exportButton,&QPushButton::clicked,this,[this] {
+        const auto path=QFileDialog::getSaveFileName(this,"Export component","component.smartflow-component","SmartFlow components (*.smartflow-component);;JSON (*.json)");
+        if(path.isEmpty()) return;
+        try { exportFile(path); }
+        catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+    });
+    refreshCatalog();
+}
+
+void ComponentLibraryDialog::refreshCatalog(int selected)
+{
+    const QSignalBlocker blocker(library);
+    catalog=graphProject.retained()["project"].value("components",Document::array());
+    library->clear();
+    if(catalog.is_array()) for(const auto& definition : catalog) {
+        QString label="Unavailable component";
+        if(definition.is_object() && definition.contains("title") && definition["title"].is_string()) label=text(definition["title"]);
+        library->addItem(label);
+    }
+    library->setCurrentIndex(selected);
     refreshBindings();
+}
+
+void ComponentLibraryDialog::importFile(const QString& path)
+{
+    if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen this dialog before importing.");
+    const auto component=project::readComponent(path);
+    graphProject.commands().catalogComponent(component);
+    revision=graphProject.revision();
+    const auto& current=graphProject.retained()["project"]["components"];
+    int index=0;
+    for(const auto& entry : current) {
+        if(entry==component.definition()) break;
+        ++index;
+    }
+    refreshCatalog(index);
+}
+
+void ComponentLibraryDialog::exportFile(const QString& path) const
+{
+    if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen this dialog before exporting.");
+    if(!catalog.is_array() || library->currentIndex()<0) throw project::FileError("Choose a saved component to export.");
+    project::writeComponent(path,project::GraphComponent(catalog[size_t(library->currentIndex())]));
 }
 
 void ComponentLibraryDialog::refreshBindings()
 {
     while(bindings->rowCount()) bindings->removeRow(0);
     inputs.clear(); controls.clear(); error->clear(); insert->setEnabled(false);
+    exportButton->setEnabled(false);
     try {
         if(!catalog.is_array()) throw project::FileError("The saved component library has an unsupported format. Its content is retained.");
-        if(library->currentIndex()<0) throw project::FileError("No saved components. Select nodes and choose Create from selection first.");
+        if(library->currentIndex()<0) throw project::FileError("No saved components. Import a component, or select nodes and choose Create from selection.");
         const project::GraphComponent component(catalog[size_t(library->currentIndex())]);
+        exportButton->setEnabled(true); // Structural export does not need installed packages.
         auto envelope=project::create("component-inspection");
         envelope["project"]["graphs"]=Document::array({component.definition()["graph"]});
         project::DocumentSession body(envelope,component.definition()["graph"]["id"],graphProject.registry(),graphProject.nodePresentations());

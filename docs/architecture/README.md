@@ -45,6 +45,11 @@ canvas/inspector facades, without domain imports. See
 [decision 0013](decisions/0013-collapsed-native-components.md).
 See [decision 0012](decisions/0012-native-graph-component-foundation.md).
 
+N6e shares strict JSON transport between project and standalone component files.
+Imports use the existing catalog command; exports retain the definition without
+changing instance snapshots or project state. See
+[decision 0014](decisions/0014-native-component-files.md).
+
 ## Product invariant
 
 3D scene support ships with the product, while the core remains usable without a 3D data model. Prove this with an independent data/text extension.

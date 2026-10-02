@@ -84,7 +84,12 @@ its summary output: expect total 79. Undo/Redo should remove/restore the instanc
 as one command. Save, relaunch and Open; confirm the saved component is available
 in the library and its saved instances still execute. Try the shipped `components.smartflow` example
 and use the toolbar Output selector to switch between rows and summary. See
-[the component guide](GRAPH_COMPONENTS.md) for the full workflow.
+[the component guide](GRAPH_COMPONENTS.md) for the full workflow. In the library,
+export a definition to `.smartflow-component`, open another project and import it.
+Check the original nodes remain unchanged, the catalog import supports Undo/Redo,
+and the imported definition can be inserted with compatible bindings. Importing
+identical content should add no history entry; conflicting identities report an
+inline error. The shipped `filtered-summary.smartflow-component` is ready to import.
 
 ## Current limitations
 
@@ -97,7 +102,7 @@ and use the toolbar Output selector to switch between rows and summary. See
 - The independent data extension is available; packaged interaction acceptance
   for both workflows is the next checkpoint.
 - Components support collapsed snapshots and optional ordinary node copies. Nested
-  components, definition editing, library deletion/export and automatic updates
+  components, definition editing, library deletion and automatic updates
   of existing instances are pending.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.

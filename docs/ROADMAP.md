@@ -100,6 +100,12 @@ component example runs in the separate data-only app. Full N5 desktop interactio
 acceptance remains pending. See the
 [N6d handoff](agents/handoffs/2026-10-02-native-checkpoint-n6d.md).
 
+N6e adds standalone component import/export through the native library, using
+strict JSON and atomic file writes. Imports are undoable catalog edits and preserve
+existing instance snapshots. Desktop interaction acceptance remains pending the
+native computer-use connection. See the
+[N6e handoff](agents/handoffs/2026-10-02-native-checkpoint-n6e.md).
+
 The list below records the earlier TypeScript plan. It is superseded for current
 implementation by this native migration sequence:
 
@@ -127,7 +133,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 - Completed N5h: add a native table workflow through the same SDK.
 - Completed N5h: run it in a separate executable without linking/initializing the 3D package.
-- N6a?N6d: reusable definitions, extraction/catalog commands, native authoring/library UI and collapsed-node execution implemented. Nested components and library editing/export remain pending.
+- N6a through N6e: reusable definitions, extraction/catalog commands, native authoring/library UI and collapsed-node execution implemented. Standalone import/export is implemented; nested components and library editing/deletion remain pending.
 - Check missing package and unsupported backend behavior.
 
 ## Later, when justified

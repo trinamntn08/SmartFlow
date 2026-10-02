@@ -224,3 +224,15 @@ example. UI tests write `component-collapsed-smoke.png`,
 `component-example-smoke.png` and `component-collapsed-scene-smoke.png`.
 Set `SMARTFLOW_TEST_FONT=C:/Windows/Fonts/segoeui.ttf` for readable offscreen
 component and scene screenshots. See the [component guide](GRAPH_COMPONENTS.md).
+
+## N6e component file exchange
+
+The library's Import/Export buttons use `project::readComponent`/`writeComponent`.
+The existing project codec exposes schema-independent `jsonFile` transport with
+strict preflight and atomic writes; its project entry points retain schema checks.
+`native_components` checks lossless file exchange, unsupported/lossy input,
+size/nesting limits, write-failure preservation and reuse in another project.
+`native_component_ui` drives real Qt file dialogs, cancellation, inline errors,
+unavailable-package exchange, import undo/redo, conflicts, snapshot isolation and
+save/reopen. It writes `component-file-library-smoke.png` for render inspection.
+This Qt test coverage does not establish real Windows desktop acceptance.

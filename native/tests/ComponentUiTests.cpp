@@ -1,5 +1,6 @@
 #include "workspace/WorkspaceWindow.h"
 #include "workspace/ComponentDialogs.h"
+#include "project/ComponentFile.h"
 #include <DataExtension.h>
 #include <tp_data/Collection.h>
 #include <QAction>
@@ -8,6 +9,8 @@
 #include <QDialogButtonBox>
 #include <QDoubleSpinBox>
 #include <QFontDatabase>
+#include <QFileDialog>
+#include <QFile>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -43,6 +46,97 @@ double total(WorkspaceWindow& window, const std::string& summary)
 class ComponentUiTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void libraryFileExchangeUndoConflictsAndSnapshotIsolation()
+    {
+        WorkspaceWindow source(data::dataConfiguration()); source.execution().setLive(false); source.show();
+        source.openProject(SMARTFLOW_COMPONENT_EXAMPLE);
+        QTemporaryDir directory; const auto path=directory.filePath("tool.smartflow-component");
+        ComponentLibraryDialog library(source.project());
+        const auto before=source.project().retained();
+        const auto historyIndex=source.scene().undoStack().index();
+        library.exportFile(path);
+        QVERIFY(source.project().retained()==before);
+        QCOMPARE(source.scene().undoStack().index(),historyIndex);
+        QVERIFY(!source.projectDirty());
+
+        WorkspaceWindow destination(data::dataConfiguration()); destination.execution().setLive(false); destination.show();
+        QTest::qWait(30);
+        const auto empty=destination.project().retained();
+        ComponentLibraryDialog imported(destination.project());
+        QVERIFY(imported.findChild<QPushButton*>("importComponentFile")->isEnabled());
+        QVERIFY(!imported.findChild<QPushButton*>("exportComponentFile")->isEnabled());
+        imported.importFile(path);
+        QCOMPARE(imported.findChild<QComboBox*>("componentCatalog")->count(),1);
+        QVERIFY(destination.projectDirty());
+        QVERIFY(destination.project().selectedGraph()==empty["project"]["graphs"][0]);
+        const auto count=destination.scene().undoStack().count();
+        imported.importFile(path); QCOMPARE(destination.scene().undoStack().count(),count);
+        imported.findChild<QComboBox*>("componentInput_table")->setCurrentIndex(1);
+        imported.accept(); QCOMPARE(imported.result(),int(QDialog::Accepted));
+        const auto retained=destination.project().retained();
+        const auto& node=retained["project"]["graphs"][0]["nodes"].back();
+        QVERIFY(node["component"]==before["project"]["components"][0]);
+        destination.execution().run(); QTRY_VERIFY(destination.execution().result().has_value());
+        QVERIFY(destination.execution().result()->succeeded());
+        destination.scene().undoStack().undo(); // Instance insertion.
+        destination.scene().undoStack().undo(); // Catalog import.
+        QVERIFY(destination.project().retained()["project"]==empty["project"]);
+        QVERIFY(destination.scene().undoStack().canRedo());
+        auto conflict=project::readComponent(path).definition(); conflict["title"]="Changed same identity";
+        project::writeComponent(path,project::GraphComponent(conflict));
+        destination.scene().undoStack().redo(); // Restore original catalog.
+        ComponentLibraryDialog conflicting(destination.project());
+        const auto preserved=destination.project().retained();
+        QVERIFY_EXCEPTION_THROWN(conflicting.importFile(path),project::FileError);
+        QVERIFY(destination.project().retained()==preserved);
+        QVERIFY(destination.scene().undoStack().canRedo());
+        destination.scene().undoStack().redo();
+        QVERIFY(destination.project().retained()["project"]==retained["project"]);
+        QVERIFY_EXCEPTION_THROWN(conflicting.exportFile(directory.filePath("stale.smartflow-component")),project::FileError);
+        const auto projectPath=directory.filePath("destination.smartflow"); destination.saveProject(projectPath);
+        WorkspaceWindow reopened(data::dataConfiguration()); reopened.execution().setLive(false); reopened.show(); reopened.openProject(projectPath);
+        QVERIFY(reopened.project().retained()["project"]==retained["project"]);
+        QVERIFY(library.grab().save("component-file-library-smoke.png"));
+    }
+
+    void libraryButtonsUseFileDialogsAndRetainUnavailableDefinitions()
+    {
+        WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();
+        QTemporaryDir directory; const auto path=directory.filePath("unavailable.smartflow-component");
+        auto definition=project::read(SMARTFLOW_COMPONENT_EXAMPLE)["project"]["components"][0];
+        definition["graph"]["nodes"][0]["packageId"]="unavailable.package";
+        project::writeComponent(path,project::GraphComponent(definition));
+        ComponentLibraryDialog library(window.project()); library.show();
+        auto choose=[&](const QString& file) {
+            QTimer::singleShot(0,&library,[file] {
+                auto* dialog=qobject_cast<QFileDialog*>(QApplication::activeModalWidget());
+                QVERIFY(dialog); dialog->selectFile(file);
+                QMetaObject::invokeMethod(dialog,"accept",Qt::DirectConnection);
+            });
+        };
+        choose(path); library.findChild<QPushButton*>("importComponentFile")->click();
+        QVERIFY(window.project().retained()["project"]["components"][0]==definition);
+        QVERIFY(!library.findChild<QPushButton*>("insertComponentConfirm")->isEnabled());
+        QVERIFY(library.findChild<QPushButton*>("exportComponentFile")->isEnabled());
+        const auto copy=directory.filePath("exported.smartflow-component");
+        const auto retained=window.project().retained();
+        choose(copy); library.findChild<QPushButton*>("exportComponentFile")->click();
+        QVERIFY(project::readComponent(copy).definition()==definition);
+        QVERIFY(window.project().retained()==retained);
+        QTimer::singleShot(0,&library,[] {
+            auto* dialog=qobject_cast<QFileDialog*>(QApplication::activeModalWidget()); QVERIFY(dialog); dialog->reject();
+        });
+        library.findChild<QPushButton*>("importComponentFile")->click();
+        QVERIFY(window.project().retained()==retained);
+        QVERIFY_EXCEPTION_THROWN(library.importFile(directory.filePath("missing")),project::FileError);
+        QVERIFY(window.project().retained()==retained);
+        const auto invalid=directory.filePath("invalid.smartflow-component");
+        QFile file(invalid); QVERIFY(file.open(QIODevice::WriteOnly)); file.write("{}"); file.close();
+        choose(invalid); library.findChild<QPushButton*>("importComponentFile")->click();
+        QVERIFY(!library.findChild<QLabel*>("componentError")->text().isEmpty());
+        QVERIFY(window.project().retained()==retained);
+    }
+
     void shippedCollapsedExampleRestoresSelectedOutputAndControl()
     {
         WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();
@@ -127,6 +221,7 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
         const auto path=qEnvironmentVariable("SMARTFLOW_TEST_FONT");
         if(path.isEmpty()) return;
         const auto id=QFontDatabase::addApplicationFont(path);

@@ -1,0 +1,75 @@
+{
+  "format": "smartflow.graph-component",
+  "schemaVersion": 1,
+  "id": "filtered-summary",
+  "title": "Filtered summary",
+  "version": 1,
+  "graph": {
+    "id": "body",
+    "nodes": [
+      {
+        "id": "filter",
+        "packageId": "smartflow.data",
+        "typeId": "filter",
+        "version": 1,
+        "parameters": {
+          "minimum": 30
+        }
+      },
+      {
+        "id": "summary",
+        "packageId": "smartflow.data",
+        "typeId": "summary",
+        "version": 1,
+        "parameters": {}
+      }
+    ],
+    "connections": [
+      {
+        "id": "edge-2",
+        "source": {
+          "nodeId": "filter",
+          "portId": "out"
+        },
+        "target": {
+          "nodeId": "summary",
+          "portId": "in"
+        }
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "id": "table",
+      "target": {
+        "nodeId": "filter",
+        "portId": "in"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "id": "rows",
+      "source": {
+        "nodeId": "filter",
+        "portId": "out"
+      }
+    },
+    {
+      "id": "summary",
+      "source": {
+        "nodeId": "summary",
+        "portId": "out"
+      }
+    }
+  ],
+  "controls": [
+    {
+      "id": "minimum",
+      "target": {
+        "nodeId": "filter",
+        "parameter": "minimum"
+      }
+    }
+  ]
+}
