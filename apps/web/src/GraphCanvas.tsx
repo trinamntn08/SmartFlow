@@ -13,6 +13,7 @@ import {
   type Connection,
   type ReactFlowInstance,
 } from '@xyflow/react';
+import type { NodeTiming } from '@smartflow/runtime';
 import type { GraphDocument, NodeDocument } from '@smartflow/core';
 import type { NodeDefinition } from '@smartflow/extension-sdk';
 import type { GraphWorkspace, Point } from './workspace.ts';
@@ -27,6 +28,7 @@ type CanvasNode = Node<
     supported: boolean;
     available: boolean;
     status?: string;
+    duration?: string;
   },
   'smartflow'
 >;
@@ -68,6 +70,14 @@ function SmartNode({ data, selected }: NodeProps<CanvasNode>) {
           ))}
         </div>
       </div>
+      {data.duration && (
+        <div
+          className="node-time"
+          title="Invocation wall time; excludes ready-queue waiting. Components include their complete body span."
+        >
+          Run: {data.duration} ms
+        </div>
+      )}
       <div className={`node-status ${data.status ?? ''}`}>
         {data.status ??
           (data.supported
@@ -89,10 +99,13 @@ interface Props {
   onPositions(positions: Record<string, Point>): void;
   onViewport(viewport: { x: number; y: number; zoom: number }): void;
   statuses?: Record<string, string>;
+  timings?: Record<string, NodeTiming>;
+  elapsedMs?: number;
 }
 function projectNodes(props: Props): CanvasNode[] {
   return props.graph.nodes.map((node, index) => {
     const definition = props.definition(node);
+    const timing = props.timings?.[node.id];
     const inferredInputs = props.graph.connections
       .filter((edge) => edge.target.nodeId === node.id)
       .map((edge) => edge.target.portId);
@@ -114,6 +127,13 @@ function projectNodes(props: Props): CanvasNode[] {
         available: definition?.capabilities.includes('browser') ?? false,
         inputs: [...new Set(definition?.inputs.map((port) => port.id) ?? inferredInputs)],
         outputs: [...new Set(definition?.outputs.map((port) => port.id) ?? inferredOutputs)],
+        ...(timing?.startedMs !== undefined
+          ? {
+              duration: (
+                (timing.endedMs ?? props.elapsedMs ?? timing.startedMs) - timing.startedMs
+              ).toFixed(3),
+            }
+          : {}),
         ...(props.statuses?.[node.id] ? { status: props.statuses[node.id]! } : {}),
       },
     };
@@ -147,6 +167,8 @@ export function GraphCanvas(props: Props) {
     props.workspace.selection,
     props.definition,
     props.statuses,
+    props.timings,
+    props.elapsedMs,
   ]);
   const saveViewport = () => {
     if (instance.current) props.onViewport(instance.current.getViewport());

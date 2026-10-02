@@ -16,6 +16,13 @@ select it. Large runs have Previous/Next timings controls with 100 rows per page
 The application remains a browser preview; this change does not introduce an
 embedded Qt WebEngine shell.
 
+After Run, each native and browser graph node also displays **Run: ... ms**.
+Native Execution results includes a **Run ms** column. No Gantt panel needs to be
+open to see per-node durations. Nodes that have not executed show no duration;
+graph edits clear the canvas timings. Collapsed component labels show the wall
+span from their first invoked body step to the last terminal body step, including
+gaps between steps rather than the sum of parallel step durations.
+
 Both views show a common relative millisecond timeline, amber ready-queue bars,
 blue invocation bars, status and numeric queue/run durations. Desktop parallel
 branches can overlap; browser execution remains sequential. Native component
@@ -55,6 +62,10 @@ Read-only review of the old studio-engine checkout at commit
   profiling timestamps, queue/run durations and normalized millisecond coordinates.
 - `tp_qt_pipeline_widgets/inc/tp_qt_pipeline_widgets/CustomGanttDelegate.h`: two
   bar phases and timing tooltips.
+- `tp_qt_pipeline_widgets/src/profiling/ProfilingStepPainter.cpp` and
+  `StepDelegatePainter.cpp`: canvas timing statistics and queue/run/total tooltips.
+  The former draws legacy total-time/percentage statistics below nodes; SmartFlow
+  shows invocation time explicitly, with queue timing available in Gantt.
 - The `NumericTimelineGrid` header and module references: KDGantt numeric chart
   integration rather than calendar dates.
 

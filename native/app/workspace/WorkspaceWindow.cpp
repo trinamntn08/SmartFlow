@@ -264,8 +264,8 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     outputLabel->setWordWrap(true);
     results = new QTreeWidget;
     results->setObjectName("executionResults");
-    results->setColumnCount(3);
-    results->setHeaderLabels({"Node", "State", "Result"});
+    results->setColumnCount(4);
+    results->setHeaderLabels({"Node", "State", "Result", "Run ms"});
     results->setRootIsDecorated(false);
     executionLayout->addWidget(outputLabel);
     executionLayout->addWidget(results, 1);
@@ -667,6 +667,15 @@ void WorkspaceWindow::refreshResults()
     outputLabel->setText("Output: " + runner.status());
     const auto& progress=runner.progress();
     gantt->refresh(document,progress);
+    canvasModel.showExecutionTimes(progress);
+    auto runTime=[&](const tp_utils::StringID& id) {
+        if(progress) {
+            const auto found=progress->nodes.find(id);
+            if(found!=progress->nodes.end() && found->second.startedMs)
+                return QString::number(found->second.endedMs.value_or(progress->elapsedMs)-*found->second.startedMs,'f',3);
+        }
+        return QString("-");
+    };
     executionProgress->setRange(0,progress ? int(std::max(size_t(1),progress->total)) : 1);
     executionProgress->setValue(progress ? int(progress->completed) : 0);
     executionProgress->setFormat(progress ? QString("%1/%2 steps finished").arg(qulonglong(progress->completed)).arg(qulonglong(progress->total)) : runner.status());
@@ -717,7 +726,7 @@ void WorkspaceWindow::refreshResults()
             if(value.state==StepState::Running && value.fraction)
                 description=QString("%1%").arg(int(*value.fraction*100));
             const auto* step=document.step(id);
-            auto* item=new QTreeWidgetItem(results,{step ? document.title(step->delegateName()) : QString::fromStdString(id.toString()),state,description});
+            auto* item=new QTreeWidgetItem(results,{step ? document.title(step->delegateName()) : QString::fromStdString(id.toString()),state,description,runTime(id)});
             item->setData(0,Qt::UserRole,QString::fromStdString(id.toString()));
         }
         return;
@@ -738,11 +747,11 @@ void WorkspaceWindow::refreshResults()
         if(description.isEmpty()) description = outputText(value);
         const QString state = value.state == StepState::Succeeded ? "Complete" :
                               value.state == StepState::Failed ? "Failed" : "Skipped";
-        auto* item = new QTreeWidgetItem(results, {document.title(step->delegateName()), state, description});
+        auto* item = new QTreeWidgetItem(results, {document.title(step->delegateName()), state, description,runTime(step->id())});
         item->setData(0, Qt::UserRole, QString::fromStdString(step->id().toString()));
         item->setToolTip(2, description);
         if(step->id() == selected) outputLabel->setText("Output: " + description);
     }
-    for(int column = 0; column < 3; ++column) results->resizeColumnToContents(column);
+    for(int column = 0; column < 4; ++column) results->resizeColumnToContents(column);
 }
 } // namespace smartflow

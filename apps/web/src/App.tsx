@@ -418,6 +418,8 @@ export function App() {
               workspace={workspace}
               definition={resolve}
               statuses={execution.phase === 'obsolete' ? {} : execution.statuses}
+              timings={execution.phase === 'obsolete' ? {} : (execution.timings ?? {})}
+              elapsedMs={execution.elapsedMs ?? 0}
               onConnect={onConnect}
               onSelection={(nodes, edges) => {
                 setSelectedEdges((current) =>

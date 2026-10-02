@@ -90,8 +90,9 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 Desktop **Process Gantt** widget and browser profiling panel are implemented,
 following read-only review of the legacy Gantt display. Queue/invocation timings
 remain transient and domain-independent; see [analysis](GANTT_ANALYSIS.md) and
-[checkpoint](agents/handoffs/2026-10-02-process-gantt.md). Native manual packaged
-interaction acceptance remains pending.
+[checkpoint](agents/handoffs/2026-10-02-process-gantt.md). Per-node timing labels and a native results duration column are included; see
+[follow-up checkpoint](agents/handoffs/2026-10-02-node-execution-times.md).
+Native manual packaged interaction acceptance remains pending.
 
 ## Next work
 

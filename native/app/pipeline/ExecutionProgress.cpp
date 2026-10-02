@@ -65,6 +65,9 @@ ExecutionProgressSnapshot ExecutionProgress::snapshot() const
             const auto found=output.steps.find(id);
             if(found==output.steps.end()) { done=false; continue; }
             const auto& step=found->second;
+            if(step.readyMs && (!combined.readyMs || *step.readyMs<*combined.readyMs)) combined.readyMs=step.readyMs;
+            if(step.startedMs && (!combined.startedMs || *step.startedMs<*combined.startedMs)) combined.startedMs=step.startedMs;
+            if(step.endedMs && (!combined.endedMs || *step.endedMs>*combined.endedMs)) combined.endedMs=step.endedMs;
             done=done && terminal(step.state);
             failed=failed || step.state==StepState::Failed;
             cancelled=cancelled || step.state==StepState::Cancelled;
@@ -75,6 +78,7 @@ ExecutionProgressSnapshot ExecutionProgress::snapshot() const
             if(!step.error.empty()) combined.error+=id.toString()+": "+step.error+"\n";
             output.nodes.erase(id);
         }
+        if(!done) combined.endedMs.reset();
         if(done) combined.state=failed ? StepState::Failed : cancelled ? StepState::Cancelled :
             skipped ? StepState::Skipped : StepState::Succeeded;
         else combined.state=running ? StepState::Running : ready ? StepState::Ready : StepState::Waiting;

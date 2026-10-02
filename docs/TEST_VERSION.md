@@ -17,6 +17,7 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 
 - Native node editing, typed connections, parameter inspector and semantic Undo/Redo.
 - Background execution/cancellation and pinned result viewers.
+- **Run: ... ms** on graph nodes and a **Run ms** results column.
 - **Process Gantt** widget with ready-queue/execution timing bars and node selection.
 - Sequential/Parallel and Threads controls, live node/component progress and
   managed node-internal work sharing the configured per-run budget.

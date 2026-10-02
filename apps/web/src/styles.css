@@ -681,3 +681,10 @@ pre {
   height: 28px;
   display: block;
 }
+
+.node-time {
+  color: #dfeaf2;
+  font-size: 11px;
+  padding: 5px 0;
+  font-variant-numeric: tabular-nums;
+}

@@ -6,6 +6,8 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QTreeWidget>
+#include <QLabel>
+#include <QGraphicsProxyWidget>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QFontDatabase>
@@ -15,6 +17,12 @@
 using namespace smartflow;
 using namespace tp_pipeline;
 namespace {
+QList<QLabel*> timingLabels(WorkspaceWindow& window) {
+    QList<QLabel*> labels;
+    for(auto* item:window.scene().items()) if(auto* proxy=qgraphicsitem_cast<QGraphicsProxyWidget*>(item))
+        if(auto* label=qobject_cast<QLabel*>(proxy->widget()); label && label->objectName()=="nodeExecutionTime") labels.push_back(label);
+    return labels;
+}
 struct Gate { std::atomic_bool open{false}; std::atomic<size_t> active{0}; };
 class Delegate final : public StepDelegate {
 public:
@@ -71,6 +79,20 @@ private Q_SLOTS:
         const auto id=QFontDatabase::addApplicationFont(path); QVERIFY(id>=0);
         QApplication::setFont(QFont(QFontDatabase::applicationFontFamilies(id).first(),10));
     }
+    void componentTimingsUseBodyWallSpan() {
+        auto gate=std::make_shared<Gate>(); WorkspaceWindow window(configuration(gate));
+        window.execution().setLive(false); window.execution().cancel(); QTRY_VERIFY(!window.execution().busy());
+        const auto first=window.project().graph().steps()[0]->id(), second=window.project().graph().steps()[1]->id();
+        ExecutionProgress progress(window.project().graph(),{{"component",{first,second},{}}});
+        progress.state(first,StepState::Ready); progress.state(first,StepState::Running);
+        progress.state(second,StepState::Ready); progress.state(second,StepState::Running);
+        progress.state(first,StepState::Succeeded);
+        QVERIFY(!progress.snapshot().nodes.at("component").endedMs);
+        progress.state(second,StepState::Succeeded); progress.finish(false);
+        const auto final=progress.snapshot(); const auto& combined=final.nodes.at("component");
+        QCOMPARE(combined.startedMs,final.steps.at(first).startedMs);
+        QCOMPARE(combined.endedMs,final.steps.at(second).endedMs);
+    }
     void controlsAndLiveProgressOnQtThread() {
         auto gate=std::make_shared<Gate>(); WorkspaceWindow window(configuration(gate)); window.show();
         window.execution().setLive(false); window.execution().cancel(); QTRY_VERIFY(!window.execution().busy());
@@ -106,6 +128,15 @@ private Q_SLOTS:
         QVERIFY(window.execution().result()->succeeded()); QVERIFY(uiThread);
         QCOMPARE(window.execution().progress()->completed,size_t(3)); QCOMPARE(bar->value(),3);
         const auto final=*window.execution().progress();
+        const auto labels=timingLabels(window);
+        QCOMPARE(labels.size(),3);
+        for(const auto* label:labels) {
+            QVERIFY(label->text().startsWith("Run: ")); QVERIFY(label->text().endsWith(" ms"));
+            QVERIFY(label->text()!="Run: -");
+        }
+        QCOMPARE(tree->columnCount(),4);
+        for(int row=0;row<tree->topLevelItemCount();++row) QVERIFY(tree->topLevelItem(row)->text(3)!="-");
+        QVERIFY(window.grab().save("execution-node-times-smoke.png"));
         for(const auto& entry:final.steps) {
             QVERIFY(entry.second.endedMs); QVERIFY(*entry.second.startedMs<=*entry.second.endedMs);
             QVERIFY(*entry.second.endedMs<=final.elapsedMs);
@@ -138,6 +169,7 @@ private Q_SLOTS:
         window.project().commands().setParameter(step->id().toString(),"value",7.0);
         QTRY_VERIFY(!window.execution().busy());
         QVERIFY(!window.execution().result()); QVERIFY(!window.execution().progress());
+        for(const auto* label:timingLabels(window)) QCOMPARE(label->text(),QString("Run: -"));
         window.execution().run(); QTRY_COMPARE(gate->active.load(),size_t(2));
         QVERIFY(window.execution().progress()->runId!=old);
         window.execution().setScheduling(ExecutionMode::Sequential,1);
@@ -160,6 +192,7 @@ private Q_SLOTS:
         gate->open=true;
         QTRY_VERIFY(!window.execution().busy()); QVERIFY(edited);
         QVERIFY(!window.execution().result()); QVERIFY(!window.execution().progress());
+        for(const auto* label:timingLabels(window)) QCOMPARE(label->text(),QString("Run: -"));
     }
 };
 QTEST_MAIN(ExecutionUiTests)

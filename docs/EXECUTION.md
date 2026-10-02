@@ -28,6 +28,10 @@ alter project files or undo history.
 
 ## Process time analysis
 
+Each graph node displays **Run: ... ms** after execution; **Execution results**
+also has a **Run ms** column. Collapsed components show their complete body wall
+span. These transient durations clear after graph edits.
+
 Choose **Process Gantt** in a workspace region to compare ready-queue and
 invocation spans on one millisecond timeline. Browser mode has the same analysis
 panel. See [Gantt analysis](GANTT_ANALYSIS.md) for timing semantics and limitations.

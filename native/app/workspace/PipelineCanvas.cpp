@@ -3,6 +3,8 @@
 #include <tp_pipeline/StepDelegate.h>
 #include <QScopedValueRollback>
 #include <set>
+#include <QLabel>
+#include <QPointer>
 
 namespace smartflow {
 namespace {
@@ -12,10 +14,29 @@ public:
         : StepDelegateNodeDelegateModel(definition), title(std::move(title)) {}
     CanvasNode(std::shared_ptr<const tp_pipeline::StepDelegate> definition, QString title)
         : StepDelegateNodeDelegateModel(definition.get()), title(std::move(title)), owner(std::move(definition)) {}
+    ~CanvasNode() override { delete timingLabel.data(); }
     QString caption() const override { return title; }
+    QWidget* embeddedWidget() override {
+        if(!timingLabel) {
+            timingLabel=new QLabel(timingText);
+            timingLabel->setObjectName("nodeExecutionTime");
+            timingLabel->setFixedSize(80,32);
+            timingLabel->setAlignment(Qt::AlignCenter);
+            timingLabel->setWordWrap(true);
+            timingLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+            timingLabel->setStyleSheet("color: #e0e6eb; background: transparent; font-size: 11px;");
+        }
+        return timingLabel;
+    }
+    void setTiming(const QString& text) {
+        timingText=text;
+        if(timingLabel) { timingLabel->setText(text); timingLabel->setToolTip("Invocation wall time; excludes ready-queue waiting. Components include their complete body span."); }
+    }
     // Routing points belong exclusively to the canvas workspace state.
     void setConnectionAnchors(QtNodes::PortType, QtNodes::PortIndex, const std::vector<QPointF>&) override {}
 private:
+    QPointer<QLabel> timingLabel;
+    QString timingText="Run: -";
     QString title;
     std::shared_ptr<const tp_pipeline::StepDelegate> owner;
 };
@@ -193,6 +214,21 @@ void PipelineCanvas::synchronize()
             if(!desired.count(edge)) DataFlowGraphModel::deleteConnection(edge);
     for(const auto edge : desired)
         if(!connectionExists(edge)) DataFlowGraphModel::addConnection(edge);
+}
+
+void PipelineCanvas::showExecutionTimes(const std::optional<ExecutionProgressSnapshot>& progress)
+{
+    for(const auto id:allNodeIds()) if(auto* node=delegateModel<CanvasNode>(id)) {
+        QString text="Run: -";
+        if(progress) {
+            const auto found=progress->nodes.find(projectId(id));
+            if(found!=progress->nodes.end() && found->second.startedMs) {
+                const auto& timing=found->second;
+                text=QString("Run: %1 ms").arg(timing.endedMs.value_or(progress->elapsedMs)-*timing.startedMs,0,'f',3);
+            }
+        }
+        node->setTiming(text);
+    }
 }
 
 void PipelineCanvas::resetLayout()

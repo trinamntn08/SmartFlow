@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphProject.h"
+#include "pipeline/PipelineExecution.h"
 #include <QtNodes/DataFlowGraphModel>
 
 namespace smartflow {
@@ -18,6 +19,7 @@ public:
     tp_utils::StringID projectId(QtNodes::NodeId id) const;
     std::string edgeId(QtNodes::ConnectionId connection) const;
     void resetLayout();
+    void showExecutionTimes(const std::optional<ExecutionProgressSnapshot>& progress);
 private:
     void synchronize();
     GraphProject& project;

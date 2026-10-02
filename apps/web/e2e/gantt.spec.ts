@@ -7,12 +7,25 @@ for (const example of ['data', 'scene', 'components']) {
     await page.getByLabel('Open example').selectOption(example);
     await page.getByRole('button', { name: 'Run graph' }).click();
     await expect(page.getByLabel('Execution state')).toHaveText('completed');
+    await page.getByRole('button', { name: 'Fit graph', exact: true }).click();
     const table = page.getByRole('table', { name: 'Process timings' });
     await expect(table).toBeVisible();
     const rows = table.locator('tbody tr');
     expect(await rows.count()).toBeGreaterThan(0);
     await expect(rows.first()).toContainText('completed');
     await expect(rows.first().getByRole('img')).toBeVisible();
+    for (let index = 0; index < (await rows.count()); index++) {
+      const row = rows.nth(index);
+      const id = await row.getByRole('button').textContent();
+      const duration = await row.locator('td').nth(3).textContent();
+      await expect(page.locator(`.react-flow__node[data-id="${id}"] .node-time`)).toHaveText(
+        `Run: ${duration} ms`,
+      );
+    }
+    await page.screenshot({
+      path: test.info().outputPath(`node-times-${example}.png`),
+      fullPage: true,
+    });
     await rows.first().getByRole('button').click();
     const pending = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download project' }).click();
