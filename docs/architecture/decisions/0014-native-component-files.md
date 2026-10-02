@@ -42,3 +42,13 @@ dependency. Installing node packages is a separate concern, and importing does
 not establish executable support. Nested definitions, editing/deletion, external
 assets, migrations and automatic updates remain future work. This adds no
 production plugin system, installer or new dependency.
+
+## N6f library removal follow-up
+
+Removing a selected retained catalog array entry is one semantic history edit.
+It targets an index in the current revision, so opaque or duplicate entries can
+be removed explicitly without schema repair or broad identity-based deletion.
+The UI checks revisions before confirmation and again before mutation, defaults
+to No, and explains that existing snapshots survive. No files are deleted.
+Undo restores the original order/content while retaining current workspace state.
+Unsupported catalog containers reject instead of being silently replaced.

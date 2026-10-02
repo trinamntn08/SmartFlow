@@ -106,6 +106,10 @@ existing instance snapshots. Desktop interaction acceptance remains pending the
 native computer-use connection. See the
 [N6e handoff](agents/handoffs/2026-10-02-native-checkpoint-n6e.md).
 
+N6f adds explicit undoable removal of selected library entries, including opaque
+entries, while retaining all existing instance snapshots and graph content. See
+the [N6f handoff](agents/handoffs/2026-10-02-native-checkpoint-n6f.md).
+
 The list below records the earlier TypeScript plan. It is superseded for current
 implementation by this native migration sequence:
 
@@ -133,7 +137,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 - Completed N5h: add a native table workflow through the same SDK.
 - Completed N5h: run it in a separate executable without linking/initializing the 3D package.
-- N6a through N6e: reusable definitions, extraction/catalog commands, native authoring/library UI and collapsed-node execution implemented. Standalone import/export is implemented; nested components and library editing/deletion remain pending.
+- N6a through N6f: reusable definitions, extraction/catalog commands, native authoring/library UI and collapsed-node execution implemented. Standalone import/export is implemented; undoable library removal is implemented; nested components and definition editing remain pending.
 - Check missing package and unsupported backend behavior.
 
 ## Later, when justified

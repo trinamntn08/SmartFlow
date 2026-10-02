@@ -90,6 +90,9 @@ Check the original nodes remain unchanged, the catalog import supports Undo/Redo
 and the imported definition can be inserted with compatible bindings. Importing
 identical content should add no history entry; conflicting identities report an
 inline error. The shipped `filtered-summary.smartflow-component` is ready to import.
+Select an entry and use **Remove from library...**: No preserves it; Yes removes
+only the library entry. Verify existing collapsed instances still execute,
+Undo/Redo restores/removes the entry, and saved instances reopen without it.
 
 ## Current limitations
 
@@ -102,7 +105,7 @@ inline error. The shipped `filtered-summary.smartflow-component` is ready to imp
 - The independent data extension is available; packaged interaction acceptance
   for both workflows is the next checkpoint.
 - Components support collapsed snapshots and optional ordinary node copies. Nested
-  components, definition editing, library deletion and automatic updates
+  components, definition editing, automatic updates
   of existing instances are pending.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.

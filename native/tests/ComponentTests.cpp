@@ -56,6 +56,44 @@ double total(const DocumentSession& session, const WorkspaceConfiguration& confi
 class ComponentTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void catalogRemovalPreservesInstancesOpaqueEntriesAndHistory()
+    {
+        const auto config=data::dataConfiguration();
+        auto initial=source(config);
+        initial["project"]["components"]=Document::array({definition(),{{"future",uint64_t(18446744073709551615ULL)}},definition()});
+        DocumentHistory history(initial,"graph",config.delegates,config.nodes);
+        const auto instance=history.instantiateComponent(GraphComponent(definition()),"saved-instance",{{"minimum",30}},input(),true);
+        const auto before=history.session().document();
+        history.removeCatalogComponent(0);
+        QCOMPARE(history.session().document()["project"]["components"].size(),size_t(2));
+        QVERIFY(history.session().document()["project"]["components"][0]==initial["project"]["components"][1]);
+        QVERIFY(history.session().document()["project"]["graphs"]==before["project"]["graphs"]);
+        QCOMPARE(total(history.session(),config,instance),79.0);
+        history.setWorkspaceField("latest","preserved across undo");
+        history.undoStack().undo();
+        QVERIFY(history.session().document()["project"]==before["project"]);
+        QVERIFY(history.session().document()["workspace"]["latest"]=="preserved across undo");
+        const auto unchanged=history.session().document();
+        QVERIFY_EXCEPTION_THROWN(history.removeCatalogComponent(size_t(-1)),FileError);
+        QVERIFY(history.session().document()==unchanged); QVERIFY(history.undoStack().canRedo());
+        history.undoStack().redo();
+        history.removeCatalogComponent(0); // Explicitly selected opaque entry.
+        history.removeCatalogComponent(0); // Final duplicate definition.
+        QVERIFY(history.session().document()["project"]["components"].empty());
+        QCOMPARE(total(history.session(),config,instance),79.0);
+        QTemporaryDir directory; const auto path=directory.filePath("removed-catalog.smartflow");
+        write(path,history.session().document());
+        DocumentSession reopened(read(path),"graph",config.delegates,config.nodes);
+        QCOMPARE(total(reopened,config,instance),79.0);
+        auto unsupported=initial; unsupported["project"]["components"]={{"future","opaque"}};
+        DocumentHistory malformed(unsupported,"graph",config.delegates,config.nodes);
+        QVERIFY_EXCEPTION_THROWN(malformed.removeCatalogComponent(0),FileError);
+        QVERIFY(malformed.session().document()==unsupported);
+        DocumentHistory empty(source(config),"graph",config.delegates,config.nodes);
+        QVERIFY_EXCEPTION_THROWN(empty.removeCatalogComponent(0),FileError);
+        QVERIFY(empty.session().document()==source(config));
+    }
+
     void standaloneFilesRoundTripAndReuseInAnotherProject()
     {
         QTemporaryDir directory;

@@ -336,6 +336,18 @@ void DocumentSession::catalogComponent(const GraphComponent& component)
     replace(component.catalog(source));
 }
 
+void DocumentSession::removeCatalogComponent(size_t index)
+{
+    const auto& project=source["project"];
+    if(!project.contains("components") || !project["components"].is_array())
+        throw FileError("Component library is missing or has an unsupported format");
+    if(index>=project["components"].size()) throw FileError("Component library entry does not exist");
+    auto replacement=source;
+    auto& catalog=replacement["project"]["components"];
+    catalog.erase(index);
+    replace(std::move(replacement));
+}
+
 ComponentBindings DocumentSession::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
     const Document& controls, const Document& inputSources, bool collapsed)
 {

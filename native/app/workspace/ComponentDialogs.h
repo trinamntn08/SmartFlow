@@ -40,6 +40,7 @@ public:
     // export does not alter project, workspace or undo state.
     void importFile(const QString& path);
     void exportFile(const QString& path) const;
+    void removeSelected();
 private:
     void refreshCatalog(int selected = 0);
     void refreshBindings();
@@ -51,6 +52,7 @@ private:
     QLabel* error;
     QPushButton* insert;
     QPushButton* exportButton;
+    QPushButton* removeButton;
     QCheckBox* collapsed;
     QFormLayout* bindings;
     std::vector<std::pair<std::string,QComboBox*>> inputs;

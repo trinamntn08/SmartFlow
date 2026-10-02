@@ -39,6 +39,9 @@ public:
                  const std::string& targetNode, const std::string& targetPort);
     void disconnect(const std::string& connectionId);
     void catalogComponent(const GraphComponent& component);
+    // Remove exactly one retained catalog entry, including opaque entries.
+    // Instance snapshots, graphs, workspace and other entries are untouched.
+    void removeCatalogComponent(size_t index);
     ComponentBindings instantiateComponent(const GraphComponent& component, const std::string& instanceId,
         const Document& controls, const Document& inputSources, bool collapsed = false);
     // Replace only an explicitly owned top-level workspace field. This does not

@@ -11,6 +11,7 @@
 #include <QFontDatabase>
 #include <QFileDialog>
 #include <QFile>
+#include <QMessageBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -46,6 +47,54 @@ double total(WorkspaceWindow& window, const std::string& summary)
 class ComponentUiTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void libraryRemovalConfirmationUndoAndSnapshotReopen()
+    {
+        WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();
+        window.openProject(SMARTFLOW_COMPONENT_EXAMPLE);
+        auto source=window.project().retained();
+        source["project"]["components"].push_back({{"future",uint64_t(18446744073709551615ULL)}});
+        window.project().commands().replace(source,"graph");
+        ComponentLibraryDialog library(window.project()); library.show();
+        auto* choices=library.findChild<QComboBox*>("componentCatalog"); choices->setCurrentIndex(1);
+        auto* remove=library.findChild<QPushButton*>("removeCatalogComponent");
+        QVERIFY(remove->isEnabled());
+        QVERIFY(!library.findChild<QPushButton*>("insertComponentConfirm")->isEnabled());
+        auto answer=[&](QMessageBox::StandardButton response) {
+            QTimer::singleShot(0,&library,[response] {
+                auto* dialog=qobject_cast<QMessageBox*>(QApplication::activeModalWidget()); QVERIFY(dialog);
+                QCOMPARE(dialog->defaultButton(),dialog->button(QMessageBox::No));
+                dialog->button(response)->click();
+            });
+        };
+        answer(QMessageBox::No); remove->click();
+        QVERIFY(window.project().retained()==source); QCOMPARE(choices->count(),2);
+        answer(QMessageBox::Yes); remove->click(); QCOMPARE(choices->count(),1);
+        QVERIFY(window.project().retained()["project"]["graphs"]==source["project"]["graphs"]);
+        QTest::qWait(30); // Let replacement binding widgets complete their layout.
+        QVERIFY(library.findChild<QComboBox*>("componentInput_table")->isVisible());
+        QVERIFY(library.grab().save("component-library-removal-smoke.png"));
+        answer(QMessageBox::Yes); remove->click(); QCOMPARE(choices->count(),0);
+        QVERIFY(!remove->isEnabled());
+        QVERIFY(window.project().retained()["project"]["components"].empty());
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        window.scene().undoStack().undo(); window.scene().undoStack().undo();
+        QVERIFY(window.project().retained()["project"]==source["project"]);
+        window.scene().undoStack().redo(); window.scene().undoStack().redo();
+        const auto removed=window.project().retained();
+        QVERIFY_EXCEPTION_THROWN(library.removeSelected(),project::FileError); // Stale revision.
+        QVERIFY(window.project().retained()==removed);
+        QTemporaryDir directory; const auto path=directory.filePath("removed-library.smartflow"); window.saveProject(path);
+        WorkspaceWindow reopened(data::dataConfiguration()); reopened.execution().setLive(false); reopened.show(); reopened.openProject(path);
+        reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
+        QCOMPARE(reopened.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        QVERIFY(reopened.project().retained()["project"]["graphs"]==source["project"]["graphs"]);
+        ComponentLibraryDialog empty(reopened.project());
+        QVERIFY(!empty.findChild<QPushButton*>("removeCatalogComponent")->isEnabled());
+        QVERIFY_EXCEPTION_THROWN(empty.removeSelected(),project::FileError);
+    }
+
     void libraryFileExchangeUndoConflictsAndSnapshotIsolation()
     {
         WorkspaceWindow source(data::dataConfiguration()); source.execution().setLive(false); source.show();

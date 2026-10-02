@@ -1,6 +1,6 @@
 # Native graph components
 
-Status: native authoring/library UI and collapsed instances and file exchange, N6e. Components
+Status: native authoring/library UI and collapsed instances and file exchange and library removal, N6f. Components
 insert as one node by default, with ordinary-node insertion also available.
 
 ## Desktop workflow
@@ -135,7 +135,7 @@ that do not provide an exposed output. A failed body publishes no instance outpu
 Both visible and expanded graphs must be acyclic. Output choice/pinning is saved
 in workspace `selectedPort`/`pinnedPort`, separately from project parameters.
 
-Nested components, definition migration/editing, library deletion and live
+Nested components, definition migration/editing and live
 updates remain future work. This is a native migration feature, not a production
 plugin system. See [decision 0013](architecture/decisions/0013-collapsed-native-components.md).
 
@@ -161,3 +161,17 @@ project state; writes use atomic replacement. Closing the library does not undo
 imports already completed; use Undo for those catalog edits. Files have the same strict JSON,
 16 MiB and nesting limits as project files. See
 [decision 0014](architecture/decisions/0014-native-component-files.md).
+
+## Remove a library entry
+
+Select an entry in **Components > Component library**, click **Remove from
+library...** and confirm. The default response is No. Removal changes this
+project's catalog only; it does not delete files or alter any graph/instance
+snapshot. Existing collapsed instances still execute and reopen without a catalog.
+Undo restores the complete entry, including unknown fields, in its original order.
+
+Unavailable and malformed entries in a catalog array can be explicitly removed.
+An unsupported catalog container is preserved and cannot be edited through this
+operation. Empty or stale selections reject without changing project/history.
+`DocumentHistory::removeCatalogComponent(index)` removes exactly the selected
+array entry as one semantic command; workspace changes remain separate.

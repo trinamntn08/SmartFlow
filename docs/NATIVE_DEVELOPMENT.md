@@ -236,3 +236,14 @@ size/nesting limits, write-failure preservation and reuse in another project.
 unavailable-package exchange, import undo/redo, conflicts, snapshot isolation and
 save/reopen. It writes `component-file-library-smoke.png` for render inspection.
 This Qt test coverage does not establish real Windows desktop acceptance.
+
+## N6f undoable library removal
+
+`DocumentSession` and `DocumentHistory::removeCatalogComponent(index)` remove one
+retained array entry without changing graphs, instance snapshots or workspace.
+The library confirms removal with No as the default and refreshes its selection.
+`native_components` tests duplicate/opaque entries, failed-command redo retention,
+workspace isolation and execution/save/reopen after the entire catalog is removed.
+`native_component_ui` drives No/Yes confirmation, unavailable/empty/stale selections,
+undo/redo and viewer restoration. It writes `component-library-removal-smoke.png`.
+Definition editing and live instance updates remain separate future work.

@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QSignalBlocker>
+#include <QMessageBox>
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
@@ -178,7 +179,8 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
     auto* files=new QHBoxLayout;
     auto* importButton=new QPushButton("Import component..."); importButton->setObjectName("importComponentFile");
     exportButton=new QPushButton("Export component..."); exportButton->setObjectName("exportComponentFile");
-    files->addWidget(importButton); files->addWidget(exportButton); files->addStretch(); layout->addLayout(files);
+    removeButton=new QPushButton("Remove from library..."); removeButton->setObjectName("removeCatalogComponent");
+    files->addWidget(importButton); files->addWidget(exportButton); files->addWidget(removeButton); files->addStretch(); layout->addLayout(files);
     auto* scroll=new QScrollArea; scroll->setWidgetResizable(true);
     auto* body=new QWidget; bindings=new QFormLayout(body); scroll->setWidget(body); layout->addWidget(scroll,1);
     error=message(this,"componentError"); layout->addWidget(error);
@@ -199,6 +201,17 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
         if(path.isEmpty()) return;
         try { exportFile(path); }
         catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+    });
+    connect(removeButton,&QPushButton::clicked,this,[this] {
+        try {
+            if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen this dialog before removing a component.");
+            QMessageBox confirm(QMessageBox::Question,"Remove component from library",{},QMessageBox::Yes|QMessageBox::No,this);
+            confirm.setObjectName("confirmRemoveComponent"); confirm.setTextFormat(Qt::PlainText);
+            confirm.setText("Remove \""+library->currentText()+"\" from this project's library?\n\nExisting instances keep their saved snapshots and remain usable. Undo restores the library entry.");
+            confirm.setDefaultButton(QMessageBox::No);
+            if(confirm.exec()!=QMessageBox::Yes) return;
+            removeSelected();
+        } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
     });
     refreshCatalog();
 }
@@ -239,11 +252,23 @@ void ComponentLibraryDialog::exportFile(const QString& path) const
     project::writeComponent(path,project::GraphComponent(catalog[size_t(library->currentIndex())]));
 }
 
+void ComponentLibraryDialog::removeSelected()
+{
+    if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen this dialog before removing a component.");
+    const auto selected=library->currentIndex();
+    if(!catalog.is_array() || selected<0) throw project::FileError("Choose a saved component to remove.");
+    graphProject.commands().removeCatalogComponent(size_t(selected));
+    revision=graphProject.revision();
+    const auto remaining=graphProject.retained()["project"]["components"].size();
+    refreshCatalog(remaining ? std::min(selected,int(remaining)-1) : -1);
+}
+
 void ComponentLibraryDialog::refreshBindings()
 {
     while(bindings->rowCount()) bindings->removeRow(0);
     inputs.clear(); controls.clear(); error->clear(); insert->setEnabled(false);
     exportButton->setEnabled(false);
+    removeButton->setEnabled(catalog.is_array() && library->currentIndex()>=0);
     try {
         if(!catalog.is_array()) throw project::FileError("The saved component library has an unsupported format. Its content is retained.");
         if(library->currentIndex()<0) throw project::FileError("No saved components. Import a component, or select nodes and choose Create from selection.");
