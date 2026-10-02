@@ -1,6 +1,7 @@
 # 3D scene extension
 
-Status: initial native implementation, checkpoint N4.
+Status: native primitive preview introduced at N4, integrated with project/workspace
+persistence and collapsed components through N6f.
 
 The required included domain package. `native/` implements Cube, Transform,
 Material, Scene and Merge nodes, a versioned scene output type, and an interactive
@@ -28,3 +29,12 @@ Native behavior tests are in `native/tests/SceneTests.cpp`; they run with CTest.
 The source-level contribution interface is in `native/sdk/WorkspaceExtension.h`.
 `smartflow.exe --numeric` constructs only the independent numeric workflow.
 There is no JavaScript package here yet; TypeScript runtime integration is deferred.
+
+Open the shipped `examples/scene.smartflow` to restore scene parameters and camera.
+The same scene nodes can be exposed through a collapsed component with a size
+control and scene output; native tests cover edits, undo and save/reopen. Library
+removal leaves retained instance snapshots usable. See
+[components](../../docs/GRAPH_COMPONENTS.md),
+[VS Code launch](../../docs/NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools)
+and [desktop testing](../../docs/DESKTOP_TESTING.md). Automated scene/UI/startup
+checks pass; packaged interaction acceptance is pending the user's manual results.

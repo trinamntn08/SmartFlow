@@ -19,10 +19,20 @@ This setup provides development context. It does not install an AI SDK into the 
 
 For a new extension, begin with a concrete graph, its data types, and viewer behavior. Extend the SDK only where that example needs a public contract. Verify that the platform does not import the new domain.
 
-## Useful first task
+## Current continuation context
 
-> Read AGENTS.md, the product proposal, architecture notes, and roadmap. Specify the minimal graph and extension contracts for a primitive-transform-material-scene-viewer workflow. Keep the core domain-independent and identify how a table/text extension would use the same contracts. Propose a bounded implementation slice and acceptance tests before expanding the API.
+Read [the current roadmap](../ROADMAP.md) and the
+[handoff index](handoffs/README.md) before choosing work. Native implementation is
+complete through N6f, with VS Code launch setup. Do not reimplement delivered graph,
+file or component features based on old handoff "next steps".
+
+The user has deferred automated desktop interaction and will test manually. Keep
+full N5 acceptance pending their results; continue unrelated authorized work
+without repeatedly retrying native computer-use. Definition editing, nested
+components and asset distribution require scoped follow-up decisions.
 
 ## Handoffs
 
-Use [the handoff template](HANDOFF_TEMPLATE.md) for work that spans sessions. Put durable decisions in architecture records and completed milestone status in the roadmap. Avoid treating conversation history as the only record of a decision.
+Use [the handoff template](HANDOFF_TEMPLATE.md) for work that spans sessions. Put durable decisions in architecture records and completed milestone status in the roadmap. Avoid treating conversation history as the only record of a decision. Dated
+handoffs are historical snapshots; current guides and explicit user instructions
+supersede their pending items.

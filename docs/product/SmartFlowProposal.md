@@ -4,6 +4,25 @@ Status: native C++/Qt selected as the starting application by the user on 2026-0
 
 This proposal describes an independent product in a new repository. It originates from Pipeline Builder and 3D scene applications, and must retain the ability to build and visualize 3D scene workflows. Reuse audited native source by copying it with its licenses into SmartFlow; builds must not depend on the old checkout. Its architecture should support additional domains through extensions.
 
+## Implementation status (2026-10-02)
+
+The native Windows preview now implements graph editing, background execution and
+cancellation, inspector controls, undo/redo, atomic Save/Open and workspace/viewer
+restoration. It includes the primitive scene workflow and an independent table
+workflow through source-level native contribution contracts. Components support
+collapsed snapshots with exposed controls/ports, standalone import/export and
+undoable library removal. VS Code CMake Tools and a local runtime test folder
+support development/manual launches.
+
+The automated baseline passes Release builds, 17 CTest entries, packaged startup
+and web checks. Full N5 desktop interaction acceptance is pending the user's
+manual results; automated computer-use is deferred. Production rendering, asset
+import/bundling, dynamic plugin loading, nested components, definition editing and
+public distribution remain unimplemented. The TypeScript browser/core/SDK material
+below describes a preserved prototype or future options, not a shipped web app.
+See [the roadmap](../ROADMAP.md) for authoritative delivered status. The vision and
+acceptance criteria below remain product goals, not claims of completed release.
+
 ## 1. Product vision
 
 An extensible visual workspace for building processes and interacting with their results, with 3D scene workflows as a required initial capability.
@@ -251,7 +270,7 @@ The first graph establishes 3D as a usable capability. The second must work with
 - Saving and reopening preserves graph parameters, asset references, and viewer configuration.
 - A developer can add the non-3D package without editing the graph editor or introducing its domain model into the core.
 - A reusable component exposes defined inputs and controls and behaves like another node.
-- The first user test release launches as a desktop application with its runtime dependencies, without a browser server or Node.js. Both demonstration workflows target the native extension contracts; full N5 remains incomplete until the independent non-3D workflow and workspace persistence pass acceptance.
+- The first user test release launches as a desktop application with its runtime dependencies, without a browser server or Node.js. Both demonstration workflows target the native extension contracts; the independent non-3D workflow and workspace persistence are implemented, but full N5 remains incomplete until packaged desktop interaction acceptance is recorded.
 
 ### Deferred scope
 
@@ -282,4 +301,4 @@ Each can become substantial work without proving the core interaction.
 - Which extension language and packaging format provide a practical first developer experience?
 - Which project and asset storage model is appropriate for the first delivery?
 
-The next step is to specify the 3D reference workflow and a small independent non-3D workflow, then prototype the workspace and extension boundaries. Selecting the final application field is not a prerequisite for that work.
+Both reference workflows and the native extension boundaries are implemented. The next step is to collect manual desktop acceptance results and address concrete issues from testing. Component definition editing/update policy needs a separate scoped decision. Selecting the final application field is not a prerequisite.

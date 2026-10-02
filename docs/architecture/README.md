@@ -1,95 +1,101 @@
 # Architecture boundaries
 
-## Current implementation direction
+Updated: 2026-10-02. Native C++17/Qt6 is primary, per
+[decision 0003](decisions/0003-native-first.md); the first test delivery is Windows,
+per [decision 0009](decisions/0009-desktop-test-release.md).
 
-Native C++/Qt is primary, per [decision 0003](decisions/0003-native-first.md).
-The first user test release is the Windows desktop app, per
-[decision 0009](decisions/0009-desktop-test-release.md); browser delivery is deferred.
-`native/app` composes the application and links the copied QtNodes library in
-`native/vendor`. N2 adds selected pipeline/data/task sources and a separate
-`native/app/pipeline` background execution adapter. It has no QtNodes or scene
-dependency. N3 adds the project/canvas adapter, command-based inspector and
-revision-aware execution controller. N4 adds source-level native contribution
-contracts in `native/sdk` and the bundled extension in `extensions/scene-3d/native`.
-The application composition root links it; workspace and execution code do not.
-The extension reuses audited geometry/material math with a bounded primitive
-preview. Broader scene and production renderer migration remain pending. See
-[decision 0004](decisions/0004-native-pipeline-migration.md) and
-[decision 0005](decisions/0005-native-workspace.md) and
-[decision 0006](decisions/0006-native-scene-extension.md). The old checkout is
-not a dependency. The TypeScript package diagram below
-describes the preserved future-extension prototype, not the native build.
+## Current native implementation
 
-N5a adds `native/app/project/ProjectFile`, a Qt Core/JSON-only file layer sharing
-the schema-v1 envelope with the preserved prototype. It retains unknown content
-and performs atomic file writes. N5b adds the retained `DocumentSession` execution
-adapter and explicit persisted identities in native registrations. N5c/N5d add
-structural commands and retained-document undo; N5e connects them to the editor
-and adds unavailable-node placeholders. N5f adds editor file actions and
-retained-content dirty tracking; N5g adds workspace persistence through opaque viewer hooks.
-See [decision 0010](decisions/0010-native-workspace-persistence.md).
-See [decision 0007](decisions/0007-native-project-files.md) and the
-[editor integration decision](decisions/0008-retained-editor-commands.md).
+| Area                         | Ownership and implemented behavior                                                                                                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `native/app/main.cpp`        | Composition of the required scene extension and optional data configuration; separate data-only executable excludes scene libraries                 |
+| `native/app/project`         | Strict schema-v1 files, retained documents, commands/history, component definitions/snapshots, standalone files and disposable execution projection |
+| `native/app/pipeline`        | Background execution adapter over audited pipeline/data/task sources; validation, cancellation and grouped component results                        |
+| `native/app/workspace`       | Qt canvas/inspector adapters, file actions, component dialogs, viewer selection and workspace state                                                 |
+| `native/sdk`                 | Source-level node/type/factory/viewer contribution contracts, without concrete domain imports                                                       |
+| `extensions/scene-3d/native` | Scene types/nodes and bounded interactive primitive preview using audited geometry/material math                                                    |
+| `extensions/data/native`     | Independent table types/nodes and viewer using the same contracts                                                                                   |
+| `native/vendor`              | Copied sources, preserved licenses/provenance and isolated local patches; no old-checkout dependency                                                |
+| `native/tests`               | Behavior, Qt UI, file round-trip, failure/cancellation and startup checks                                                                           |
 
-N5h adds `extensions/data/native` with its own table type, nodes and viewer.
-The data-only executable and tests exclude scene libraries. The composition
-root also exposes it through `smartflow.exe --data`. No graph editor or runtime
-domain branch is introduced. See [decision 0011](decisions/0011-independent-native-data-extension.md).
+The composition root registers contributions. Workspace, document and execution
+adapters do not import a concrete domain. `smartflow-data` validates this by linking
+without scene or scene-math libraries. The SDK and adapters are native migration
+features; no dynamic plugin loader or production extension runtime exists.
 
-N6a adds a registry-independent graph-component definition/expansion library,
-with retained-session instantiation and one-command undo. It depends on the
-project codec; active registrations validate domain types in the session adapter.
-N6b adds extraction/catalog commands; N6c adds native authoring/library dialogs.
-N6d adds retained instance snapshots, disposable execution expansion and exposed
-canvas/inspector facades, without domain imports. See
-[decision 0013](decisions/0013-collapsed-native-components.md).
-See [decision 0012](decisions/0012-native-graph-component-foundation.md).
+## Retained state and execution
 
-N6e shares strict JSON transport between project and standalone component files.
-Imports use the existing catalog command; exports retain the definition without
-changing instance snapshots or project state. See
-[decision 0014](decisions/0014-native-component-files.md).
+The schema-v1 file codec retains unknown JSON and other graphs, uses strict numeric
+and structural validation, and writes atomically. The editor opens the first graph;
+unsupported content displays placeholders/diagnostics and blocks execution rather
+than being silently dropped. Definitions and standalone files share strict JSON
+transport; schema validation stays with their respective adapters.
 
-## Product invariant
+Separate state responsibilities:
 
-3D scene support ships with the product, while the core remains usable without a 3D data model. Prove this with an independent data/text extension.
+- Project: graph nodes/connections, parameters, component catalogs/snapshots,
+  package metadata and asset references.
+- Workspace: canvas positions/navigation, selection, selected/pinned output aliases
+  and opaque viewer state. Window/splitter geometry is not yet persisted.
+- Execution: disposable compiled steps, worker snapshots, status/errors and computed
+  outputs. Results are not serialized; general caching is not implemented.
+- Domain output: immutable-by-convention scene/table values supplied by extensions.
 
-## Planned dependency direction
+Viewer navigation/selection saves workspace state. Parameter edits use explicit
+project/history commands. Undo of semantic edits preserves the current workspace.
+No domain object is required in an empty project.
 
-```text
-apps/web (composition root)
-  -> packages/core
-  -> packages/extension-sdk
-  -> packages/runtime
-  -> extensions/scene-3d
-  -> extensions/data
+The executor validates an acyclic graph, runs off the UI thread, propagates failures
+and discards cancelled output. Revision checks prevent stale runs replacing current
+results. Streaming, simulation, remote execution and production scheduling remain
+future decisions.
 
-packages/extension-sdk -> packages/core
-packages/runtime -> packages/core + packages/extension-sdk
-extensions/* -> packages/core + packages/extension-sdk
-```
+## Reusable components
 
-The native application explicitly composes the included scene extension. Core, SDK, and runtime never import concrete extensions. Rendering integrations belong in viewer contributions, not the graph model. The TypeScript core implements document persistence and its SDK provides initial contracts; its runtime and domain implementations remain planned.
+Definitions expose named inputs, outputs and controls. The library supports
+selection extraction, catalog storage, collapsed insertion by default and optional
+expanded copies. A collapsed node retains a complete definition snapshot and
+separate control values; it executes independently of subsequent catalog changes
+or removal. Compilation expands private body steps and creates canvas/inspector
+facades from public registrations.
 
-## Separate kinds of state
+Body dependency barriers wait for all external inputs; external consumers wait for
+all body steps, including unexposed branches. Grouped results share exposed members
+without renaming their data. Both visible and expanded dependency cycles reject.
+Nested components and exposed input fan-out are unsupported.
 
-- Project: graph nodes, connections, parameters, assets, and package dependencies.
-- Workspace: panel layout, pinned outputs, selection, and navigation camera.
-- Execution: node status, progress, cached results, cancellation, and errors.
-- Domain output: scene hierarchy, table, image, or other typed result.
+Standalone import adds a catalog entry through one history command. Identical
+content is a no-op and conflicting identity/version content rejects. Export and
+library removal do not update instance snapshots. Removal targets one array entry
+in the current revision and is undoable, including opaque entries. External asset
+bundling/relocation, definition editing/migration and live updates are unimplemented.
 
-The execution graph and scene hierarchy are different structures. Editing an output must have a defined route back to project commands. Viewing an output must not implicitly rewrite graph parameters.
+See [the component guide](../GRAPH_COMPONENTS.md) and decisions
+[0012](decisions/0012-native-graph-component-foundation.md),
+[0013](decisions/0013-collapsed-native-components.md) and
+[0014](decisions/0014-native-component-files.md).
 
-## Extension contract to design
+## Preserved TypeScript prototype
 
-Define stable identifiers, versions, dependencies, custom types, typed nodes, parameter editors, viewers, runtime capabilities, and saved-state migration. Use a minimal working 3D package to discover the contract, then test it with an independent domain before expanding the API.
+`apps/web` contains a standalone setup page. The workspace separately preserves
+`packages/core` persistence and provisional `packages/extension-sdk` contracts. `packages/runtime` is reserved; no browser graph
+editor, runtime, renderer or extension loader exists. The intended future direction
+is application composition to core/SDK/runtime/extensions, with SDK depending only
+on core and runtime depending only on core plus SDK. Concrete extensions never
+become core/runtime dependencies.
 
-Persist unknown nodes and their data losslessly when an extension is absent. Validate before execution and explain missing capabilities. Do not promise that all extensions run in every environment.
+## Verification and open work
 
-## Execution direction
+Current Release builds, 17 CTest entries and packaged startup checks passed. Full
+Windows desktop interaction acceptance is pending manual testing, as recorded in
+[the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
+The primitive viewer is not production GPU rendering; importer/asset handling,
+performance policy, public packaging/signing and broader compatibility are open.
 
-Start with acyclic dataflow, explicit live-versus-manual execution, and inspectable results. Introduce worker, native, or remote execution behind explicit adapters when needed. Streaming and simulation are future semantic decisions, not implied support.
+## Decision records
 
-## Decisions
-
-See [0001: bootstrap](decisions/0001-bootstrap.md) and [0002: project contract](decisions/0002-project-contract.md). Create a new decision record for consequential changes rather than silently rewriting settled rationale.
+[Decision records](decisions/README.md) retain rationale at the date of each step;
+follow-ups/current guides supersede historical pending items. The initial legacy
+audit records evidence, not current implementation recommendations. Consult the
+[roadmap](../ROADMAP.md) for delivered status and
+[product proposal](../product/SmartFlowProposal.md) for product constraints.

@@ -86,6 +86,13 @@ Using a build-tree executable is a development workflow. Packaged desktop
 acceptance still uses `build/desktop-test`; the user is testing it manually and
 that acceptance is pending until results are reported.
 
+## Implementation and verification notes
+
+The sections below organize current code/tests by their originating checkpoint.
+Dated handoffs describe the state at that date; later steps supersede earlier
+limitations. The current suite has 17 CTest entries. Release presets/builds are
+verified; the separate Debug configuration has not been built in this session.
+
 ## N2 pipeline foundation
 
 The build also produces `smartflow_legacy`, `smartflow_pipeline`, and
@@ -139,9 +146,9 @@ intersecting surfaces and production GPU rendering are not supported. Read the
 `native_project` checks shared native/browser fixture compatibility, unknown
 content retention, real filesystem round trips, malformed files, numeric limits,
 and failed-save preservation. Report: `build/native/native/project-results.xml`.
-The library is not yet connected to application Save/Open actions. Read the
-[N5a handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md) before continuing
-the editor integration.
+The codec is connected to editor Open/Save/Save As through N5f. The
+[N5a handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md) records its
+original standalone checkpoint.
 
 ## N5b retained-document adapter
 
@@ -151,28 +158,28 @@ saved numeric graph execution, exact preservation during edits, rejected edits,
 unknown node/parameter/connection handling and registration validation.
 `native_scene` also executes a serialized scene graph through these contracts.
 Report: `build/native/native/document-session-results.xml`.
-This adapter is not yet wired to application file actions or missing-node visuals.
-Continue from the [N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md).
+N5e/N5f connect this adapter to unavailable placeholders and file actions. The
+[N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md) records the
+original adapter checkpoint.
 
 N5c extends that suite with empty-project creation, structural node/connection
 edits, save/reopen execution, opaque-edge preservation, failed-command isolation,
-type compatibility and workspace-only edits. Continue editor integration from the
+type compatibility and workspace-only edits. Historical implementation record:
 [N5c handoff](agents/handoffs/2026-09-30-native-checkpoint-n5c.md).
 
 N5d adds `smartflow_document_history`, a Qt undo command layer over retained
 documents. The same suite now checks exact restoration of opaque nodes and
 incident edges, connection identity, redo branching and rejection, execution
-after undo, workspace isolation and transactional document replacement. The demo
-editor still uses its earlier canvas undo stack; no file actions are exposed yet.
-Continue from the [N5d handoff](agents/handoffs/2026-10-01-native-checkpoint-n5d.md).
+after undo, workspace isolation and transactional document replacement. N5e
+connects the canvas/inspector to this history; N5f adds editor file actions. See the [N5d handoff](agents/handoffs/2026-10-01-native-checkpoint-n5d.md).
 
 N5e wires that command layer into the running workspace. The inspector and canvas
 now edit retained documents, with exact semantic undo and workspace-only movement
 undo. Unknown node types display as labeled placeholders, and unsupported graph
 diagnostics block worker submission. `native_workspace` checks editor-level
 opaque-content round trips, deletion/disconnection undo, hidden-edge occupancy,
-inspection-copy isolation and replacement during execution. File actions and
-viewer/canvas persistence remain pending. See the
+inspection-copy isolation and replacement during execution. N5f/N5g complete file
+actions and viewer/canvas persistence. See the
 [N5e handoff](agents/handoffs/2026-10-01-native-checkpoint-n5e.md).
 
 For readable workspace-test screenshots when offscreen font discovery fails, set
@@ -183,10 +190,11 @@ The test writes `build/native/native/n5e-unavailable-smoke.png` under CTest.
 
 File actions use the atomic codec and track retained-content changes, including
 undo back to the saved snapshot. Open and Close offer Save/Discard/Cancel for
-unsaved content. Open selects the first graph and resets canvas layout and
-selection; files with no graphs are rejected without replacing the editor.
+unsaved content. Open selects the first graph and restores saved workspace state; files with no
+graphs are rejected without replacing the editor. Without saved workspace state,
+the canvas fits its nodes and chooses a terminal output.
 Unknown content and other graphs remain retained. Workspace/viewer restoration
-is the next checkpoint. See the [N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).
+is implemented through N5g. See the [N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).
 
 ## N5g workspace persistence
 

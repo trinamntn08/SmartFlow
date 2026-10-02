@@ -1,9 +1,10 @@
 # Data extension
 
-Status: initial native implementation, checkpoint N5h.
+Status: independent native table workflow introduced at N5h, used to validate
+components and library workflows through N6f.
 
-The independent non-3D validation package implements Sample table ? Filter rows
-? Summary, with a read-only two-column table viewer. It uses the same native
+The independent non-3D validation package implements Sample table -> Filter rows
+-> Summary, with a read-only two-column table viewer. It uses the same native
 StepDelegate, member factory, node registration and OutputViewer contracts as
 the bundled scene extension. No scene model or scene registry is imported.
 
@@ -28,3 +29,12 @@ at most 1000 input rows, and finite values within 1,000,000. It does not provide
 CSV import, arbitrary column schemas, sorting, editable tables or a plugin loader.
 Tests live in `native/tests/DataTests.cpp`, which does not link scene libraries.
 No TypeScript package/runtime is introduced; browser integration remains deferred.
+
+Shipped data/component projects restore minimum 30 and summary total 79. Components
+expose row/summary outputs and a minimum control through the same platform commands;
+choose a toolbar Output alias before pinning. The library supports standalone
+import/export and undoable removal without altering existing snapshots. Tests in
+`ComponentTests.cpp`/`ComponentUiTests.cpp` also link without scene libraries.
+See [examples](../../examples/README.md), [components](../../docs/GRAPH_COMPONENTS.md)
+and [desktop testing](../../docs/DESKTOP_TESTING.md). Packaged interaction acceptance
+is pending the user's manual results; no production plugin loader is claimed.

@@ -60,3 +60,12 @@ against stale dialog edits. Inserted copies are placed beside existing nodes and
 framed through workspace state. This does not add a component node type or change
 execution semantics. A collapsed-node exposed-control inspector remains pending.
 Full N5 desktop acceptance remains independently pending the computer-use helper.
+
+## Subsequent checkpoints
+
+N6d implements collapsed snapshot nodes and exposed-control inspection through
+[decision 0013](0013-collapsed-native-components.md). N6e/N6f add standalone exchange
+and undoable catalog removal through [decision 0014](0014-native-component-files.md).
+The earlier pending items above record the foundation checkpoint's scope. Full N5
+acceptance is now pending the user's manual desktop results; native computer-use
+is deferred. See [the current roadmap](../../ROADMAP.md).

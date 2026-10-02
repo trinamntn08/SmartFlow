@@ -1,6 +1,7 @@
 # Native graph components
 
-Status: native authoring/library UI and collapsed instances and file exchange and library removal, N6f. Components
+Status: implemented through N6f: authoring, collapsed instances, file exchange
+and undoable library removal. Components
 insert as one node by default, with ordinary-node insertion also available.
 
 ## Desktop workflow

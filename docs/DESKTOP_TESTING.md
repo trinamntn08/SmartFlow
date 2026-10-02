@@ -2,7 +2,13 @@
 
 The first version for user testing is the Windows native C++/Qt application.
 The browser starter is deferred. This is a local development preview, not a
-public installer or a completed N5 release.
+public installer or a completed N5 release. Implementation is complete through
+N6f and VS Code setup; full N5 packaged interaction acceptance is pending the
+user's manual test results. Automated native computer-use is deferred for now.
+
+For development runs, use [VS Code CMake Tools](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
+Acceptance runs below use the installed test folder, so they check bundled runtime
+dependencies as well as app behavior.
 
 ## Build and prepare
 
@@ -22,12 +28,13 @@ a browser server or a Qt PATH entry. Close the app before reinstalling the folde
 
 ## Open the shipped examples
 
-CMake install copies `examples/scene.smartflow` and `examples/data.smartflow`
-into the desktop test folder. Launch either directly from a PowerShell prompt:
+CMake install copies scene, data and component projects plus the standalone
+component definition into the desktop test folder. Launch either directly from a PowerShell prompt:
 
 ```powershell
 build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples/scene.smartflow"
 build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/data.smartflow"
+build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/components.smartflow"
 ```
 
 The scene example restores size 3 and an orbited camera with the object selected.
@@ -67,8 +74,8 @@ For the desktop test:
 ## Independent table workflow
 
 Launch `build/desktop-test/bin/smartflow-data.exe` or `smartflow.exe --data`.
-The separate executable does not link scene libraries. Sample table ? Filter
-rows ? Summary initially displays count 3, total 104 and mean 34.66666667.
+The separate executable does not link scene libraries. Sample table -> Filter
+rows -> Summary initially displays count 3, total 104 and mean 34.66666667.
 Select Filter rows, change minimum from 20 to 30 and Apply; expect count 2,
 total 79 and mean 39.5. Undo/Redo restores those results. Select a viewer row,
 move a canvas node, Save As, relaunch and Open to check parameters, selection
@@ -103,9 +110,18 @@ Undo/Redo restores/removes the entry, and saved instances reopen without it.
   preserved. Unsupported nodes are displayed but cannot execute.
 - The 3D view is a primitive software preview, not a production GPU renderer.
 - The independent data extension is available; packaged interaction acceptance
-  for both workflows is the next checkpoint.
+  for scene, data and components is pending manual results.
 - Components support collapsed snapshots and optional ordinary node copies. Nested
   components, definition editing, automatic updates
   of existing instances are pending.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.
+
+## Record manual results
+
+Report the tested executable/configuration and whether scene, data, component,
+import/export/removal, Undo/Redo and save/relaunch/Open checks passed. Include
+reproduction steps and expected/actual behavior for failures. Use a separate saved
+file to preserve shipped fixtures. Manual results have not yet been reported; the
+current automated baseline is a Release build, 17 CTest entries and successful
+Windows startup smoke checks. A clean-machine/public-install test remains separate.

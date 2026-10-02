@@ -5,14 +5,27 @@ An independent, extensible visual workspace for interactive node graphs and thei
 
 ## Current state
 
-SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds the pipeline foundation and background execution adapter. N3 connects the workspace, inspector and undo/redo. N4 adds the included scene-3d extension: Cube, Transform, Material, Scene and Merge nodes with an interactive primitive preview. N5a–N5e add the native project-file codec, retained-document editor commands and undo, and unavailable-node placeholders. N5f adds Open/Save/Save As and retained-content dirty tracking. N5g adds canvas layout/navigation, selection, pinned-output and viewer-state persistence. N5h adds the independent data extension and table workflow. N5i adds shipped example projects and launch-time project loading. N6a adds a reusable graph-component model and atomic subgraph insertion commands. N6b adds extraction/catalog commands and N6c adds the native component authoring/library UI; N6d adds collapsed component nodes with exposed controls, ports and grouped execution. N6e adds standalone component import/export; N6f adds undoable library removal. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
+Updated: 2026-10-02. SmartFlow is a native C++17/Qt6 Windows development preview
+with graph editing, background execution/cancellation, inspector controls,
+undo/redo, atomic project Save/Open and workspace/viewer restoration.
+
+The included 3D extension provides Cube/Transform/Material/Scene/Merge and a
+bounded interactive primitive viewer. The separate data app provides sample,
+filter and summary nodes with a table viewer, without scene dependencies.
+Reusable components support collapsed snapshots, exposed ports/controls,
+standalone import/export and undoable library removal (N6a through N6f).
+
+Release build, 17 native CTest entries, packaged startup and web checks passed.
+**Full desktop interaction acceptance remains pending the user's manual results**;
+automated computer-use is deferred. The TypeScript browser starter, persistence
+and SDK contracts are preserved for a future extension, not the delivered app.
+See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
 
 ## Start locally
 
-N6b adds reusable-component extraction and catalog commands. N6c adds the
-**Components** menu for creating components from selected nodes and inserting
-them from the saved project library. See [graph components](docs/GRAPH_COMPONENTS.md).
-Components insert as one node by default, with optional expanded insertion.
+Use **Components** to create, insert, import/export and remove saved definitions.
+Instances insert as one node by default, with optional expanded copies. See
+[graph components](docs/GRAPH_COMPONENTS.md).
 
 To build and run in VS Code, use the [CMake Tools setup](docs/NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
 
@@ -20,7 +33,7 @@ The first version for user testing is the **Windows desktop app**, built with C+
 Follow [desktop testing](docs/DESKTOP_TESTING.md) to build a local test folder and
 launch `build/desktop-test/bin/smartflow.exe` directly. Qt and compiler runtime
 dependencies are copied into that folder; Node.js and a browser server are not
-required to run it. Try the [scene and data examples](examples/README.md). This is a development preview with the limitations listed in
+required to run it. Try the [scene, data and component examples](examples/README.md). This is a development preview with the limitations listed in
 the testing guide. The old repository is not required by the new build.
 
 ### Future web prototype
@@ -58,7 +71,7 @@ npm run preview
 | ------------------------ | ----------------------------------------------------- | ------------------- |
 | `native/app`             | Native C++/Qt shell and adapters                      | Migration preview   |
 | `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses | Native dependencies |
-| `native/tests`           | Canvas, pipeline, workspace and scene behavior tests  | N1–N4 checks        |
+| `native/tests`           | Graph, execution, file, component and viewer checks   | 17 CTest entries    |
 | `apps/web`               | Browser interface and application composition         | Development starter |
 | `packages/core`          | Domain-independent project and graph model            | Initial persistence |
 | `packages/extension-sdk` | Public extension contracts                            | Initial contracts   |

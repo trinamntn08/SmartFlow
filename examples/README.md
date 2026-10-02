@@ -36,3 +36,10 @@ These checks do not replace real desktop interaction or clean-machine testing.
 `components.smartflow`. In the data app, open **Components > Component library**,
 click **Import component...**, choose this file, bind `table` to Sample table / out
 and insert it. Export saves the definition defaults, separately from instance edits.
+
+Removing an imported definition from the library is undoable and leaves existing
+snapshot instances usable. For build-tree runs use the
+[VS Code CMake Tools launch configurations](../docs/NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
+For acceptance, test the installed folder as described in
+[desktop testing](../docs/DESKTOP_TESTING.md). Manual results are pending; shipped
+examples and successful startup alone do not establish desktop acceptance.

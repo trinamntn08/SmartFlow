@@ -1,57 +1,81 @@
 # Local development
 
-The first user test release is the native Windows desktop app: follow
-[desktop testing](DESKTOP_TESTING.md) and [native development](NATIVE_DEVELOPMENT.md).
-The commands below maintain the preserved TypeScript prototype for a future extension.
+Updated: 2026-10-02. The primary app is native C++17/Qt6 on Windows. The TypeScript
+workspace is a preserved future prototype, maintained by its own checks.
 
-## Prerequisites
+## Native application
 
-- Node.js 24; `.node-version` and `.nvmrc` record the tested local version.
-- npm 11; the root `packageManager` field records the bootstrap version.
-- Git.
+Use Visual Studio 2022 C++ tools, CMake 3.21 or newer and a matching Qt6 MSVC kit.
+Read [native development](NATIVE_DEVELOPMENT.md) for build/test details and
+[VS Code CMake Tools setup](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools)
+for presets and launch configurations. The local ignored `CMakeUserPresets.json`
+is prepared on this machine; another developer should copy the documented example
+and set their own Qt root.
 
-Existing installations are sufficient. No global package installation or engine build is needed. Version files document the environment; they do not install Node automatically.
+```powershell
+cmake --preset windows-local
+cmake --build --preset windows-local-release
+ctest --preset windows-local-release-tests
+```
 
-## Install and run
+Run `smartflow` for 3D or `smartflow-data` for the independent table workflow.
+Use [desktop testing](DESKTOP_TESTING.md) for the packaged runtime folder and
+manual acceptance. The development build needs Qt runtime discovery; the installed
+test folder includes it. No Node.js, browser server, API key, old checkout or
+external service is required to run the desktop app.
 
-From this repository:
+## Future web prototype
+
+Use Node.js 24 and npm 11. `.node-version`, `.nvmrc` and the root `packageManager`
+record the tested versions; they do not install tools. Install dependencies in this
+repository, not globally.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Visit http://127.0.0.1:5173. Stop the server with Ctrl+C. The port is strict: if another app owns it, Vite fails instead of silently changing the URL. Both dev and preview servers bind to loopback.
-
-On Windows PowerShell, use `npm.cmd` if the shell rejects `npm.ps1`.
-
-## Validation
+Visit http://127.0.0.1:5173. Vite uses a strict loopback port and fails if occupied.
+Use `npm.cmd` on PowerShell when execution policy blocks `npm.ps1`. The browser
+starter does not implement graph editing, execution or scene rendering.
 
 ```sh
 npm run check
+npm run preview
 ```
 
-This runs Prettier, strict TypeScript, Node behavior tests, and a Vite production build. Output is in `apps/web/dist`, which is ignored by Git. Use `npm run preview` to serve it on port 4173.
+`check` runs Prettier, strict TypeScript, nine persistence behavior tests and a Vite
+production build. Output is in ignored `apps/web/dist`; preview binds to loopback
+port 4173. `npm test` runs persistence tests via Node 24's TypeScript support.
+There is no TypeScript graph runtime; native execution exists separately.
 
-The web workspace checks browser source with `apps/web/tsconfig.json` (DOM and Vite client types) and Vite tooling with `apps/web/tsconfig.node.json` (Node types). Keep browser source under `src` and include additional Node tooling files in the tooling configuration so each environment is checked separately.
+The web workspace separates browser/DOM source in `apps/web/tsconfig.json` from
+Node/Vite tooling in `tsconfig.node.json`. Keep environments explicit.
 
-Run `npm test` for persistence behavior tests using Node 24's built-in TypeScript support and test runner. There is no graph runtime yet. Add graph validation, parameter invalidation, and cancellation tests as those features arrive.
+## Editor and verification
 
-## Editor
+Open the repository folder or `smartflow.code-workspace`. CMake Tools handles
+native configure/build/test/run; Run and Debug supplies native launch choices.
+The existing VS Code tasks still maintain the web prototype. C/C++, CMake Tools
+and Prettier are recommended; recommendations do not install extensions.
 
-Open `smartflow.code-workspace` or the repository folder. VS Code tasks cover install, dev, check, and build. Prettier is recommended for formatting. Recommendations do not automatically install extensions.
+Run appropriate native build/CTest checks for native changes and `npm.cmd run
+check` before finishing implementation. For documentation-only changes, check
+formatting and local links. Native offscreen/rendering checks and packaged startup
+are useful evidence, but full desktop acceptance remains pending the user's manual
+interaction results. Browser inspection applies only to web UI changes.
 
-## Dependencies and workspaces
+## Dependencies, boundaries and configuration
 
-Use npm and the committed lockfile. Add application packages with `npm install <package> --workspace @smartflow/web`. Add shared development tools at the root. Packages under `packages/*` and `extensions/*` become npm workspaces once they have their own manifests.
+Use npm's committed lockfile for the future prototype. Add application dependencies
+with `npm install <package> --workspace @smartflow/web`; shared tools belong at the
+root. Reserved runtime/extension directories become npm workspaces only after
+manifests and implementations are added. Core/SDK never import concrete domains.
 
-Use package exports for shared code instead of reaching into another package's internal files. The core and SDK must remain independent of React and concrete domain packages.
+Native sources use CMake and audited vendor provenance/licenses. Keep local Qt paths
+in ignored user presets, not shared configuration. No global environment change is
+required. Never commit secrets or private assets; future browser environment values
+cannot store secrets. No external account, database or processing service is used.
 
-## Environment and services
-
-No environment variables, API keys, account login, database, desktop shell, or external processing service are required by the starter. Add an `.env.example` when a real configuration requirement appears. Keep local `.env` files out of Git. Never put secrets in client-side variables.
-
-## References
-
-- [Vite setup](https://vite.dev/guide/)
-- [npm workspaces](https://docs.npmjs.com/cli/v11/using-npm/workspaces/)
+See [architecture](architecture/README.md), [roadmap](ROADMAP.md) and
+[contributing](../CONTRIBUTING.md).

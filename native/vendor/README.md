@@ -20,7 +20,10 @@ adds isolated scene command-routing hooks; see
 the original source hashes, not the locally adapted hashes.
 
 No private assets, application configuration, native binaries or credentials
-were copied. Pipeline widgets and 3D modules have not yet been migrated.
+were copied. N3 adds selected pipeline widgets under `pipeline-widgets/`; N4 adds
+audited lower-level geometry/material math under `scene-math/`. The full legacy
+scene application and renderer are not copied. Each module has separate provenance,
+licenses and audit notes; the new extension glue lives outside vendor sources.
 
 N2 adds a selected pipeline/data/task foundation under `legacy/`, with its own
 [dependency/license audit](legacy/README.md), hash manifest, and isolated local

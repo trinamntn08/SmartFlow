@@ -1,164 +1,105 @@
 # Roadmap and current state
 
+Updated: 2026-10-02. Native C++17/Qt6 on Windows is the primary implementation.
+The application domain and audience remain open; included 3D support is required.
+
 ## Available now
 
-- The first user test release is the Windows C++/Qt desktop app. Browser delivery
-  is deferred. See [desktop testing](DESKTOP_TESTING.md) and
-  [decision 0009](architecture/decisions/0009-desktop-test-release.md).
-- Local desktop install folder and real desktop edit/undo/save/relaunch/Open
-  verification are available; see the [desktop checkpoint](agents/handoffs/2026-10-01-desktop-test-release.md).
-- Native C++/Qt is the primary implementation direction; TypeScript is retained for a future extension.
-- First native migration: copied QtNodes canvas, independent CMake build, numeric graph preview and native tests.
-- N2: selected pipeline/data/task sources copied with licenses and provenance;
-  background execution adapter validates ports/dependencies, rejects cycles,
-  propagates failures, isolates graph snapshots and supports cancellation.
-  See [checkpoint N2](agents/handoffs/2026-09-28-native-checkpoint-n2.md).
-- N3: canvas/inspector integration with parameter commands, undo/redo,
-  background execution, live/manual runs, cancellation, and current-result
-  inspection. See [checkpoint N3](agents/handoffs/2026-09-30-native-checkpoint-n3.md).
-- N4: included native scene-3d extension with copied geometry/material math,
-  Cube/Transform/Material/Scene/Merge nodes, and orbit/zoom/selection preview.
-  See [checkpoint N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md).
-- N5g adds canvas/viewer workspace persistence; production 3D rendering remains pending. The native work is
-  a migration foundation, not a production runtime or plugin loader.
-- N5a implements the standalone native schema-v1 file codec and atomic file I/O,
-  preserving unknown JSON content without extension registration. Editor Save/Open,
-  missing-node handling and the independent non-3D extension are still pending.
-  See [N5a checkpoint and next-session handoff](agents/handoffs/2026-09-30-native-checkpoint-n5a.md).
-- N5b adds explicit native node identities and a retained-document execution
-  adapter, with transactional parameter edits and unsupported-content diagnostics.
-  Editor Save/Open, missing-node display and the non-3D extension remain pending.
-  See [N5b handoff](agents/handoffs/2026-09-30-native-checkpoint-n5b.md).
-- Project name and branding: SmartFlow.
-- N5c adds transactional retained-document node/connection commands and isolated
-  workspace edits, with create/save/reopen execution tests. The demo editor still
-  uses its existing in-memory graph; file actions and unknown-node visuals remain
-  pending. See [N5c handoff](agents/handoffs/2026-09-30-native-checkpoint-n5c.md).
-- N5d adds retained-document undo/redo for semantic commands, preserving opaque
-  node/edge data and keeping current workspace state during undo. This command
-  layer is tested independently; switching the canvas from its legacy undo
-  commands and connecting file actions remain pending.
-  See [N5d handoff](agents/handoffs/2026-10-01-native-checkpoint-n5d.md).
-- N5e connects GraphProject, inspector edits and canvas interactions to retained
-  document history. Undo restores opaque nodes/edges exactly, unavailable node
-  types have placeholders, and diagnostics prevent partial execution. File actions
-  and viewer/canvas persistence remain pending.
-  See [N5e handoff](agents/handoffs/2026-10-01-native-checkpoint-n5e.md).
+SmartFlow is a working desktop development preview with graph editing, typed
+connections, numeric parameter inspection, semantic undo/redo, background
+execution, cancellation and result viewers. Project files preserve unsupported
+extension content and other graphs; unsupported graphs report diagnostics and
+cannot execute. Open/Save/Save As and workspace restoration are implemented.
 
-- Independent local repository and product proposal.
-- Shared agent instructions and development workflow.
-- React/TypeScript browser starter with npm workspaces.
-- Formatting, strict type checking, production build, and editor tasks.
-- Documented platform and extension ownership.
-- Checkpoint 1: versioned project persistence and initial SDK contracts, with behavior tests.
-  See [checkpoint record](agents/handoffs/2026-09-27-contract-checkpoint.md).
+The main app includes Cube, Transform, Material, Scene and Merge with a primitive
+3D viewer. The independent data app has Sample table, Filter rows, Summary and a
+table viewer; it does not link the scene extension or scene-math libraries.
 
-The browser starter is a setup page. It does not yet implement graph editing, scene rendering, execution, or extension loading.
+Components support extraction, saved catalogs, collapsed snapshot instances,
+exposed ports/controls, output selection/pinning, optional expanded insertion,
+standalone import/export and undoable library removal. They are native source-level
+features, not a production runtime or dynamically loaded plugin system.
 
-N5f adds Open/Save/Save As, unsaved-change prompts and retained-content dirty
-tracking. Failed file operations preserve the active project and path. Next:
-the independent non-3D extension. See the
-[N5f handoff](agents/handoffs/2026-10-01-native-checkpoint-n5f.md).
+VS Code CMake Tools configure/build/test presets and launch configurations are
+ready for manual use. A CMake install folder bundles both executables, Qt/MSVC
+runtime dependencies and the scene, data and component examples.
 
-N5g saves canvas positions/navigation, node selection, pinned output and opaque
-viewer state, preserving unknown workspace fields. See the
-[N5g handoff](agents/handoffs/2026-10-01-native-checkpoint-n5g.md).
+## Verification and desktop acceptance
 
-N5h adds the independent native data extension, sample/filter/summary nodes and
-a table viewer. `smartflow-data.exe` and its behavior tests do not link scene
-libraries. Packaged interaction acceptance remains the next step. See the
-[N5h handoff](agents/handoffs/2026-10-01-native-checkpoint-n5h.md).
+The latest implementation/configuration checks passed: native Release build,
+17 CTest entries, Windows startup smoke checks and `npm.cmd run check` (formatting,
+TypeScript, nine persistence tests and web production build).
 
-N5i adds shipped scene/data example projects and `--project` launch support,
-with native save/reopen and fresh-process startup checks. Real desktop interaction
-could not run because the computer-use native pipe was unavailable; full N5 is
-still pending that acceptance. See the
-[N5i handoff](agents/handoffs/2026-10-01-native-checkpoint-n5i.md).
+**Full N5 desktop interaction acceptance remains pending.** Automated native
+computer-use reported an unavailable pipe. The user has deferred that automation
+and will test manually. No manual results have been reported yet. Build-tree
+launch, offscreen tests and packaged startup do not establish packaged
+edit/undo/save/relaunch/Open acceptance or clean-machine compatibility.
 
-N6a adds a versioned graph-component model, retained definition catalog and atomic
-subgraph insertion with exposed inputs, outputs and controls. Instances expand
-into ordinary nodes; this does not yet satisfy collapsed component-node behavior.
-See [the component guide](GRAPH_COMPONENTS.md) and the
-[N6a handoff](agents/handoffs/2026-10-01-native-checkpoint-n6a.md).
+Use [desktop testing](DESKTOP_TESTING.md) to record those results and
+[VS Code setup](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools) to run the
+development build. The browser starter is deferred and cannot satisfy desktop
+acceptance.
 
-## Next: define and implement the first vertical slice
+## Completed checkpoints
 
-N6b adds selection-to-component extraction and undoable catalog storage commands,
-with explicit boundary interfaces, retained opaque content and save/reopen reuse.
-Collapsed component behavior remains pending. See the
-[N6b handoff](agents/handoffs/2026-10-02-native-checkpoint-n6b.md).
+These rows describe delivered behavior; dated handoffs retain each step's original
+verification and limitations. Later checkpoints supersede earlier pending items.
 
-N6c adds the native Components menu, authoring dialog and saved-component library.
-Users choose exposed endpoints, bind compatible inputs and edit numeric controls
-when inserting separate node copies. Qt menu/dialog tests cover execution,
-undo/redo and save/reopen reuse; real desktop acceptance remains pending. See the
-[N6c handoff](agents/handoffs/2026-10-02-native-checkpoint-n6c.md).
+| Checkpoint          | Delivered behavior                                                 | Record                                                        |
+| ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------- |
+| TypeScript contract | Schema-v1 persistence and provisional SDK contracts                | [contract](agents/handoffs/2026-09-27-contract-checkpoint.md) |
+| N1                  | Copied QtNodes canvas and native shell                             | [N1](agents/handoffs/2026-09-27-native-checkpoint-n1.md)      |
+| N2                  | Audited pipeline foundation and background execution adapter       | [N2](agents/handoffs/2026-09-28-native-checkpoint-n2.md)      |
+| N3                  | Workspace, inspector and command-based edits                       | [N3](agents/handoffs/2026-09-30-native-checkpoint-n3.md)      |
+| N4                  | Included primitive scene extension and viewer                      | [N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md)      |
+| N5a                 | Atomic schema-v1 project file codec                                | [N5a](agents/handoffs/2026-09-30-native-checkpoint-n5a.md)    |
+| N5b                 | Retained-document execution projection                             | [N5b](agents/handoffs/2026-09-30-native-checkpoint-n5b.md)    |
+| N5c                 | Structural retained project commands                               | [N5c](agents/handoffs/2026-09-30-native-checkpoint-n5c.md)    |
+| N5d                 | Retained semantic undo/redo                                        | [N5d](agents/handoffs/2026-10-01-native-checkpoint-n5d.md)    |
+| N5e                 | Canvas/inspector integration and unavailable placeholders          | [N5e](agents/handoffs/2026-10-01-native-checkpoint-n5e.md)    |
+| N5f                 | Open/Save/Save As and dirty-state tracking                         | [N5f](agents/handoffs/2026-10-01-native-checkpoint-n5f.md)    |
+| N5g                 | Layout/navigation, selection, pinned output and viewer persistence | [N5g](agents/handoffs/2026-10-01-native-checkpoint-n5g.md)    |
+| N5h                 | Independent native table workflow                                  | [N5h](agents/handoffs/2026-10-01-native-checkpoint-n5h.md)    |
+| N5i                 | Shipped examples and fresh-process project launch checks           | [N5i](agents/handoffs/2026-10-01-native-checkpoint-n5i.md)    |
+| N6a                 | Reusable definitions and atomic expanded insertion                 | [N6a](agents/handoffs/2026-10-01-native-checkpoint-n6a.md)    |
+| N6b                 | Selection extraction and catalog commands                          | [N6b](agents/handoffs/2026-10-02-native-checkpoint-n6b.md)    |
+| N6c                 | Native authoring/library dialogs                                   | [N6c](agents/handoffs/2026-10-02-native-checkpoint-n6c.md)    |
+| N6d                 | Collapsed snapshots, exposed controls/ports and grouped results    | [N6d](agents/handoffs/2026-10-02-native-checkpoint-n6d.md)    |
+| N6e                 | Standalone component import/export                                 | [N6e](agents/handoffs/2026-10-02-native-checkpoint-n6e.md)    |
+| N6f                 | Undoable catalog-entry removal, preserving instances               | [N6f](agents/handoffs/2026-10-02-native-checkpoint-n6f.md)    |
+| IDE setup           | VS Code CMake Tools presets and native launch configurations       | [IDE](agents/handoffs/2026-10-02-vscode-cmake-tools.md)       |
 
-N6d adds collapsed snapshot instances, exposed controls and typed ports, grouped
-execution/results, multi-output pinning and table/scene round trips. The shipped
-component example runs in the separate data-only app. Full N5 desktop interaction
-acceptance remains pending. See the
-[N6d handoff](agents/handoffs/2026-10-02-native-checkpoint-n6d.md).
+## Next work
 
-N6e adds standalone component import/export through the native library, using
-strict JSON and atomic file writes. Imports are undoable catalog edits and preserve
-existing instance snapshots. Desktop interaction acceptance remains pending the
-native computer-use connection. See the
-[N6e handoff](agents/handoffs/2026-10-02-native-checkpoint-n6e.md).
+1. Collect manual packaged scene/data/component interaction and file round-trip
+   results before marking full N5 accepted.
+2. Scope component definition editing, version/migration policy and any explicit
+   instance update mechanism before implementation. Preserve snapshot reproducibility.
+3. Address demonstrated usability or correctness issues from manual testing in
+   separate verified checkpoints.
 
-N6f adds explicit undoable removal of selected library entries, including opaque
-entries, while retaining all existing instance snapshots and graph content. See
-the [N6f handoff](agents/handoffs/2026-10-02-native-checkpoint-n6f.md).
+Nested components, input fan-out interfaces, asset import/bundling/relocation,
+production 3D rendering, broader scene hierarchies, richer table schemas and
+CSV import remain unimplemented. Public installer/signing, distribution and
+clean-machine Windows compatibility remain future work.
 
-The list below records the earlier TypeScript plan. It is superseded for current
-implementation by this native migration sequence:
+## Preserved future web prototype
 
-1. Completed N1: copied QtNodes canvas and native shell, with build/tests.
-2. Completed N2: selected pipeline/data/task dependencies with licenses and native execution behavior tests.
-3. Completed N3: copy selected pipeline widgets, compose the workspace/inspector, connect the execution adapter, and test parameter edits and undo.
-4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
-5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) and independent data workflow (N5h) completed; N5i adds shipped examples and packaged project launch checks; real desktop interaction acceptance remains pending. Record full N5 only after acceptance checks pass.
-
-VS Code CMake Tools presets and native launch configurations are prepared for
-manual testing. The user has deferred automated Windows desktop interaction and
-will test manually; full N5 acceptance remains pending their reported results.
-See [the IDE setup](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
-
-Each checkpoint must include actual build/test results and remaining limitations.
-
-### Earlier TypeScript prototype sequence (deferred)
-
-1. Initial graph/project document and minimal node/type/viewer identity contracts implemented;
-   validate and extend them during the runtime and viewer checkpoints.
-2. Add a graph canvas and inspector without coupling persistence to the UI library.
-3. Implement a minimal acyclic runtime and meaningful behavior tests.
-4. Implement the included 3D package: primitive, transform, material, scene assembly, and viewer.
-5. Connect a parameter edit to recomputation and the scene preview.
-6. Save/reopen a project and preserve unsupported extension nodes.
-
-Acceptance: create a scene graph, adjust a transform, see the updated scene, and save/reopen it with consistent parameters and viewer state.
-
-## Then: prove extensibility
-
-- Completed N5h: add a native table workflow through the same SDK.
-- Completed N5h: run it in a separate executable without linking/initializing the 3D package.
-- N6a through N6f: reusable definitions, extraction/catalog commands, native authoring/library UI and collapsed-node execution implemented. Standalone import/export is implemented; undoable library removal is implemented; nested components and definition editing remain pending.
-- Check missing package and unsupported backend behavior.
-
-## Later, when justified
-
-- Asset import and larger scene performance.
-- Worker execution, caching, and more detailed progress/cancellation.
-- Additional desktop integrations or remote execution for demonstrated needs.
-- Broader domain packages and simplified use mode.
+`apps/web` is a React/TypeScript setup page, not a graph editor. `packages/core`
+implements schema-v1 document persistence; `packages/extension-sdk` contains
+provisional contracts. `packages/runtime` is reserved, and the domain extensions
+have no TypeScript implementation. Browser graph execution, rendering, extension
+loading and delivery remain deferred.
 
 ## Open decisions
 
-- Audience, market, and license.
-- Node canvas and 3D rendering libraries.
-- Project schema, extension packaging, and compatibility policy.
-- Browser storage and asset strategy.
-- Desktop performance targets and supported Windows versions beyond the tested machine.
-- Public installer/signing/distribution and whether remote services are needed.
+Audience/market, project distribution license, broader extension packaging and
+migration, asset storage, performance targets, additional operating systems and
+remote services remain open. C++/Qt, the copied QtNodes canvas, the initial native
+schema-v1 file contract and current source-level SDK are implemented choices;
+their long-term compatibility/performance policies remain to be established.
 
-Follow [the native-first decision](architecture/decisions/0003-native-first.md) for the approved implementation direction and [the product proposal](product/SmartFlowProposal.md) for domain requirements.
+See [architecture](architecture/README.md), [product proposal](product/SmartFlowProposal.md)
+and the [historical handoff index](agents/handoffs/README.md). The old checkout is
+never a build/runtime dependency and must remain unchanged.

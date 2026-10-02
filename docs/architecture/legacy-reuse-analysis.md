@@ -5,13 +5,14 @@ Date: 2026-09-27. Status: initial source audit and recommendation, not an implem
 Superseded implementation recommendation: the user selected native C++/Qt reuse.
 See [decision 0003](decisions/0003-native-first.md). This audit remains historical
 dependency evidence; its recommendation to exclude Qt and port to TypeScript
-does not govern current work.
+does not govern current work. See [current architecture](README.md) and
+[the roadmap](../ROADMAP.md) for delivered native functionality.
 
 ## Scope and conclusion
 
 The presumed source repository is `D:/dev/omi_code/studio_engine`, inspected at commit `d6f457e8415445d00eaf7e9fbf9e5047768ea637`. Its working tree also contained an untracked `documentation/VisualWorkspaceProposal.md`; this assessment does not depend on that file. SmartFlow's working tree was clean before this analysis.
 
-SmartFlow currently implements only the React browser starter. Core, SDK, runtime, and extensions contain ownership documents, not executable libraries.
+At the audit date, SmartFlow implemented only the React browser starter. Core, SDK, runtime, and extensions then contained ownership documents, not executable libraries.
 
 Recommend selective reimplementation of useful behavior in TypeScript, with source references and focused tests. No complete legacy module is recommended for direct copying into the first browser slice. The legacy C++ pipeline foundation is useful design evidence, but it depends on other engine libraries. Qt widgets and the scene application introduce much larger dependency chains.
 
@@ -65,4 +66,4 @@ The inspected `tp_pipeline/LICENSE` is MIT and requires retaining its notice for
 5. Implement sample table → filter → summary through `extensions/data`, and verify it executes without importing or initializing the 3D extension.
 6. Add reusable graph components; consider a legacy importer or native integration only against a concrete example that users need.
 
-The next bounded implementation task should be the document/SDK contract and its persistence tests. Copying the entire old pipeline or scene module first would bring dependencies that the standalone browser architecture does not need.
+At the audit date, the next bounded implementation task was the document/SDK contract and its persistence tests. Copying the entire old pipeline or scene module first would bring dependencies that the standalone browser architecture does not need.

@@ -45,3 +45,10 @@ definition migration/editing, export and live updates need future decisions.
 Snapshots increase file size, but make saved execution reproducible without a
 catalog lookup. This remains a source-level native migration feature; it does
 not establish a production runtime or dynamically loaded plugin system.
+
+## Subsequent library work
+
+N6e/N6f implement standalone import/export and undoable catalog-entry removal in
+[decision 0014](0014-native-component-files.md). These operations preserve existing
+instance snapshots. Definition editing/migration, nested execution and live updates
+remain unimplemented; consult the [current roadmap](../../ROADMAP.md).
