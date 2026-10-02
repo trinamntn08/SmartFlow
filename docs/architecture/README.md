@@ -105,7 +105,9 @@ and [the compatibility audit](web-compatibility-audit-2026-10-02.md) records
 original transport gaps. W1b now implements strict core JSON preflight and a web
 UTF-8 byte adapter, with shared native/browser fixtures and explicit numeric
 rejection under [decision 0019](decisions/0019-browser-json-transport.md).
-W2a commands/history and extension lookup are next; editable import is pending.
+W2a adds retained core commands/history and immutable SDK extension lookup.
+Workspace updates stay outside semantic undo/redo. W2b browser editing and
+file actions are next; no browser execution implementation exists yet.
 
 ## Verification and open work
 

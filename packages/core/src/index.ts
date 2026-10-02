@@ -6,6 +6,16 @@ import {
   parseJson,
 } from './json-transport.ts';
 export { MAXIMUM_FILE_BYTES, MAXIMUM_NESTING } from './json-transport.ts';
+export {
+  ProjectHistory,
+  addNode,
+  removeNodes,
+  connect,
+  disconnect,
+  setParameter,
+  graphById,
+  cloneJson,
+} from './commands.ts';
 
 export type JsonValue = null | boolean | number | string | JsonValue[] | JsonObject;
 export interface JsonObject {

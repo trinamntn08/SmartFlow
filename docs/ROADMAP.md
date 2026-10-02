@@ -37,7 +37,7 @@ with ten installed startup/render checks and matching executable hashes. See
 
 The latest implementation/configuration checks passed: native Release build,
 24 CTest entries, Windows startup smoke checks and `npm.cmd run check` (formatting,
-TypeScript, 38 core tests, three web byte-adapter tests and web production build).
+TypeScript, 43 core tests, four SDK tests, three web transport tests and web production build).
 
 **Full N5 desktop interaction acceptance remains pending.** Automated native
 computer-use reported an unavailable pipe. The user has deferred that automation
@@ -121,7 +121,9 @@ provisional contracts. `packages/runtime` is reserved, and the domain extensions
 have no TypeScript implementation. Browser graph execution, rendering, extension
 loading and delivery remain unimplemented. W1 planning/audit and W1b strict JSON
 transport are complete; [the web plan](WEB_IMPLEMENTATION_PLAN.md) defines W2 through W6.
-W2a retained commands/history and extension lookup are next. W1b rejects duplicate
+W2a retained commands/history and immutable extension lookup are complete; see
+[the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md). W2b browser editor
+and file actions are next. W1b rejects duplicate
 keys, unsafe numeric values, invalid Unicode and native-aligned size/depth violations;
 all shipped projects retain opaque content. See
 [the W1b checkpoint](agents/handoffs/2026-10-02-web-w1b-transport.md),

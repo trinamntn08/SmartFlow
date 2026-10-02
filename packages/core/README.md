@@ -11,6 +11,7 @@ transport rejects duplicate keys, invalid Unicode, unsafe integer-valued numbers
 negative zero and native-aligned byte/depth limit violations before returning a
 document. See [numeric policy](../../docs/architecture/decisions/0019-browser-json-transport.md).
 The web adapter owns UTF-8 byte decoding; core has no browser API dependency.
-Run `npm test` from the root for 38 core tests and three web byte-adapter tests.
-TypeScript commands/history are next in W2a; execution validation remains deferred.
+W2a adds `ProjectHistory`, retained add/delete/connect/disconnect/parameter commands,
+transactional replacement and workspace-independent undo/redo. Run `npm test` from
+the root for persistence, command and SDK tests. Execution validation remains deferred.
 Native commands/validation live in `native/app/project` and `native/app/pipeline`. See [the contract decision](../../docs/architecture/decisions/0002-project-contract.md).

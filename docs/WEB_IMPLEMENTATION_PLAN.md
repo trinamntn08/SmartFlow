@@ -1,6 +1,6 @@
 # Parallel web implementation plan
 
-Updated: 2026-10-02. W1 planning/audit and W1b strict transport are complete. Browser
+Updated: 2026-10-02. W1 planning/audit, W1b transport and W2a commands/registry are complete. Browser
 editor and execution milestones below are pending. Native C++17/Qt6 remains the primary
 implementation and the first user test delivery remains packaged Windows desktop.
 
@@ -44,7 +44,7 @@ workspaces only when their implementation begins.
 | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | W1 (complete)  | Plan, source audit and recorded compatibility probes            | [Audit](architecture/web-compatibility-audit-2026-10-02.md), documented gaps and follow-up gates                                                                                                 |
 | W1b (complete) | Strict browser file transport and shared compatibility fixtures | Duplicate keys, depth/size boundaries and unsafe numeric tokens cannot silently corrupt imports; native and TypeScript agree on the supported subset; all shipped projects retain opaque content |
-| W2a            | Retained commands/history and extension lookup                  | Add/remove/connect/parameter edits undo and redo exactly; unknown fields and inactive graphs survive; workspace navigation is independent of semantic history                                    |
+| W2a (complete) | Retained commands/history and extension lookup                  | Add/remove/connect/parameter edits undo and redo exactly; unknown fields and inactive graphs survive; workspace navigation is independent of semantic history                                    |
 | W2b            | Browser library, canvas, inspector and file actions             | Create/edit/connect/delete, dirty-state indication, undo/redo and import/download/reopen work through browser interaction; unsupported nodes display placeholders                                |
 | W3a            | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
 | W3b            | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
@@ -99,6 +99,8 @@ collaboration, production asset import/rendering and a public deployment provide
 remain outside this initial plan. Browser/desktop execution parity is limited to
 explicitly implemented nodes and versions. Audience and application field stay open.
 
-Next implementation task: W2a retained commands/history and extension lookup.
+W2a commands/history and immutable bundled extension lookup are complete;
+see [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md).
+Next implementation task: W2b browser canvas, inspector and file actions.
 [W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
 tests; browser file interaction and editing remain unimplemented.

@@ -1,4 +1,5 @@
 import type { JsonObject, JsonValue, NodeDocument, PackageDependency } from '@smartflow/core';
+export { ExtensionRegistry, validateParameter } from './registry.ts';
 
 export type ExecutionCapability = 'browser' | 'local' | 'remote';
 export interface TypeDefinition {
