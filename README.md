@@ -1,104 +1,106 @@
 # SmartFlow
 
-An independent, extensible visual workspace for interactive node graphs and their results.
-3D scene workflows are a required capability. Other fields extend the same platform through packages; the final audience and application domain remain open.
+**Build workflows with nodes. Run them. Explore the results.**
 
-## Current state
+SmartFlow is a visual workspace for connecting operations into interactive graphs.
+Adjust parameters, inspect outputs, and turn useful groups of nodes into reusable
+components.
 
-Updated: 2026-10-02. SmartFlow is a native C++17/Qt6 Windows development preview
-with graph editing, background execution/cancellation, inspector controls,
-undo/redo, atomic project Save/Open and workspace/viewer restoration.
-Selectable widget regions support H/V splits, swapping, resizing and saved layouts.
-Process Gantt analysis is available in desktop and browser mode; see
-[process timings](docs/GANTT_ANALYSIS.md).
-See [workspace widgets](docs/WORKSPACE_WIDGETS.md).
-Sequential/parallel execution controls and live node/component progress are
-available, with managed node-internal work sharing the thread budget; see
-[execution](docs/EXECUTION.md).
+The primary application is a **Windows desktop app built with C++17 and Qt6**.
+It includes a 3D scene extension and a separate data workflow, so projects can work
+with tables without requiring any 3D content. The platform is designed to support
+additional domains; its final audience and application field remain open.
 
-The included 3D extension provides Cube/Transform/Material/Scene/Merge and a
-bounded interactive primitive viewer. The separate data app provides sample,
-filter and summary nodes with a table viewer, without scene dependencies.
-Reusable components support collapsed snapshots, exposed ports/controls,
-standalone import/export, undoable library removal and isolated editing copies
-and explicit compatible instance updates (N6a through N6h).
+> **Development preview:** graph editing, execution, project saving, and viewers
+> are implemented. Full packaged desktop interaction testing is still pending.
+> A public installer and production plugin system are future work.
 
-Release build, 24 native CTest entries, packaged startup and web checks passed.
-**Full desktop interaction acceptance remains pending the user's manual results**;
-automated computer-use is deferred. The parallel browser preview is implemented
-through W6: retained editing, strict import/download, worker execution, table and
-primitive scene viewers, component authoring and saved browser workspace. Native
-and browser file exchange is verified through fresh native window processes.
-See [the web guide](docs/WEB_DEVELOPMENT.md), [browser delivery](docs/WEB_DELIVERY.md)
-and [web plan](docs/WEB_IMPLEMENTATION_PLAN.md). This does not establish packaged
-desktop interaction acceptance or a production plugin runtime.
-See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
+## What you can do
 
-The refreshed `build/desktop-test` folder is ready for first manual testing.
-See [the version notes and result sheet](docs/TEST_VERSION.md).
+- **Build graphs** with typed connections, editable parameters, and undo/redo.
+- **Run and inspect** workflows with background execution, cancellation,
+  sequential or parallel scheduling, live progress, and timing analysis.
+- **Explore results** in an interactive primitive 3D viewer or a table viewer.
+- **Reuse components** with exposed ports and controls, a component library,
+  and standalone import/export.
+- **Save your workspace** with project files that retain graph settings,
+  canvas positions, viewer state, and panel layouts.
+- **Arrange panels** by splitting, resizing, and swapping workspace regions.
 
-## Start locally
+## Example workflows
 
-Use **Components** to create, insert, import/export and remove saved definitions.
-Instances insert as one node by default, with optional expanded copies. See
+| Workflow           | Included operations                                 | Result                                       |
+| ------------------ | --------------------------------------------------- | -------------------------------------------- |
+| 3D scene           | Cube → Transform → Material → Scene                 | Interactive primitive scene preview          |
+| Data               | Sample table → Filter rows → Summary                | Filtered rows and summary values             |
+| Reusable component | Wrap filtering and summary operations into one node | A component with exposed inputs and controls |
+
+Try the [example projects](examples/README.md), or read about the
+[3D extension](extensions/scene-3d/README.md),
+[data extension](extensions/data/README.md), and
 [graph components](docs/GRAPH_COMPONENTS.md).
 
-To build and run in VS Code, use the [CMake Tools setup](docs/NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
+## Get started on Windows
 
-The first version for user testing is the **Windows desktop app**, built with C++/Qt.
-Follow [desktop testing](docs/DESKTOP_TESTING.md) to build a local test folder and
-launch `build/desktop-test/bin/smartflow.exe` directly. Qt and compiler runtime
-dependencies are copied into that folder; Node.js and a browser server are not
-required to run it. Try the [scene, data and component examples](examples/README.md). This is a development preview with the limitations listed in
-the testing guide. The old repository is not required by the new build.
+### Build and run the desktop app
 
-### Parallel web development
+Install Visual Studio 2022 C++ tools, CMake 3.21 or newer, and a matching Qt6 MSVC
+kit with Widgets, OpenGLWidgets, and Test. From the repository root, run the
+following in PowerShell, replacing the Qt path with your installation:
 
-Use Node.js 24 (the tested version is in `.node-version`) and npm 11.
+```powershell
+cmake -S . -B build/native -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH=C:/Qt/6.11.1/msvc2022_64
+cmake --build build/native --config Release --parallel 8
+cmake --install build/native --config Release --prefix "$PWD/build/desktop-test"
+.\build\desktop-test\bin\smartflow.exe
+```
+
+The install step creates a local folder containing the app, runtime dependencies,
+and examples. Keep that folder together when running it. Launch
+`build/desktop-test/bin/smartflow-data.exe` for the independent table workflow.
+The installed app runs without Node.js or a browser server.
+
+For IDE setup and native tests, see [native development](docs/NATIVE_DEVELOPMENT.md).
+For the save/reopen test workflow and current limitations, see
+[desktop testing](docs/DESKTOP_TESTING.md).
+
+### Browser preview
+
+A parallel React/TypeScript preview supports graph editing, worker execution,
+table and primitive scene viewers, components, and project import/download.
+It remains a local preview with provisional extension contracts.
+
+With Node.js 24 and npm 11 installed:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. In Windows PowerShell, use `npm.cmd` if script execution policy prevents `npm` from running.
+Open <http://127.0.0.1:5173>. In Windows PowerShell, use `npm.cmd` if execution
+policy blocks `npm`. See [web development](docs/WEB_DEVELOPMENT.md) for supported
+workflows and checks.
 
-```sh
-npm run check
-npm run format
-npm run preview
-```
+## Documentation
 
-`check` verifies formatting, TypeScript, persistence tests, and a production build. `preview` serves an existing build on http://127.0.0.1:4173. No API keys, database, native engine, or remote service are required.
+- [Documentation guide](docs/README.md) — entry point for all guides.
+- [Roadmap](docs/ROADMAP.md) — current status, verification, and planned work.
+- [Product proposal](docs/product/SmartFlowProposal.md) — goals and open decisions.
+- [Architecture](docs/architecture/README.md) — module boundaries and contracts.
+- [Contributing](CONTRIBUTING.md) — development workflow and contribution status.
 
-## Read first
+## Repository layout
 
-- [Product proposal](docs/product/SmartFlowProposal.md)
-- [Architecture](docs/architecture/README.md)
-- [Roadmap and current status](docs/ROADMAP.md)
-- [Local development](docs/DEVELOPMENT.md)
-- [Agent instructions](AGENTS.md)
-- [Agent workflow](docs/agents/WORKFLOW.md)
-- [Contributing](CONTRIBUTING.md)
+| Directory     | Contents                                                         |
+| ------------- | ---------------------------------------------------------------- |
+| `native/`     | Desktop application, native tests, and copied dependencies       |
+| `apps/web/`   | Browser preview                                                  |
+| `packages/`   | TypeScript graph model, extension contracts, and preview runtime |
+| `extensions/` | Included 3D scene and data workflows                             |
+| `examples/`   | Sample projects and a reusable component definition              |
+| `docs/`       | Guides, roadmap, architecture decisions, and development history |
 
-## Layout
+## License
 
-| Path                     | Responsibility                                             | State               |
-| ------------------------ | ---------------------------------------------------------- | ------------------- |
-| `native/app`             | Native C++/Qt shell and adapters                           | Migration preview   |
-| `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses      | Native dependencies |
-| `native/tests`           | Graph, execution, file, component, panel and viewer checks | 24 CTest entries    |
-| `apps/web`               | Browser interface and application composition              | Local web preview   |
-| `packages/core`          | Domain-independent project and graph model                 | Persistence/history |
-| `packages/extension-sdk` | Public extension contracts                                 | Initial contracts   |
-| `packages/runtime`       | Validation, scheduling, execution state                    | Browser preview     |
-| `extensions/scene-3d`    | Included native 3D types, nodes, and viewer                | Primitive preview   |
-| `extensions/data`        | Independent native table/filter/summary workflow           | Validation preview  |
-| `docs`                   | Product, decisions, development, and agent context         | Available           |
-
-TypeScript workspaces are private preview libraries with local manifests and
-behavior tests; they do not implement dynamic third-party plugin loading.
-
-## Repository status
-
-The Git repository has a configured GitHub remote; no deployment configuration is included. Packages are private and no distribution license has been selected. Copied dependencies retain their own licenses. The original checkout is never a build/runtime dependency.
+A project distribution license has not yet been selected. Copied dependencies
+retain their own licenses and [provenance records](native/vendor/README.md).
