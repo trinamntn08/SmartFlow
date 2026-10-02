@@ -27,6 +27,7 @@ what runs today; this index is not a claim of completed production delivery.
 - [0014: Standalone native component files](0014-native-component-files.md)
 - [0015: Component editing and explicit update scope](0015-component-editing-scope.md)
 - [0016: Selectable workspace widgets in split regions](0016-selectable-workspace-widgets.md)
+- [0019: Strict browser JSON transport and numeric rejection](0019-browser-json-transport.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
 0018 activates web planning alongside native development, updating 0003's web

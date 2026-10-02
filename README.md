@@ -24,8 +24,9 @@ and explicit compatible instance updates (N6a through N6h).
 Release build, 24 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;
 automated computer-use is deferred. The TypeScript browser starter, persistence
-and SDK contracts are the foundation for a planned parallel web track, not the
-delivered app. See [the web plan](docs/WEB_IMPLEMENTATION_PLAN.md).
+and SDK contracts are the foundation for the parallel web track, not the
+delivered app. W1b adds strict JSON/UTF-8 transport with shared native fixtures;
+browser editing and file actions remain pending. See [the web plan](docs/WEB_IMPLEMENTATION_PLAN.md).
 See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
 
 The refreshed `build/desktop-test` folder is ready for first manual testing.

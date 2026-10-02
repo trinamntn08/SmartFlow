@@ -6,7 +6,11 @@ C++/Qt is the active application implementation.
 Own the serializable project and graph model. Keep this package independent of UI frameworks, browser APIs, concrete extensions, and scene types.
 
 Exports JSON document types, `createProject`, `parseProject`, and `serializeProject`.
-Loading preserves unavailable extensions and unresolved connections. Run `npm test`
-from the root for nine persistence behavior tests. TypeScript project commands
-and semantic graph validation remain deferred, not the next native checkpoint.
+Loading preserves unavailable extensions and unresolved connections. Strict
+transport rejects duplicate keys, invalid Unicode, unsafe integer-valued numbers,
+negative zero and native-aligned byte/depth limit violations before returning a
+document. See [numeric policy](../../docs/architecture/decisions/0019-browser-json-transport.md).
+The web adapter owns UTF-8 byte decoding; core has no browser API dependency.
+Run `npm test` from the root for 38 core tests and three web byte-adapter tests.
+TypeScript commands/history are next in W2a; execution validation remains deferred.
 Native commands/validation live in `native/app/project` and `native/app/pipeline`. See [the contract decision](../../docs/architecture/decisions/0002-project-contract.md).

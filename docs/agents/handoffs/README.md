@@ -50,3 +50,5 @@ results; automated native computer-use is deferred by the user.
 - [E2: bounded native dependency scheduler](2026-10-02-execution-e2.md)
 - [E3: native execution controls and live progress](2026-10-02-execution-e3.md)
 - [E4: managed node work and refreshed desktop package](2026-10-02-execution-e4.md)
+- [W1: parallel web plan and compatibility audit](2026-10-02-web-w1-plan-audit.md)
+- [W1b: strict browser project transport](2026-10-02-web-w1b-transport.md)

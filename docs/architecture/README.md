@@ -102,7 +102,10 @@ become core/runtime dependencies.
 web track without changing native delivery priority. W1 is documentation/audit
 only; [the plan](../WEB_IMPLEMENTATION_PLAN.md) defines implementation checkpoints
 and [the compatibility audit](web-compatibility-audit-2026-10-02.md) records
-transport gaps to resolve before editable import.
+original transport gaps. W1b now implements strict core JSON preflight and a web
+UTF-8 byte adapter, with shared native/browser fixtures and explicit numeric
+rejection under [decision 0019](decisions/0019-browser-json-transport.md).
+W2a commands/history and extension lookup are next; editable import is pending.
 
 ## Verification and open work
 

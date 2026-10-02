@@ -3,6 +3,11 @@
 Date: 2026-10-02. Scope: source inspection and TypeScript parse/serialize probes,
 not browser editing or native application round-trip acceptance.
 
+Follow-up: [W1b](../agents/handoffs/2026-10-02-web-w1b-transport.md) resolves the
+duplicate-key, size/depth and numeric corruption findings with strict transport
+and explicit numeric rejection. The observations/probes below retain the original
+W1 baseline; rerunning them now produces rejections for the malformed/unsafe cases.
+
 ## Evidence and result
 
 Inspected [native codec](../../native/app/project/ProjectFile.cpp), its

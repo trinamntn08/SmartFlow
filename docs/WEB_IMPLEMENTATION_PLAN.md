@@ -1,7 +1,7 @@
 # Parallel web implementation plan
 
-Updated: 2026-10-02. W1 planning and compatibility audit are complete. Browser
-implementation milestones below are pending. Native C++17/Qt6 remains the primary
+Updated: 2026-10-02. W1 planning/audit and W1b strict transport are complete. Browser
+editor and execution milestones below are pending. Native C++17/Qt6 remains the primary
 implementation and the first user test delivery remains packaged Windows desktop.
 
 ## Goal and initial scope
@@ -40,18 +40,18 @@ workspaces only when their implementation begins.
 
 ## Checkpoints and acceptance
 
-| Checkpoint    | Deliverable                                                     | Acceptance evidence                                                                                                                                                                              |
-| ------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| W1 (complete) | Plan, source audit and recorded compatibility probes            | [Audit](architecture/web-compatibility-audit-2026-10-02.md), documented gaps and follow-up gates                                                                                                 |
-| W1b           | Strict browser file transport and shared compatibility fixtures | Duplicate keys, depth/size boundaries and unsafe numeric tokens cannot silently corrupt imports; native and TypeScript agree on the supported subset; all shipped projects retain opaque content |
-| W2a           | Retained commands/history and extension lookup                  | Add/remove/connect/parameter edits undo and redo exactly; unknown fields and inactive graphs survive; workspace navigation is independent of semantic history                                    |
-| W2b           | Browser library, canvas, inspector and file actions             | Create/edit/connect/delete, dirty-state indication, undo/redo and import/download/reopen work through browser interaction; unsupported nodes display placeholders                                |
-| W3a           | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
-| W3b           | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
-| W4            | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
-| W5a           | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
-| W5b           | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
-| W6            | Browser acceptance and delivery instructions                    | Both workflows pass interaction and file exchange checks in the documented supported browser set; production build and deployment instructions are verified                                      |
+| Checkpoint     | Deliverable                                                     | Acceptance evidence                                                                                                                                                                              |
+| -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| W1 (complete)  | Plan, source audit and recorded compatibility probes            | [Audit](architecture/web-compatibility-audit-2026-10-02.md), documented gaps and follow-up gates                                                                                                 |
+| W1b (complete) | Strict browser file transport and shared compatibility fixtures | Duplicate keys, depth/size boundaries and unsafe numeric tokens cannot silently corrupt imports; native and TypeScript agree on the supported subset; all shipped projects retain opaque content |
+| W2a            | Retained commands/history and extension lookup                  | Add/remove/connect/parameter edits undo and redo exactly; unknown fields and inactive graphs survive; workspace navigation is independent of semantic history                                    |
+| W2b            | Browser library, canvas, inspector and file actions             | Create/edit/connect/delete, dirty-state indication, undo/redo and import/download/reopen work through browser interaction; unsupported nodes display placeholders                                |
+| W3a            | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
+| W3b            | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
+| W4             | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
+| W5a            | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
+| W5b            | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
+| W6             | Browser acceptance and delivery instructions                    | Both workflows pass interaction and file exchange checks in the documented supported browser set; production build and deployment instructions are verified                                      |
 
 W2 depends on W1b. W3 follows W2, W4 follows W3, and W5 requires the retained
 commands/runtime foundations. W6 requires both domains and the agreed component
@@ -75,10 +75,10 @@ a native file; do not interpret Qt layout or viewer payloads as browser settings
 Define viewer-state conversion in W4/W5 rather than silently rewriting it.
 
 Until W5, component instances remain preserved placeholders and cannot execute.
-Before W1b, the prototype must not claim lossless import of arbitrary native files:
-the audit found unsafe integer rounding. W1b must choose and test lossless numeric
-transport or explicit rejection before numeric conversion. A rejection must leave
-the original file intact and explain the unsupported value.
+W1b implements explicit rejection of unsafe integer-valued numbers and negative
+zero before document conversion; see [decision 0019](architecture/decisions/0019-browser-json-transport.md).
+It does not claim lossless import of arbitrary native files. W2 file actions must
+leave the original file/current document intact and explain unsupported values.
 
 Local filesystem asset paths are references, not browser permissions. Until asset
 selection/bundling is implemented, retain them and report unavailable inputs.
@@ -99,5 +99,6 @@ collaboration, production asset import/rendering and a public deployment provide
 remain outside this initial plan. Browser/desktop execution parity is limited to
 explicitly implemented nodes and versions. Audience and application field stay open.
 
-Next implementation task: W1b, beginning with failing shared transport fixtures
-for the audit findings. No application implementation is included in W1.
+Next implementation task: W2a retained commands/history and extension lookup.
+[W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
+tests; browser file interaction and editing remain unimplemented.

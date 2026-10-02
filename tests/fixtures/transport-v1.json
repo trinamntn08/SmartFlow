@@ -1,0 +1,90 @@
+{
+  "cases": [
+    {
+      "name": "opaque object",
+      "json": "{\"unknown\": [null, true, 1.25, \"é😀\"]}",
+      "native": true,
+      "browser": true
+    },
+    {
+      "name": "safe integers",
+      "json": "[-9007199254740991,9007199254740991,0]",
+      "native": true,
+      "browser": true
+    },
+    { "name": "negative zero", "json": "-0.0", "native": true, "browser": false },
+    {
+      "name": "finite doubles",
+      "json": "[0.1,1.25e-10,5e-324,1e-400,1.0,1e3]",
+      "native": true,
+      "browser": true
+    },
+    {
+      "name": "same names in separate objects",
+      "json": "[{\"x\":1},{\"x\":2}]",
+      "native": true,
+      "browser": true
+    },
+    {
+      "name": "reserved names",
+      "json": "{\"__proto__\":1,\"constructor\":2}",
+      "native": true,
+      "browser": true
+    },
+    { "name": "duplicate key", "json": "{\"x\":1,\"x\":2}", "native": false, "browser": false },
+    {
+      "name": "escaped duplicate",
+      "json": "{\"x\":1,\"\\u0078\":2}",
+      "native": false,
+      "browser": false
+    },
+    {
+      "name": "escaped pair duplicate",
+      "json": "{\"😀\":1,\"\\ud83d\\ude00\":2}",
+      "native": false,
+      "browser": false
+    },
+    { "name": "unsafe integer", "json": "9007199254740993", "native": true, "browser": false },
+    { "name": "unsafe negative", "json": "-9007199254740993", "native": true, "browser": false },
+    { "name": "uint64 maximum", "json": "18446744073709551615", "native": true, "browser": false },
+    {
+      "name": "uint64 overflow",
+      "json": "18446744073709551616",
+      "native": false,
+      "browser": false
+    },
+    { "name": "int64 minimum", "json": "-9223372036854775808", "native": true, "browser": false },
+    {
+      "name": "int64 underflow",
+      "json": "-9223372036854775809",
+      "native": false,
+      "browser": false
+    },
+    { "name": "large float", "json": "1.25e100", "native": true, "browser": false },
+    { "name": "unsafe decimal", "json": "9007199254740993.0", "native": true, "browser": false },
+    { "name": "overflow", "json": "1e400", "native": false, "browser": false },
+    { "name": "leading zero", "json": "01", "native": false, "browser": false },
+    { "name": "trailing comma", "json": "[1,]", "native": false, "browser": false },
+    { "name": "unpaired high surrogate", "json": "\"\\ud800\"", "native": false, "browser": false },
+    { "name": "unpaired low surrogate", "json": "\"\\udfff\"", "native": false, "browser": false },
+    { "name": "invalid escape", "json": "\"\\x41\"", "native": false, "browser": false },
+    { "name": "unescaped newline", "json": "\"a\nb\"", "native": false, "browser": false }
+  ],
+  "names": [
+    { "id": "", "accepted": false },
+    { "id": " \t\r\n\u0085\u2028", "accepted": false },
+    { "id": "\ufeff", "accepted": false },
+    { "id": "\ufeff \t", "accepted": false },
+    { "id": " \ufeff", "accepted": true },
+    { "id": "\ufeff\ufeff", "accepted": true },
+    { "id": "é😀", "accepted": true }
+  ],
+  "depths": [
+    { "arrays": 127, "accepted": true },
+    { "arrays": 128, "accepted": false }
+  ],
+  "sizes": [
+    { "bytes": 16777216, "accepted": true },
+    { "bytes": 16777217, "accepted": false }
+  ]
+}
