@@ -3,6 +3,10 @@
 Status: independent native table workflow introduced at N5h, used to validate
 components and library workflows through N6f.
 
+W2b adds TypeScript browser editor metadata in `src/`, with the same persisted
+IDs, numeric defaults and ranges. Browser execution is pending W3; this metadata
+does not import scene types or application code.
+
 The independent non-3D validation package implements Sample table -> Filter rows
 -> Summary, with a read-only two-column table viewer. It uses the same native
 StepDelegate, member factory, node registration and OutputViewer contracts as

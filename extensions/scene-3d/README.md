@@ -3,6 +3,9 @@
 Status: native primitive preview introduced at N4, integrated with project/workspace
 persistence and collapsed components through N6f.
 
+W2b adds TypeScript browser editor metadata in `src/`, with native persisted
+IDs/ports/parameter ranges. Browser execution and rendering are pending W4.
+
 The required included domain package. `native/` implements Cube, Transform,
 Material, Scene and Merge nodes, a versioned scene output type, and an interactive
 orthographic preview. Geometry, transform composition and materials reuse the

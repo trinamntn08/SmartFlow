@@ -53,3 +53,4 @@ results; automated native computer-use is deferred by the user.
 - [W1: parallel web plan and compatibility audit](2026-10-02-web-w1-plan-audit.md)
 - [W1b: strict browser project transport](2026-10-02-web-w1b-transport.md)
 - [W2a: retained commands and extension lookup](2026-10-02-web-w2a-history.md)
+- [W2b: browser editor and file actions](2026-10-02-web-w2b-editor.md)

@@ -83,11 +83,19 @@ export class ProjectHistory {
     this.#cursor = 0;
     this.#revision++;
   }
-  edit(label: string, command: (project: ProjectDocument) => void): boolean {
+  edit(
+    label: string,
+    command: (project: ProjectDocument) => void,
+    workspaceCommand?: (workspace: JsonObject) => void,
+  ): boolean {
     const candidate = cloneJson(this.#file);
     command(candidate.project);
+    workspaceCommand?.(candidate.workspace);
     serializeProject(candidate);
-    if (JSON.stringify(candidate.project) === JSON.stringify(this.#file.project)) return false;
+    if (JSON.stringify(candidate.project) === JSON.stringify(this.#file.project)) {
+      this.#file = cloneJson(candidate);
+      return false;
+    }
     const entry = {
       label,
       before: cloneJson(this.#file.project),

@@ -23,6 +23,8 @@
     "extensions/*"
   ],
   "scripts": {
+    "test:browser": "node tools/browser-tests.mjs test",
+    "test:browser:install": "node tools/browser-tests.mjs install chromium",
     "dev": "npm run dev --workspace @smartflow/web",
     "build": "npm run build --workspace @smartflow/web",
     "preview": "npm run preview --workspace @smartflow/web",
@@ -33,6 +35,7 @@
     "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/node": "24.19.0",
     "prettier": "3.9.9",
     "typescript": "7.0.2"

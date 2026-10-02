@@ -1,7 +1,7 @@
 # Local development
 
 Updated: 2026-10-02. The primary app is native C++17/Qt6 on Windows. The TypeScript
-workspace is a prototype with a planned parallel web track, maintained by its
+workspace has a retained browser editor (W2b) on the parallel web track, maintained by its
 own checks. See [the web implementation plan](WEB_IMPLEMENTATION_PLAN.md).
 
 ## Native application
@@ -38,16 +38,19 @@ npm run dev
 
 Visit http://127.0.0.1:5173. Vite uses a strict loopback port and fails if occupied.
 Use `npm.cmd` on PowerShell when execution policy blocks `npm.ps1`. The browser
-starter does not implement graph editing, execution or scene rendering.
+workspace implements graph editing and strict file actions. Execution/scene rendering
+are pending. See [the browser guide](WEB_DEVELOPMENT.md).
 
 ```sh
 npm run check
 npm run preview
 ```
 
-`check` runs Prettier, strict TypeScript, nine persistence behavior tests and a Vite
+`check` runs Prettier, strict TypeScript, persistence/command/SDK/adapter tests and a Vite
 production build. Output is in ignored `apps/web/dist`; preview binds to loopback
-port 4173. `npm test` runs persistence tests via Node 24's TypeScript support.
+port 4173. `npm test` runs behavior tests via Node 24's TypeScript support.
+`npm run test:browser:install` installs isolated Chromium inside the repository cache;
+`npm run test:browser` checks real editor interactions and file download/reopen.
 There is no TypeScript graph runtime; native execution exists separately.
 
 The web workspace separates browser/DOM source in `apps/web/tsconfig.json` from

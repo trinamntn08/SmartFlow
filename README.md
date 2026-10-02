@@ -25,8 +25,9 @@ Release build, 24 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;
 automated computer-use is deferred. The TypeScript browser starter, persistence
 and SDK contracts are the foundation for the parallel web track, not the
-delivered app. W1b adds strict JSON/UTF-8 transport with shared native fixtures;
-browser editing and file actions remain pending. See [the web plan](docs/WEB_IMPLEMENTATION_PLAN.md).
+delivered desktop app. W2b adds a browser graph editor with strict import/download,
+retained undo/redo and data/scene metadata; browser execution/rendering remain
+pending. See [the web guide](docs/WEB_DEVELOPMENT.md) and [web plan](docs/WEB_IMPLEMENTATION_PLAN.md).
 See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
 
 The refreshed `build/desktop-test` folder is ready for first manual testing.
@@ -83,8 +84,8 @@ npm run preview
 | `native/app`             | Native C++/Qt shell and adapters                           | Migration preview   |
 | `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses      | Native dependencies |
 | `native/tests`           | Graph, execution, file, component, panel and viewer checks | 24 CTest entries    |
-| `apps/web`               | Browser interface and application composition              | Development starter |
-| `packages/core`          | Domain-independent project and graph model                 | Initial persistence |
+| `apps/web`               | Browser interface and application composition              | Retained editor     |
+| `packages/core`          | Domain-independent project and graph model                 | Persistence/history |
 | `packages/extension-sdk` | Public extension contracts                                 | Initial contracts   |
 | `packages/runtime`       | Validation, scheduling, execution state                    | Reserved            |
 | `extensions/scene-3d`    | Included native 3D types, nodes, and viewer                | Primitive preview   |

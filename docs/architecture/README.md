@@ -91,9 +91,11 @@ See [the component guide](../GRAPH_COMPONENTS.md) and decisions
 
 ## TypeScript prototype and planned web track
 
-`apps/web` contains a standalone setup page. The workspace separately preserves
-`packages/core` persistence and provisional `packages/extension-sdk` contracts. `packages/runtime` is reserved; no browser graph
-editor, runtime, renderer or extension loader exists. The intended future direction
+`apps/web` now contains a retained graph editor with React Flow, parameter inspection
+and strict file import/download (W2b). Core owns persistence/commands/history and
+SDK owns immutable bundled registration. The data and scene source workspaces own
+editor metadata. `packages/runtime` is reserved; browser execution/rendering and
+component authoring are pending. The intended dependency direction
 is application composition to core/SDK/runtime/extensions, with SDK depending only
 on core and runtime depending only on core plus SDK. Concrete extensions never
 become core/runtime dependencies.
@@ -106,8 +108,9 @@ original transport gaps. W1b now implements strict core JSON preflight and a web
 UTF-8 byte adapter, with shared native/browser fixtures and explicit numeric
 rejection under [decision 0019](decisions/0019-browser-json-transport.md).
 W2a adds retained core commands/history and immutable SDK extension lookup.
-Workspace updates stay outside semantic undo/redo. W2b browser editing and
-file actions are next; no browser execution implementation exists yet.
+Workspace updates stay outside semantic undo/redo. W2b editing/file actions are
+implemented under [decision 0020](decisions/0020-browser-canvas.md). W3a worker
+execution is next. See [the web guide](../WEB_DEVELOPMENT.md).
 
 ## Verification and open work
 

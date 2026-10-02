@@ -1,45 +1,432 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  parseProject,
+  serializeProject,
+  type NodeDocument,
+  type ProjectFile,
+} from '@smartflow/core';
+import { ExtensionRegistry } from '@smartflow/extension-sdk';
+import { dataExtension } from '@smartflow/data';
+import { sceneExtension } from '@smartflow/scene-3d';
+import type { Connection } from '@xyflow/react';
+import dataText from '../../../examples/data.smartflow?raw';
+import sceneText from '../../../examples/scene.smartflow?raw';
+import componentText from '../../../examples/components.smartflow?raw';
+import { parseProjectBytes } from './project-files.ts';
+import { EditorSession, emptyProject } from './editor-session.ts';
+import { patchWorkspace, readWorkspace } from './workspace.ts';
+import { GraphCanvas } from './GraphCanvas.tsx';
+import { ParameterEditor } from './ParameterEditor.tsx';
+
+const registry = new ExtensionRegistry([dataExtension, sceneExtension]);
+const examples: Record<string, string> = {
+  data: dataText,
+  scene: sceneText,
+  components: componentText,
+};
 export function App() {
+  const [session] = useState(() => new EditorSession(parseProject(dataText), registry));
+  const [file, setFile] = useState(session.history.snapshot);
+  const [graphId, setGraphId] = useState(file.project.graphs[0]?.id ?? '');
+  const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
+  const [loadNumber, setLoadNumber] = useState(0);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [search, setSearch] = useState('');
+  const [filename, setFilename] = useState('data.smartflow');
+  const importInput = useRef<HTMLInputElement>(null);
+  const refresh = useCallback(() => {
+    setFile(session.history.snapshot);
+  }, [session]);
+  const action = useCallback(
+    (work: () => void) => {
+      try {
+        work();
+        setError('');
+        refresh();
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+      }
+    },
+    [refresh],
+  );
+  const graph = file.project.graphs.find((graph) => graph.id === graphId);
+  const workspace = readWorkspace(file, graphId);
+  const selected = graph?.nodes.find((node) => workspace.selection.includes(node.id));
+  const definition = selected && session.definition(selected);
+  const resolve = useCallback((node: NodeDocument) => session.definition(node), [session]);
+  const remove = useCallback(() => {
+    if (graph)
+      action(() =>
+        session.remove(
+          graphId,
+          workspace.selection.filter((id) => graph.nodes.some((node) => node.id === id)),
+          selectedEdges,
+        ),
+      );
+  }, [action, graph, graphId, session, workspace.selection, selectedEdges]);
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLElement &&
+        (event.target.matches('input,textarea,select') || event.target.isContentEditable)
+      )
+        return;
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        action(() => {
+          if (event.shiftKey) session.history.redo();
+          else session.history.undo();
+        });
+      } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
+        event.preventDefault();
+        action(() => {
+          session.history.redo();
+        });
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        event.preventDefault();
+        remove();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [action, remove, session]);
+  useEffect(() => {
+    const handler = (event: BeforeUnloadEvent) => {
+      if (session.history.dirty) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [session]);
+  const replace = (replacement: ProjectFile, name: string) => {
+    if (
+      session.history.dirty &&
+      !window.confirm(
+        'Discard changes to the current project? Download it first to keep your edits.',
+      )
+    )
+      return;
+    action(() => {
+      session.history.replace(replacement);
+      setGraphId(replacement.project.graphs[0]?.id ?? '');
+      setSelectedEdges([]);
+      setLoadNumber((value) => value + 1);
+      setFilename(name);
+      setNotice('Project opened. Opening does not execute it.');
+    });
+  };
+  const download = () =>
+    action(() => {
+      const url = URL.createObjectURL(
+        new Blob([serializeProject(session.history.snapshot)], { type: 'application/json' }),
+      );
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      session.history.markSaved();
+      setNotice('Project download prepared. Keep the downloaded file to save your work.');
+    });
+  const onConnect = (connection: Connection) =>
+    action(() => {
+      if (!connection.sourceHandle || !connection.targetHandle)
+        throw new Error('Choose named ports');
+      session.connection(graphId, {
+        id: crypto.randomUUID(),
+        source: { nodeId: connection.source, portId: connection.sourceHandle },
+        target: { nodeId: connection.target, portId: connection.targetHandle },
+      });
+    });
   return (
-    <main>
-      <header>
-        <span className="mark" aria-hidden="true">
-          SF
-        </span>
-        <span>SmartFlow</span>
-        <span className="badge">Development starter</span>
+    <main className="app-shell">
+      <header className="app-header">
+        <div className="brand">
+          <span className="mark">SF</span>
+          <div>
+            <strong>SmartFlow</strong>
+            <small>Visual workspace</small>
+          </div>
+        </div>
+        <div className="project-name">
+          {filename}
+          <span className={session.history.dirty ? 'dirty' : 'saved'}>
+            {session.history.dirty ? 'Unsaved changes' : 'Saved'}
+          </span>
+        </div>
+        <span className="preview-badge">Web preview</span>
       </header>
-      <section className="intro" aria-labelledby="title">
-        <p className="eyebrow">Connect. Explore. Extend.</p>
-        <h1 id="title">
-          One workspace.
-          <br />
-          Many possibilities.
-        </h1>
-        <p className="lead">
-          Build interactive tools with node graphs. Start with 3D scenes and extend into other
-          fields.
-        </p>
-      </section>
-      <section className="domains" aria-label="Planned capabilities">
-        <article>
-          <span className="number">01 / FOUNDATION</span>
-          <h2>Interactive graphs</h2>
-          <p>Connect operations, adjust parameters, and inspect each result.</p>
-        </article>
-        <article>
-          <span className="number">02 / INCLUDED DOMAIN</span>
-          <h2>3D scenes</h2>
-          <p>Compose geometry, materials, and transforms in an interactive scene workspace.</p>
-        </article>
-        <article>
-          <span className="number">03 / EXTENSIONS</span>
-          <h2>Room to grow</h2>
-          <p>Add new types, operations, and viewers for data, images, or another domain.</p>
-        </article>
-      </section>
-      <footer>
-        The local development environment is ready. Graph editing, execution, and viewers are the
-        next implementation steps.
+      <div className="toolbar" aria-label="Project actions">
+        <button onClick={() => replace(emptyProject(crypto.randomUUID()), 'untitled.smartflow')}>
+          New project
+        </button>
+        <button onClick={() => importInput.current?.click()}>Open project</button>
+        <button onClick={download}>Download project</button>
+        <span className="toolbar-divider" />
+        <button
+          disabled={!session.history.canUndo}
+          title={session.history.undoLabel}
+          onClick={() =>
+            action(() => {
+              session.history.undo();
+            })
+          }
+        >
+          Undo
+        </button>
+        <button
+          disabled={!session.history.canRedo}
+          title={session.history.redoLabel}
+          onClick={() =>
+            action(() => {
+              session.history.redo();
+            })
+          }
+        >
+          Redo
+        </button>
+        <button disabled={!workspace.selection.length && !selectedEdges.length} onClick={remove}>
+          Delete selection
+        </button>
+        <div className="toolbar-spacer" />
+        <label className="compact-label">
+          Examples
+          <select
+            aria-label="Open example"
+            defaultValue=""
+            onChange={(event) => {
+              const value = examples[event.target.value];
+              if (value) replace(parseProject(value), `${event.target.value}.smartflow`);
+              event.target.value = '';
+            }}
+          >
+            <option value="" disabled>
+              Choose a workflow
+            </option>
+            <option value="data">Data · filtered summary</option>
+            <option value="scene">3D · colored cube</option>
+            <option value="components">Reusable component</option>
+          </select>
+        </label>
+      </div>
+      <input
+        ref={importInput}
+        type="file"
+        accept=".smartflow,application/json"
+        aria-label="Project file"
+        className="file-input"
+        onChange={async (event) => {
+          const input = event.currentTarget;
+          const imported = input.files?.[0];
+          if (!imported) return;
+          try {
+            if (imported.size > 16 * 1024 * 1024) throw new Error('JSON exceeds 16 MiB file limit');
+            replace(parseProjectBytes(new Uint8Array(await imported.arrayBuffer())), imported.name);
+          } catch (error) {
+            setError(error instanceof Error ? error.message : String(error));
+          } finally {
+            input.value = '';
+          }
+        }}
+      />
+      {error && (
+        <div role="alert" className="error-banner">
+          <strong>Action could not be completed.</strong> {error}
+          <button aria-label="Dismiss error" onClick={() => setError('')}>
+            ×
+          </button>
+        </div>
+      )}
+      <div className="workspace-grid">
+        <aside className="library panel">
+          <div className="panel-title">
+            <h2>Node library</h2>
+            <span>
+              {registry.extensions.reduce((sum, extension) => sum + extension.nodes.length, 0)}
+            </span>
+          </div>
+          <input
+            className="search"
+            aria-label="Search nodes"
+            placeholder="Find an operation…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          {registry.extensions.map((extension) => (
+            <section className="library-group" key={extension.id}>
+              <h3>{extension.id === 'smartflow.data' ? 'Data' : 'Scene 3D'}</h3>
+              {extension.nodes
+                .filter((node) => node.label.toLowerCase().includes(search.toLowerCase()))
+                .map((node) => (
+                  <button
+                    className="library-node"
+                    key={node.id}
+                    disabled={!graph}
+                    onClick={() =>
+                      action(() => session.add(graphId, extension.id, node.id, crypto.randomUUID()))
+                    }
+                  >
+                    <span
+                      className={`node-dot ${extension.id.includes('scene') ? 'scene' : 'data'}`}
+                    />
+                    <span>{node.label}</span>
+                    <span className="add-symbol">+</span>
+                  </button>
+                ))}
+            </section>
+          ))}
+          <div className="library-note">
+            Connect an output to an input. Select a node to edit its parameters.
+          </div>
+        </aside>
+        <section className="graph-panel">
+          <div className="panel-title graph-title">
+            <h2>Graph</h2>
+            <select
+              aria-label="Active graph"
+              value={graphId}
+              onChange={(event) => {
+                setGraphId(event.target.value);
+                setSelectedEdges([]);
+              }}
+            >
+              {file.project.graphs.map((graph) => (
+                <option key={graph.id} value={graph.id}>
+                  {graph.id}
+                </option>
+              ))}
+            </select>
+            <span>
+              {graph?.nodes.length ?? 0} nodes · {graph?.connections.length ?? 0} connections
+            </span>
+          </div>
+          {graph ? (
+            <GraphCanvas
+              key={`${loadNumber}:${graphId}`}
+              graph={graph}
+              workspace={workspace}
+              definition={resolve}
+              onConnect={onConnect}
+              onSelection={(nodes, edges) => {
+                setSelectedEdges((current) =>
+                  JSON.stringify(current) === JSON.stringify(edges) ? current : edges,
+                );
+                if (
+                  JSON.stringify(nodes) !==
+                  JSON.stringify(
+                    workspace.selection.filter((id) => graph.nodes.some((node) => node.id === id)),
+                  )
+                )
+                  action(() => patchWorkspace(session.history, graphId, { selection: nodes }));
+              }}
+              onPositions={(positions) =>
+                action(() =>
+                  patchWorkspace(session.history, graphId, {
+                    positions: { ...workspace.positions, ...positions },
+                  }),
+                )
+              }
+              onViewport={(viewport) =>
+                action(() => patchWorkspace(session.history, graphId, { viewport }))
+              }
+            />
+          ) : (
+            <div className="canvas-empty">
+              <strong>This project has no graphs</strong>
+              <button
+                onClick={() =>
+                  action(() => {
+                    const id = crypto.randomUUID();
+                    session.history.edit('Add graph', (project) => {
+                      project.graphs.push({ id, nodes: [], connections: [] });
+                    });
+                    setGraphId(id);
+                  })
+                }
+              >
+                Add graph
+              </button>
+            </div>
+          )}
+        </section>
+        <aside className="inspector panel">
+          <div className="panel-title">
+            <h2>Inspector</h2>
+            <span>
+              {workspace.selection.length
+                ? `${workspace.selection.length} selected`
+                : 'No selection'}
+            </span>
+          </div>
+          {selected ? (
+            <>
+              <h3 className="inspector-heading">{definition?.label ?? selected.typeId}</h3>
+              <div className="muted small">
+                {selected.packageId} · v{selected.version}
+              </div>
+              {definition ? (
+                <div className="parameters">
+                  {definition.parameters.map((parameter) => (
+                    <ParameterEditor
+                      key={`${selected.id}:${parameter.id}`}
+                      parameter={parameter}
+                      value={selected.parameters[parameter.id] ?? parameter.defaultValue}
+                      commit={(value) =>
+                        action(() => session.parameter(graphId, selected.id, parameter.id, value))
+                      }
+                    />
+                  ))}
+                  {!definition.parameters.length && (
+                    <p className="muted">This node has no parameters.</p>
+                  )}
+                  <p className="contract-note">
+                    Execution is added in the next checkpoints. Your graph can be edited and saved
+                    now.
+                  </p>
+                </div>
+              ) : (
+                <div className="unsupported-note">
+                  This node contract is unavailable. Its parameters and connections remain in the
+                  project.
+                </div>
+              )}
+              <details>
+                <summary>Retained node content</summary>
+                <pre>{JSON.stringify(selected, null, 2)}</pre>
+              </details>
+            </>
+          ) : (
+            <div className="inspector-empty">
+              <span>↗</span>
+              <strong>Select a node</strong>
+              <p>Inspect its parameters and ports here.</p>
+            </div>
+          )}
+          <div className="connection-list">
+            <h3>Connections</h3>
+            {graph?.connections.map((edge) => (
+              <div key={edge.id}>
+                <span>
+                  {edge.source.nodeId.slice(0, 12)}:{edge.source.portId} →{' '}
+                  {edge.target.nodeId.slice(0, 12)}:{edge.target.portId}
+                </span>
+                <button
+                  aria-label={`Remove connection ${edge.id}`}
+                  onClick={() => action(() => session.remove(graphId, [], [edge.id]))}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+      <footer className="statusbar">
+        <span>{notice || 'Local workspace · project files stay on your device'}</span>
+        <span>Schema 1 · {file.project.assets.length} asset references</span>
       </footer>
     </main>
   );
