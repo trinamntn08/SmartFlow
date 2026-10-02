@@ -1,4 +1,5 @@
 #include "WorkspaceWindow.h"
+#include "ComponentDialogs.h"
 #include <tp_qt_pipeline_widgets/parameter_editors/DoubleParameterEditor.h>
 #include <tp_data/members/NumberMember.h>
 #include <tp_data/Collection.h>
@@ -28,6 +29,7 @@
 #include <QJsonDocument>
 #include <QScopedValueRollback>
 #include <cmath>
+#include <set>
 
 namespace smartflow {
 namespace {
@@ -86,6 +88,46 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     auto* saveAs = file->addAction("Save &As...");
     saveAs->setShortcut(QKeySequence::SaveAs);
     connect(saveAs, &QAction::triggered, this, [this] { saveFromDialog(true); });
+    auto* components=menuBar()->addMenu("&Components");
+    auto* createComponent=components->addAction("Create from selection...");
+    createComponent->setObjectName("createComponent");
+    auto* insertComponent=components->addAction("Component library...");
+    insertComponent->setObjectName("insertComponent");
+    connect(createComponent,&QAction::triggered,this,[this] {
+        std::vector<std::string> selection;
+        for(const auto id : canvasScene.selectedNodes()) selection.push_back(canvasModel.projectId(id).toString());
+        ComponentAuthorDialog dialog(document,std::move(selection),this);
+        dialog.exec();
+    });
+    connect(insertComponent,&QAction::triggered,this,[this] {
+        std::set<std::string> before;
+        for(const auto& node : document.selectedGraph()["nodes"]) before.insert(node["id"].get<std::string>());
+        ComponentLibraryDialog dialog(document,this);
+        if(dialog.exec()!=QDialog::Accepted) return;
+        auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
+        // Place copies beside the existing graph, so repeated insertion does
+        // not stack nodes on the same viewport center.
+        QRectF occupied;
+        for(const auto id : canvasModel.allNodeIds()) if(before.count(canvasModel.projectId(id).toString()))
+            occupied=occupied.united(canvasScene.nodeGraphicsObject(id)->sceneBoundingRect());
+        const QPointF origin(occupied.right()+80,occupied.top());
+        canvasScene.clearSelection();
+        int index=0;
+        for(const auto& node : document.selectedGraph()["nodes"])
+            if(!before.count(node["id"].get<std::string>()))
+                for(const auto id : canvasModel.allNodeIds()) if(canvasModel.projectId(id).toString()==node["id"]) {
+                    canvasModel.setNodeData(id,QtNodes::NodeRole::Position,origin+QPointF((index%3)*240,(index/3)*180));
+                    canvasScene.nodeGraphicsObject(id)->setSelected(true);
+                    ++index;
+                    break;
+                }
+        view->fitInView(canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30),Qt::KeepAspectRatio);
+        captureWorkspace();
+        statusBar()->showMessage("Inserted component as "+QString::number(index)+" separate nodes.",5000);
+    });
+    connect(components,&QMenu::aboutToShow,this,[this,createComponent] {
+        createComponent->setEnabled(!canvasScene.selectedNodes().empty());
+    });
     auto* toolbar = addToolBar("Graph");
     toolbar->setMovable(false);
     auto* undo = canvasScene.undoStack().createUndoAction(this, "Undo");

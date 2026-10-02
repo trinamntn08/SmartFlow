@@ -1,8 +1,33 @@
 # Native graph components
 
-Status: extraction/catalog command foundation, N6b. End-user authoring UI and collapsed component
-nodes are not available yet. A component currently inserts a reusable subgraph as
+Status: native authoring/library UI, N6c. Collapsed component nodes are not
+available yet. A component currently inserts a reusable subgraph as
 ordinary nodes through an atomic document command.
+
+## Desktop workflow
+
+1. Select nodes on the canvas (use Ctrl to add nodes to the selection), then open
+   **Components > Create from selection**.
+2. Give the component a title. The Inputs, Outputs and Controls tabs list
+   available endpoints. Boundary connections are required and checked; give each
+   exposed endpoint a unique name within its tab. Free inputs and terminal outputs
+   are checked initially. Choose any additional outputs and parameter controls.
+3. Click **Create component** to save it in the current project's library. The
+   original nodes remain unchanged. Creation is one undoable project command.
+4. Open **Components > Component library**, choose a saved component, select a
+   compatible source output for each input, and adjust exposed numeric controls.
+   Other parameter types retain their saved defaults.
+5. Click **Insert component**. A separate copy of its ordinary nodes appears beside
+   the existing graph, selected and framed in the canvas. Connect its output nodes,
+   select them to inspect results or pin their output in the viewer. Insertion is
+   one semantic undo command; positions and navigation are workspace state.
+6. Save and reopen the project to retain both the library and inserted copies.
+
+Identifiers are generated automatically. Validation errors stay in the dialog,
+allowing correction without changing the project. Cancellation makes no edit.
+Unavailable or malformed catalog entries stay visible/retained and report errors;
+they cannot be inserted. Creating a component from unavailable selected nodes is
+disabled. Dialogs reject edits if the graph changes while they are open.
 
 ## Definition contract
 
@@ -82,7 +107,12 @@ data-based tests link scene-domain libraries.
 N6b also checks extraction, boundary validation, catalog conflicts/no-ops,
 workspace-preserving undo/redo and real file reopening followed by execution.
 
-Next: component-authoring/library UI, then a collapsed instance
+`native_component_ui` drives the actual menu/dialog workflow through Qt in the
+independent data app. It verifies exposed endpoints, separate control values,
+execution, non-overlapping placement, undo/redo, save/reopen/library reuse,
+compatible-input filtering, cancellation and unavailable-content retention.
+
+Next: a collapsed instance
 node with exposed parameter controls and execution/result mapping. Recursive
 components, definition migration, live catalog updates and external distribution
 remain later work. See [decision 0012](architecture/decisions/0012-native-graph-component-foundation.md).

@@ -5,12 +5,14 @@ An independent, extensible visual workspace for interactive node graphs and thei
 
 ## Current state
 
-SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds the pipeline foundation and background execution adapter. N3 connects the workspace, inspector and undo/redo. N4 adds the included scene-3d extension: Cube, Transform, Material, Scene and Merge nodes with an interactive primitive preview. N5a–N5e add the native project-file codec, retained-document editor commands and undo, and unavailable-node placeholders. N5f adds Open/Save/Save As and retained-content dirty tracking. N5g adds canvas layout/navigation, selection, pinned-output and viewer-state persistence. N5h adds the independent data extension and table workflow. N5i adds shipped example projects and launch-time project loading. N6a adds a reusable graph-component model and atomic subgraph insertion commands; component UI remains pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
+SmartFlow starts as a native C++/Qt application based on audited source copied from the old studio engine. N1 provides the copied QtNodes canvas. N2 adds the pipeline foundation and background execution adapter. N3 connects the workspace, inspector and undo/redo. N4 adds the included scene-3d extension: Cube, Transform, Material, Scene and Merge nodes with an interactive primitive preview. N5a–N5e add the native project-file codec, retained-document editor commands and undo, and unavailable-node placeholders. N5f adds Open/Save/Save As and retained-content dirty tracking. N5g adds canvas layout/navigation, selection, pinned-output and viewer-state persistence. N5h adds the independent data extension and table workflow. N5i adds shipped example projects and launch-time project loading. N6a adds a reusable graph-component model and atomic subgraph insertion commands. N6b adds extraction/catalog commands and N6c adds the native component authoring/library UI; collapsed nodes remain pending. The TypeScript browser starter, persistence prototype and SDK contracts are retained for a future extension.
 
 ## Start locally
 
-N6b adds reusable-component extraction and catalog commands with undo/save/reopen
-coverage. Component authoring UI and collapsed nodes remain pending.
+N6b adds reusable-component extraction and catalog commands. N6c adds the
+**Components** menu for creating components from selected nodes and inserting
+them from the saved project library. See [graph components](docs/GRAPH_COMPONENTS.md).
+Collapsed component nodes remain pending.
 
 The first version for user testing is the **Windows desktop app**, built with C++/Qt.
 Follow [desktop testing](docs/DESKTOP_TESTING.md) to build a local test folder and

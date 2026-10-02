@@ -186,9 +186,28 @@ reopened extracted definitions executing through the data extension. See the
 `smartflow_components` is a project-codec/Qt Core library, without domain or
 canvas imports. DocumentSession/DocumentHistory expose atomic component
 instantiation with retained catalog insertion, typed binding validation and undo.
-This is a model/command API; no component UI or collapsed node is provided yet.
+This is a model/command API; the N6c workspace UI below invokes it. Collapsed
+component nodes remain pending.
 `native_components` checks independent data instances, save/reopen, opaque-field
 retention, undo/redo and failed-command isolation. Report:
 `build/native/native/component-results.xml`. Read the
 [component guide](GRAPH_COMPONENTS.md) and
 [decision 0012](architecture/decisions/0012-native-graph-component-foundation.md).
+
+## N6c component authoring and library
+
+The Components menu creates reusable definitions from canvas selections and
+inserts saved definitions with compatible source bindings and numeric controls.
+Creation and insertion use the retained document history; cancellation and
+validation failures preserve project state. Inserted nodes are selected, placed
+beside the existing graph and framed. IDs are generated automatically.
+
+`native_component_ui` drives actual menu/modal-dialog actions in a data-only
+workspace and verifies execution, undo/redo, save/reopen/library reuse, placement,
+compatible-input filtering, cancellation, stale dialogs and unavailable catalogs.
+Report: `build/native/native/component-ui-results.xml`. With optional
+`SMARTFLOW_TEST_FONT` configured, it also writes `component-author-smoke.png`,
+`component-library-smoke.png` and `component-workspace-smoke.png` in that directory.
+Offscreen tests/render inspection do not establish real desktop interaction
+acceptance. See [the guide](GRAPH_COMPONENTS.md) and
+[N6c handoff](agents/handoffs/2026-10-02-native-checkpoint-n6c.md).

@@ -39,7 +39,8 @@ domain branch is introduced. See [decision 0011](decisions/0011-independent-nati
 N6a adds a registry-independent graph-component definition/expansion library,
 with retained-session instantiation and one-command undo. It depends on the
 project codec; active registrations validate domain types in the session adapter.
-This is subgraph insertion, with component UI/collapsed execution still pending.
+N6b adds extraction/catalog commands; N6c adds native authoring/library dialogs.
+This is subgraph insertion, with collapsed execution still pending.
 See [decision 0012](decisions/0012-native-graph-component-foundation.md).
 
 ## Product invariant

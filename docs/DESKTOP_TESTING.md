@@ -74,6 +74,17 @@ total 79 and mean 39.5. Undo/Redo restores those results. Select a viewer row,
 move a canvas node, Save As, relaunch and Open to check parameters, selection
 and layout restoration. This is a bundled sample, without CSV import.
 
+## Reusable components
+
+Select Filter rows and Summary, then use Components > Create from selection.
+Name the component, expose its minimum control and name its table input and
+summary output. Open Components > Component library, bind the input to Sample
+table / out and set minimum to 30. Insert the component and inspect its copied
+Summary node: expect total 79. Undo/Redo should remove/restore the copied subgraph
+as one command. Save, relaunch and Open; confirm the saved component is available
+in the library and its inserted nodes still execute. See
+[the component guide](GRAPH_COMPONENTS.md) for the full workflow.
+
 ## Current limitations
 
 - Canvas positions/navigation, selection and viewer camera/pinning are saved.
@@ -84,5 +95,7 @@ and layout restoration. This is a bundled sample, without CSV import.
 - The 3D view is a primitive software preview, not a production GPU renderer.
 - The independent data extension is available; packaged interaction acceptance
   for both workflows is the next checkpoint.
+- Components insert ordinary node copies; collapsed nodes, definition editing,
+  library deletion/export and automatic updates of existing instances are pending.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.

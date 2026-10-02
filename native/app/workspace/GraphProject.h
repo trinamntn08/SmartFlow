@@ -18,6 +18,7 @@ public:
     const auto& selectedGraph() const { return history.session().selectedGraph(); }
     const auto& diagnostics() const { return history.session().diagnostics(); }
     auto registry() const { return delegates; }
+    const auto& nodePresentations() const { return presentations; }
     auto& commands() { return history; }
     quint64 revision() const { return history.revision(); }
     tp_pipeline::StepDetails* step(const tp_utils::StringID& id) const;

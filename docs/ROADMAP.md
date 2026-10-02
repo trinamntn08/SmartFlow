@@ -85,8 +85,14 @@ See [the component guide](GRAPH_COMPONENTS.md) and the
 
 N6b adds selection-to-component extraction and undoable catalog storage commands,
 with explicit boundary interfaces, retained opaque content and save/reopen reuse.
-The authoring/library UI and collapsed component behavior remain pending. See the
+Collapsed component behavior remains pending. See the
 [N6b handoff](agents/handoffs/2026-10-02-native-checkpoint-n6b.md).
+
+N6c adds the native Components menu, authoring dialog and saved-component library.
+Users choose exposed endpoints, bind compatible inputs and edit numeric controls
+when inserting separate node copies. Qt menu/dialog tests cover execution,
+undo/redo and save/reopen reuse; real desktop acceptance remains pending. See the
+[N6c handoff](agents/handoffs/2026-10-02-native-checkpoint-n6c.md).
 
 The list below records the earlier TypeScript plan. It is superseded for current
 implementation by this native migration sequence:
@@ -115,7 +121,7 @@ Acceptance: create a scene graph, adjust a transform, see the updated scene, and
 
 - Completed N5h: add a native table workflow through the same SDK.
 - Completed N5h: run it in a separate executable without linking/initializing the 3D package.
-- N6a: reusable graph definitions and atomic subgraph insertion commands implemented; component authoring/UI and collapsed-node execution remain pending.
+- N6a/N6b/N6c: reusable graph definitions, extraction/catalog commands and native authoring/library UI implemented; collapsed-node execution remains pending.
 - Check missing package and unsupported backend behavior.
 
 ## Later, when justified

@@ -50,5 +50,13 @@ plugin system or recursive component runtime. Required inputs are single-target;
 fan-out input bindings and nested component instances are not implemented. Port
 types and parameter bounds come from the active node registrations. Instances are
 independent copies; changing a catalog definition does not update prior instances.
-There is no component-authoring/library UI or exposed-control inspector yet.
+N6c (2026-10-02) adds modal authoring and library dialogs in the native workspace.
+The author chooses named interfaces from active registrations; boundary endpoints
+are required. The library retains unknown entries, filters external input sources
+by port type and provides numeric controls using registered bounds. IDs are
+generated automatically. Dialog acceptance invokes retained project commands;
+cancellation/validation failures do not mutate the project. Graph revisions guard
+against stale dialog edits. Inserted copies are placed beside existing nodes and
+framed through workspace state. This does not add a component node type or change
+execution semantics. A collapsed-node exposed-control inspector remains pending.
 Full N5 desktop acceptance remains independently pending the computer-use helper.
