@@ -23,7 +23,7 @@ For a new extension, begin with a concrete graph, its data types, and viewer beh
 
 Read [the current roadmap](../ROADMAP.md) and the
 [handoff index](handoffs/README.md) before choosing work. Native implementation is
-complete through N6h, with VS Code launch setup. Do not reimplement delivered graph,
+complete through N7, with VS Code launch setup. Do not reimplement delivered graph,
 file or component features based on old handoff "next steps".
 
 The user has deferred automated desktop interaction and will test manually. Keep

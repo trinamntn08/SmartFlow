@@ -8,7 +8,7 @@ For today's behavior, start with [the roadmap](../../ROADMAP.md),
 [current architecture](../../architecture/README.md),
 [native development](../../NATIVE_DEVELOPMENT.md) and
 [component guide](../../GRAPH_COMPONENTS.md). Implementation is delivered through
-N6h plus VS Code setup. Full N5 packaged interaction acceptance is pending manual
+N7 plus VS Code setup. Full N5 packaged interaction acceptance is pending manual
 results; automated native computer-use is deferred by the user.
 
 ## Records
@@ -42,3 +42,4 @@ results; automated native computer-use is deferred by the user.
 - [N6g: isolated component editing copies](2026-10-02-native-checkpoint-n6g.md)
 - [N6h: explicit compatible instance replacement](2026-10-02-native-checkpoint-n6h.md)
 - [First Windows version ready for testing](2026-10-02-first-test-version.md)
+- [N7: selectable workspace widgets](2026-10-02-native-checkpoint-n7.md)

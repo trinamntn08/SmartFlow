@@ -9,13 +9,15 @@ This proposal describes an independent product in a new repository. It originate
 The native Windows preview now implements graph editing, background execution and
 cancellation, inspector controls, undo/redo, atomic Save/Open and workspace/viewer
 restoration. It includes the primitive scene workflow and an independent table
-workflow through source-level native contribution contracts. Components support
+workflow. Selectable widget regions now support placement, splitting, swapping,
+closing and persisted divider sizes. Both domains use
+source-level native contribution contracts. Components support
 collapsed snapshots with exposed controls/ports, standalone import/export and
 undoable library removal, isolated definition copies and explicit compatible
 instance replacement. VS Code CMake Tools and a local runtime test folder
 support development/manual launches.
 
-The automated baseline passes Release builds, 17 CTest entries, packaged startup
+The automated baseline passes Release builds, 18 CTest entries, packaged startup
 and web checks. Full N5 desktop interaction acceptance is pending the user's
 manual results; automated computer-use is deferred. Production rendering, asset
 import/bundling, dynamic plugin loading, nested components, definition migration and

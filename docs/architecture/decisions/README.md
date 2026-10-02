@@ -22,6 +22,7 @@ what runs today; this index is not a claim of completed production delivery.
 - [0013: Collapsed native component snapshots](0013-collapsed-native-components.md)
 - [0014: Standalone native component files](0014-native-component-files.md)
 - [0015: Component editing and explicit update scope](0015-component-editing-scope.md)
+- [0016: Selectable workspace widgets in split regions](0016-selectable-workspace-widgets.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
 0009 requires packaged Windows desktop acceptance, which remains pending manual

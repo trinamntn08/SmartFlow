@@ -3,11 +3,11 @@
 The first version for user testing is the Windows native C++/Qt application.
 The browser starter is deferred. This is a local development preview, not a
 public installer or a completed N5 release. Implementation is complete through
-N6h and VS Code setup; full N5 packaged interaction acceptance is pending the
+N7 and VS Code setup; full N5 packaged interaction acceptance is pending the
 user's manual test results. Automated native computer-use is deferred for now.
 
 **Ready for first manual testing, 2026-10-02:** the installed folder at
-`build/desktop-test` contains the N6g/N6h app, examples, runtime dependencies,
+`build/desktop-test` contains the N7 app, examples, runtime dependencies,
 README and testing guides. Seven Windows startup/render checks passed with
 developer Qt paths removed. Start `bin/smartflow.exe` or `bin/smartflow-data.exe`.
 Use [the test-result sheet](TEST_VERSION.md) to record your interaction results.
@@ -76,6 +76,11 @@ result. Offscreen checks do not replace desktop interaction checks.
 
 For the desktop test:
 
+First try the [widget layout controls](WORKSPACE_WIDGETS.md): choose a widget in
+any region, use H/V to split, X to close and drag dividers to resize. Selecting an
+already visible widget swaps its placement. Save/relaunch/Open should restore
+the arrangement. **Layout > Reset widget layout** recovers the default layout.
+
 1. Launch the installed executable. Confirm the Cube/Transform/Material/Scene
    graph executes and displays a cube in the 3D preview.
 2. Select Cube, change size to 3, and click Apply. Confirm the preview updates;
@@ -132,7 +137,7 @@ with an explanatory error. Save/relaunch/Open must retain the chosen snapshot.
 ## Current limitations
 
 - Canvas positions/navigation, selection and viewer camera/pinning are saved.
-  Splitter sizes and window geometry are not yet saved.
+  Selectable widget regions and divider sizes are saved; outer window geometry is not.
   Files without saved workspace state use a fitted canvas and terminal output by default.
 - Open edits the first graph; other graphs and unknown extension data remain
   preserved. Unsupported nodes are displayed but cannot execute.
@@ -151,5 +156,5 @@ Report the tested executable/configuration and whether scene, data, component,
 import/export/removal, Undo/Redo and save/relaunch/Open checks passed. Include
 reproduction steps and expected/actual behavior for failures. Use a separate saved
 file to preserve shipped fixtures. Manual results have not yet been reported; the
-current automated baseline is a Release build, 17 CTest entries and successful
+current automated baseline is a Release build, 18 CTest entries and successful
 Windows startup smoke checks. A clean-machine/public-install test remains separate.

@@ -19,6 +19,7 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 - Background execution/cancellation and pinned result viewers.
 - Primitive 3D scene workflow plus an independent table/filter/summary workflow.
 - Atomic Save/Open with layout, navigation, selection and viewer restoration.
+- Selectable widget regions with H/V splits, swapping, closing and saved dividers.
 - Components with collapsed snapshots, exposed ports/controls, import/export and removal.
 - Isolated **Edit a copy** drafts and explicit **Update selected instance** with
   compatibility validation, preserved values and exact snapshot undo.
@@ -26,8 +27,8 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 
 ## Automated evidence
 
-Release configure/build and the native suite are verified; all 17 CTest entries
-passed after N6h. The required web checks pass, including nine persistence tests.
+Release configure/build and the native suite are verified; all 18 CTest entries
+passed after N7. The required web checks pass, including nine persistence tests.
 Seven installed Windows configurations start, execute and render with developer
 Qt environment variables removed. Installed executable hashes match the build.
 Packaged scene and component screenshots were visually inspected.
@@ -37,6 +38,10 @@ in `build/desktop-test/verification/startup-results.json`. Startup/offscreen evi
 does not establish manual file-dialog/desktop interaction or clean-machine acceptance.
 
 ## Record results
+
+Also test the region selectors, H/V split, X close and divider resizing. Confirm
+the saved arrangement returns after relaunch/Open; use **Layout > Reset widget
+layout** to recover defaults. See [workspace widgets](WORKSPACE_WIDGETS.md).
 
 Tested date, executable, Windows version and package source commit:
 

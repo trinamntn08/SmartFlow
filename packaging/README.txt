@@ -5,6 +5,12 @@ Launch bin/smartflow-data.exe for the independent table workflow.
 Keep this whole folder together; its Qt and compiler runtimes are included.
 Node.js, a browser server and the old source checkout are not needed.
 
+Each region has a widget selector: choose Graph, Node library, Inspector,
+Execution results or Result viewer. H splits left/right, V splits top/bottom,
+and X closes a region. Drag dividers to resize. Choosing an already visible
+widget swaps its region. Layout > Reset widget layout restores defaults.
+The arrangement and divider sizes are saved with your project.
+
 Open the matching examples with File > Open:
   examples/scene.smartflow       - use smartflow.exe
   examples/data.smartflow        - use smartflow-data.exe

@@ -12,6 +12,7 @@ class QPushButton;
 class QComboBox;
 
 namespace smartflow {
+class PanelWorkspace;
 class WorkspaceWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -37,6 +38,9 @@ protected:
     void closeEvent(QCloseEvent* event) override;
 private:
     WorkspaceConfiguration workspaceConfiguration;
+    PanelWorkspace* panels = nullptr;
+    bool panelStateSupported = true;
+    bool navigationRestoredOnLoad = false;
     void captureWorkspace();
     void scheduleWorkspaceCapture();
     void restoreWorkspace();

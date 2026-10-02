@@ -36,6 +36,7 @@ add_library(smartflow_pipeline_widgets STATIC
 target_include_directories(smartflow_pipeline_widgets PUBLIC vendor/pipeline-widgets/inc)
 target_link_libraries(smartflow_pipeline_widgets PUBLIC smartflow_legacy smartflow_qtnodes)
 add_library(smartflow_workspace STATIC
+  app/workspace/PanelWorkspace.cpp app/workspace/PanelWorkspace.h
   app/workspace/ComponentDialogs.cpp app/workspace/ComponentDialogs.h
   app/workspace/GraphProject.cpp app/workspace/GraphProject.h
   app/workspace/PipelineCanvas.cpp app/workspace/PipelineCanvas.h
@@ -65,6 +66,10 @@ if(WIN32)
   install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
 endif()
 if(BUILD_TESTING)
+  add_executable(panel_workspace_tests tests/PanelWorkspaceTests.cpp)
+  target_link_libraries(panel_workspace_tests PRIVATE smartflow_workspace smartflow_data Qt6::Test)
+  add_test(NAME native_panels COMMAND panel_workspace_tests -platform offscreen -o -,txt -o panel-results.xml,junitxml)
+  set_tests_properties(native_panels PROPERTIES TIMEOUT 60)
   add_executable(component_ui_tests tests/ComponentUiTests.cpp)
   target_link_libraries(component_ui_tests PRIVATE smartflow_workspace smartflow_data Qt6::Test)
   target_compile_definitions(component_ui_tests PRIVATE SMARTFLOW_COMPONENT_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/components.smartflow")

@@ -35,3 +35,9 @@ Only the first graph is opened by the current editor. Splitter sizes and window
 geometry are not persisted. Canvas centers are subject to Qt scrollbar pixel
 rounding and viewport size. This is a source-level contract for bundled native
 extensions, not a production plugin ABI or loader.
+
+## Subsequent layout work
+
+N7 adds persisted selectable-widget split regions and divider proportions under
+[decision 0016](0016-selectable-workspace-widgets.md), superseding the earlier
+splitter-size limit. Outer window geometry remains unpersisted.

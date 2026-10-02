@@ -1,5 +1,6 @@
 #include "WorkspaceWindow.h"
 #include "ComponentDialogs.h"
+#include "PanelWorkspace.h"
 #include <tp_qt_pipeline_widgets/parameter_editors/DoubleParameterEditor.h>
 #include <tp_data/members/NumberMember.h>
 #include <tp_data/Collection.h>
@@ -35,6 +36,18 @@
 
 namespace smartflow {
 namespace {
+class WorkspaceGraphView final : public QtNodes::GraphicsView {
+public:
+    using QtNodes::GraphicsView::GraphicsView;
+protected:
+    void showEvent(QShowEvent* event) override
+    {
+        // QtNodes refits on every Show, which would reset saved navigation when
+        // a widget moves between regions. The workspace handles initial fitting.
+        QGraphicsView::showEvent(event);
+    }
+};
+
 WorkspaceConfiguration numericConfiguration()
 {
     WorkspaceConfiguration config;
@@ -166,13 +179,18 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     toolbar->addWidget(live);
     toolbar->addSeparator();
     auto* library = new QComboBox;
+    library->setObjectName("nodeLibraryTypes");
     for(const auto& item : configuration.nodes) library->addItem(item.title, item.type);
-    toolbar->addWidget(library);
     auto* add = new QPushButton("Add node");
-    toolbar->addWidget(add);
+    add->setObjectName("addLibraryNode");
+    auto* nodeLibrary=new QWidget;
+    auto* libraryLayout=new QVBoxLayout(nodeLibrary);
+    auto* libraryHint=new QLabel("Choose an operation to add to the graph.");
+    libraryHint->setWordWrap(true); libraryLayout->addWidget(libraryHint);
+    libraryLayout->addWidget(library); libraryLayout->addWidget(add); libraryLayout->addStretch();
 
-    auto* split = new QSplitter;
-    auto* view = new QtNodes::GraphicsView(&canvasScene);
+    panels=new PanelWorkspace(this);
+    auto* view = new WorkspaceGraphView(&canvasScene);
     view->setObjectName("graphCanvas");
     // Clipboard serialization is not yet a public project contract. Keep one
     // set of window-wide undo shortcuts, including while the inspector has focus.
@@ -185,12 +203,11 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
             view->removeAction(action);
         }
     }
-    auto* views = new QSplitter(Qt::Vertical);
-    views->addWidget(view);
+    panels->addPanel("graph","Graph",view);
+    panels->addPanel("library","Node library",nodeLibrary);
     if(configuration.createViewer) {
         viewer = configuration.createViewer();
-        views->addWidget(viewer);
-        views->setSizes({300, 430});
+        panels->addPanel("viewer","Result viewer",viewer);
         toolbar->addWidget(new QLabel("Output:"));
         outputPorts=new QComboBox;
         outputPorts->setObjectName("outputPort");
@@ -209,11 +226,11 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         });
         pin->setToolTip("Keep the selected node's output in the viewer while editing other nodes");
     }
-    split->addWidget(views);
     auto* panel = new QWidget;
-    panel->setMinimumWidth(290);
-    panel->setMaximumWidth(410);
     inspectorLayout = new QVBoxLayout(panel);
+    inspectorLayout->addStretch();
+    auto* executionPanel=new QWidget;
+    auto* executionLayout=new QVBoxLayout(executionPanel);
     outputLabel = new QLabel("Select a node to inspect its result.");
     outputLabel->setObjectName("selectedOutput");
     outputLabel->setWordWrap(true);
@@ -222,18 +239,25 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     results->setColumnCount(3);
     results->setHeaderLabels({"Node", "State", "Result"});
     results->setRootIsDecorated(false);
-    inspectorLayout->addWidget(outputLabel);
-    inspectorLayout->addWidget(results, 1);
+    executionLayout->addWidget(outputLabel);
+    executionLayout->addWidget(results, 1);
     auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nSave preserves graph content, canvas layout and viewer settings.");
     hint->setWordWrap(true);
-    inspectorLayout->addWidget(hint);
+    executionLayout->addWidget(hint);
     auto* scroll = new QScrollArea;
     scroll->setWidgetResizable(true);
     scroll->setWidget(panel);
-    scroll->setMinimumWidth(315);
-    split->addWidget(scroll);
-    split->setStretchFactor(0, 1);
-    setCentralWidget(split);
+    panels->addPanel("inspector","Inspector",scroll);
+    panels->addPanel("results","Execution results",executionPanel);
+    panels->resetLayout();
+    setCentralWidget(panels);
+    auto* layoutMenu=menuBar()->addMenu("&Layout");
+    auto* resetLayout=layoutMenu->addAction("Reset widget layout");
+    resetLayout->setObjectName("resetWidgetLayout");
+    connect(resetLayout,&QAction::triggered,this,[this] {
+        panelStateSupported=true; panels->resetLayout(); scheduleWorkspaceCapture();
+    });
+    panels->changed=[this] { scheduleWorkspaceCapture(); };
 
     connect(run, &QPushButton::clicked, &runner, &ExecutionController::run);
     connect(cancelButton, &QPushButton::clicked, &runner, &ExecutionController::cancel);
@@ -345,6 +369,7 @@ void WorkspaceWindow::captureWorkspace()
     current["pinned"]=pinned.toString();
     current["pinnedPort"]=pinnedPort.toStdString();
     current["selectedPort"]=selectedPort.toStdString();
+    if(panelStateSupported) current["panels"]=panels->saveLayout();
     auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
     const auto center=view->mapToScene(view->viewport()->rect().center());
     auto navigation=current.value("navigation",project::Document::object());
@@ -375,6 +400,9 @@ void WorkspaceWindow::restoreWorkspace()
     const auto graph=document.selectedGraph()["id"].get<std::string>();
     const auto current=state.is_object() ? state.value(graph,project::Document::object()) : project::Document::object();
     auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
+    panels->resetLayout(); panelStateSupported=true;
+    if(current.is_object() && current.contains("panels"))
+        panelStateSupported=panels->restoreLayout(current["panels"]);
     if(viewer) viewer->restoreWorkspaceState({});
     bool navigationRestored=false;
     if(current.is_object()) {
@@ -421,6 +449,7 @@ void WorkspaceWindow::restoreWorkspace()
         if(!canvasModel.allNodeIds().empty()) view->fitInView(canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30),Qt::KeepAspectRatio);
         else view->centerOn(0,0);
     }
+    navigationRestoredOnLoad=navigationRestored;
 }
 
 void WorkspaceWindow::refreshFileState()
@@ -495,6 +524,12 @@ void WorkspaceWindow::showEvent(QShowEvent* event)
     QMainWindow::showEvent(event);
     if(firstShow) {
         firstShow=false;
+        if(!navigationRestoredOnLoad) {
+            auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
+            view->resetTransform();
+            if(!canvasModel.allNodeIds().empty()) view->fitInView(canvasScene.itemsBoundingRect().adjusted(-30,-30,30,30),Qt::KeepAspectRatio);
+            else view->centerOn(0,0);
+        }
         if(filePath.isEmpty() && clean) {
             captureWorkspace();
             savedDocument=document.retained();
@@ -511,6 +546,7 @@ void WorkspaceWindow::closeEvent(QCloseEvent* event)
 
 WorkspaceWindow::~WorkspaceWindow()
 {
+    panels->changed={};
     // Scene teardown emits selection changes after later members (including
     // the runner and selected ID) have been destroyed. Disconnect while all
     // members still exist, before QObject's automatic disconnection occurs.

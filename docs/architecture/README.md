@@ -36,7 +36,8 @@ Separate state responsibilities:
 - Project: graph nodes/connections, parameters, component catalogs/snapshots,
   package metadata and asset references.
 - Workspace: canvas positions/navigation, selection, selected/pinned output aliases
-  and opaque viewer state. Window/splitter geometry is not yet persisted.
+  opaque viewer state, selectable widget regions and divider proportions.
+  Outer window geometry is not yet persisted.
 - Execution: disposable compiled steps, worker snapshots, status/errors and computed
   outputs. Results are not serialized; general caching is not implemented.
 - Domain output: immutable-by-convention scene/table values supplied by extensions.
@@ -91,7 +92,7 @@ become core/runtime dependencies.
 
 ## Verification and open work
 
-Current Release builds, 17 CTest entries and packaged startup checks passed. Full
+Current Release builds, 18 CTest entries and packaged startup checks passed. Full
 Windows desktop interaction acceptance is pending manual testing, as recorded in
 [the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
 The primitive viewer is not production GPU rendering; importer/asset handling,

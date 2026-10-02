@@ -90,7 +90,7 @@ that acceptance is pending until results are reported.
 
 The sections below organize current code/tests by their originating checkpoint.
 Dated handoffs describe the state at that date; later steps supersede earlier
-limitations. The current suite has 17 CTest entries. Release presets/builds are
+limitations. The current suite has 18 CTest entries. Release presets/builds are
 verified; the separate Debug configuration has not been built in this session.
 
 ## N2 pipeline foundation
@@ -302,7 +302,8 @@ The library confirms removal with No as the default and refreshes its selection.
 workspace isolation and execution/save/reopen after the entire catalog is removed.
 `native_component_ui` drives No/Yes confirmation, unavailable/empty/stale selections,
 undo/redo and viewer restoration. It writes `component-library-removal-smoke.png`.
-N6g adds definition editing copies; live instance updates remain future work.
+N6g adds definition editing copies; N6h adds explicit instance updates.
+Automatic updates remain future work.
 
 ## N6g isolated component editing
 
@@ -324,3 +325,16 @@ instance results, opaque/workspace retention, rejected edits/redo preservation,
 no-ops and save/reopen. Scene tests include preserved overrides and new bounds
 rejection. UI tests inspect pinning, menu/dialog Apply and stale/cancel behavior,
 and write `component-update-smoke.png`.
+
+## N7 selectable widget regions
+
+Each region offers a widget selector and H/V/X split/close controls. The existing
+Graph, Node library, Inspector, Execution results and configured Result viewer
+can swap positions without recreation. **Layout > Reset widget layout** restores
+defaults. Region trees and divider proportions are workspace state saved per
+graph. `native_panels` covers actual selector/split/close controls, live identity,
+navigation, round-trip proportions/execution and unknown/future state retention.
+It writes `selectable-panels-smoke.png`. The scene round-trip suite also verifies
+that showing moved widgets does not refit saved graph navigation. See
+[the widget guide](WORKSPACE_WIDGETS.md) and
+[decision 0016](architecture/decisions/0016-selectable-workspace-widgets.md).
