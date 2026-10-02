@@ -1,6 +1,6 @@
 # Native graph components
 
-Status: implemented through N6f: authoring, collapsed instances, file exchange
+Status: implemented through N6g: authoring, collapsed instances, file exchange
 and undoable library removal. Components
 insert as one node by default, with ordinary-node insertion also available.
 
@@ -136,10 +136,10 @@ that do not provide an exposed output. A failed body publishes no instance outpu
 Both visible and expanded graphs must be acyclic. Output choice/pinning is saved
 in workspace `selectedPort`/`pinnedPort`, separately from project parameters.
 
-Nested components, definition migration/editing and live
-updates remain future work. [Proposed editing scope](architecture/decisions/0015-component-editing-scope.md)
-starts with a fresh-ID copy and later explicit compatible snapshot replacement;
-these actions are not yet available. This is a native migration feature, not a production
+Nested components, definition migration and live updates remain future work.
+[Editing scope](architecture/decisions/0015-component-editing-scope.md) implements
+fresh-ID copies; explicit compatible snapshot replacement remains pending.
+This is a native migration feature, not a production
 plugin system. See [decision 0013](architecture/decisions/0013-collapsed-native-components.md).
 
 ## Import and export
@@ -178,3 +178,21 @@ An unsupported catalog container is preserved and cannot be edited through this
 operation. Empty or stale selections reject without changing project/history.
 `DocumentHistory::removeCatalogComponent(index)` removes exactly the selected
 array entry as one semantic command; workspace changes remain separate.
+
+## Edit a copy
+
+Choose a supported definition in the library and click **Edit a copy...**.
+The separate draft workspace provides the same node canvas, inspector and local
+Undo/Redo as the main window. Edit nodes, connections and parameter defaults.
+Click **Save copy...** to choose the title and exposed interface; existing names
+are prefilled where their endpoints still exist. Saving adds a definition under
+a fresh ID as one undoable project edit. The source entry and all existing
+instances remain unchanged. Cancel discards draft edits.
+
+Exposed inputs are unbound in the draft; insert the saved copy with source bindings
+to test its results. All required unconnected inputs must be exposed before
+publication. Invalid ports/parameters, unavailable nodes, nested components and
+stale destination revisions reject without changing the destination project.
+Version fields remain 1; a saved copy does not migrate an existing definition.
+Unknown fields on retained body objects and the definition survive, as does
+metadata on interface entries whose endpoints remain exposed.

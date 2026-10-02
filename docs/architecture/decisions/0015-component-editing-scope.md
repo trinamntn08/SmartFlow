@@ -1,7 +1,8 @@
 # 0015: Component editing and explicit update scope
 
 Date: 2026-10-02
-Status: proposed; documentation scope only, no implementation delivered.
+Status: accepted for N6g editing copies; explicit instance replacement remains
+planned as a separate checkpoint.
 
 ## Context
 
@@ -15,7 +16,7 @@ under that pair. Incrementing `version` for an ordinary edit would currently mak
 the definition unsupported. These fields cannot serve as editable revision
 counters without a separate compatibility design.
 
-## Proposed scope
+## Scope
 
 ### First checkpoint: edit a copy
 
@@ -75,7 +76,11 @@ justifies a new file-contract decision.
 
 ## Consequences and verification
 
-This proposal establishes implementation boundaries, not new executable behavior.
+N6g implements editing copies in an isolated native workspace, followed by the
+interface chooser and one catalog command. The original definition's opaque
+fields and matching interface metadata remain retained. Publication validates
+installed registrations and all required input boundaries. Explicit replacement
+remains pending its separate implementation checkpoint.
 Existing schema-v1 files, exports and snapshots need no migration for edit-a-copy.
 
 For the editing checkpoint, verify independent data and required scene definitions,

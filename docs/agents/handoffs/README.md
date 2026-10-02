@@ -8,7 +8,7 @@ For today's behavior, start with [the roadmap](../../ROADMAP.md),
 [current architecture](../../architecture/README.md),
 [native development](../../NATIVE_DEVELOPMENT.md) and
 [component guide](../../GRAPH_COMPONENTS.md). Implementation is delivered through
-N6f plus VS Code setup. Full N5 packaged interaction acceptance is pending manual
+N6g plus VS Code setup. Full N5 packaged interaction acceptance is pending manual
 results; automated native computer-use is deferred by the user.
 
 ## Records
@@ -39,3 +39,4 @@ results; automated native computer-use is deferred by the user.
 
 - [2026-10-02 documentation synchronization](2026-10-02-documentation-sync.md)
 - [2026-10-02 component editing scope (proposal)](2026-10-02-component-editing-scope.md)
+- [N6g: isolated component editing copies](2026-10-02-native-checkpoint-n6g.md)

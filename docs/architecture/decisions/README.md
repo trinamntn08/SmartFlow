@@ -21,15 +21,15 @@ what runs today; this index is not a claim of completed production delivery.
 - [0012: Native graph component foundation](0012-native-graph-component-foundation.md)
 - [0013: Collapsed native component snapshots](0013-collapsed-native-components.md)
 - [0014: Standalone native component files](0014-native-component-files.md)
-- [0015: Component editing and explicit update scope (proposed)](0015-component-editing-scope.md)
+- [0015: Component editing and explicit update scope](0015-component-editing-scope.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
 0009 requires packaged Windows desktop acceptance, which remains pending manual
 results. N5f/N5g complete file actions/workspace persistence after their earlier
 foundation decisions. 0013 implements collapsed components after 0012's expanded
 insertion; 0014 and its N6f follow-up implement standalone exchange and removal.
-0015 proposes editing copies followed by explicit compatible snapshot replacement;
-neither is implemented. General migration and revision policy remain open.
+0015 governs implemented editing copies followed by planned explicit compatible
+snapshot replacement. General migration and revision policy remain open.
 
 Use [the template](TEMPLATE.md) for consequential new decisions. Do not rewrite
 a dated decision's original rationale to imply it already contained later work.

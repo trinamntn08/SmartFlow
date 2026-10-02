@@ -12,10 +12,13 @@ class QLineEdit;
 class QPushButton;
 
 namespace smartflow {
+class WorkspaceWindow;
 class ComponentAuthorDialog : public QDialog {
 public:
-    ComponentAuthorDialog(GraphProject& project, std::vector<std::string> selection, QWidget* parent = nullptr);
+    ComponentAuthorDialog(GraphProject& project, std::vector<std::string> selection, QWidget* parent = nullptr,
+        project::Document seed = nullptr, bool publish = true);
     void accept() override;
+    const project::Document& definition() const { return authored; }
 private:
     struct EndpointRow {
         std::string section;
@@ -30,6 +33,23 @@ private:
     QLineEdit* title;
     QLabel* error;
     std::vector<EndpointRow> rows;
+    project::Document seed;
+    project::Document authored;
+    bool publish;
+};
+
+class ComponentEditDialog : public QDialog {
+public:
+    ComponentEditDialog(GraphProject& destination, WorkspaceConfiguration configuration,
+        project::GraphComponent component, QWidget* parent = nullptr);
+    WorkspaceWindow& workspace() { return *draft; }
+    void saveCopy(const project::GraphComponent& component);
+private:
+    GraphProject& destination;
+    quint64 revision;
+    project::Document original;
+    WorkspaceWindow* draft;
+    QLabel* error;
 };
 
 class ComponentLibraryDialog : public QDialog {
@@ -53,6 +73,7 @@ private:
     QPushButton* insert;
     QPushButton* exportButton;
     QPushButton* removeButton;
+    QPushButton* editButton;
     QCheckBox* collapsed;
     QFormLayout* bindings;
     std::vector<std::pair<std::string,QComboBox*>> inputs;

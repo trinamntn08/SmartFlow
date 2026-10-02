@@ -68,7 +68,9 @@ Standalone import adds a catalog entry through one history command. Identical
 content is a no-op and conflicting identity/version content rejects. Export and
 library removal do not update instance snapshots. Removal targets one array entry
 in the current revision and is undoable, including opaque entries. External asset
-bundling/relocation, definition editing/migration and live updates are unimplemented.
+bundling/relocation, definition migration and live updates are unimplemented.
+The library edits supported definitions in an isolated draft and saves fresh-ID
+copies, preserving existing snapshots. Explicit replacement remains pending.
 
 See [the component guide](../GRAPH_COMPONENTS.md) and decisions
 [0012](decisions/0012-native-graph-component-foundation.md),

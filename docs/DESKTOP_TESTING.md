@@ -3,7 +3,7 @@
 The first version for user testing is the Windows native C++/Qt application.
 The browser starter is deferred. This is a local development preview, not a
 public installer or a completed N5 release. Implementation is complete through
-N6f and VS Code setup; full N5 packaged interaction acceptance is pending the
+N6g and VS Code setup; full N5 packaged interaction acceptance is pending the
 user's manual test results. Automated native computer-use is deferred for now.
 
 For development runs, use [VS Code CMake Tools](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
@@ -100,6 +100,10 @@ inline error. The shipped `filtered-summary.smartflow-component` is ready to imp
 Select an entry and use **Remove from library...**: No preserves it; Yes removes
 only the library entry. Verify existing collapsed instances still execute,
 Undo/Redo restores/removes the entry, and saved instances reopen without it.
+Choose **Edit a copy...**, change a body parameter in its draft inspector, and
+use **Save copy...** to choose its title/interface. Confirm the new entry has the
+edited defaults, existing instances retain their original values, and Cancel
+discards draft edits. Undo/Redo should remove/restore the saved catalog copy.
 
 ## Current limitations
 
@@ -112,7 +116,7 @@ Undo/Redo restores/removes the entry, and saved instances reopen without it.
 - The independent data extension is available; packaged interaction acceptance
   for scene, data and components is pending manual results.
 - Components support collapsed snapshots and optional ordinary node copies. Nested
-  components, definition editing, automatic updates
+  components, definition migration, automatic updates
   of existing instances are pending.
 - Public installer/signing, clean-machine compatibility and distribution
   preparation remain future work.

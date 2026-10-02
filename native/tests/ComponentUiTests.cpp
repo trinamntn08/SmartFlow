@@ -47,6 +47,84 @@ double total(WorkspaceWindow& window, const std::string& summary)
 class ComponentUiTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void editedCopyDraftInterfaceUndoAndReopen()
+    {
+        WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();
+        window.openProject(SMARTFLOW_COMPONENT_EXAMPLE);
+        auto initial=window.project().retained();
+        auto definition=initial["project"]["components"][0];
+        definition["futureDefinition"]={{"integer",uint64_t(18446744073709551615ULL)}};
+        definition["controls"][0]["futureInterface"]=true;
+        initial["project"]["components"][0]=definition;
+        window.project().commands().replace(initial,"graph");
+        ComponentEditDialog editor(window.project(),window.configuration(),project::GraphComponent(definition),&window);
+        editor.show();
+        const auto filter=definition["controls"][0]["target"]["nodeId"].get<std::string>();
+        editor.workspace().project().commands().setParameter(filter,"minimum",40);
+        QVERIFY(window.project().retained()["project"]==initial["project"]);
+        editor.workspace().scene().undoStack().undo();
+        QVERIFY(editor.workspace().project().selectedGraph()==definition["graph"]);
+        editor.workspace().scene().undoStack().redo();
+        QTest::qWait(40);
+        QVERIFY(editor.grab().save("component-editor-smoke.png"));
+        QTimer::singleShot(0,&editor,[&] {
+            auto* author=dynamic_cast<ComponentAuthorDialog*>(QApplication::activeModalWidget()); QVERIFY(author);
+            QCOMPARE(author->findChild<QLineEdit*>("controlsName0")->text(),QString("minimum"));
+            author->findChild<QLineEdit*>("componentTitle")->setText("Edited filter");
+            author->accept(); QCOMPARE(author->result(),int(QDialog::Accepted));
+        });
+        editor.findChild<QPushButton*>("saveComponentCopy")->click();
+        QCOMPARE(editor.result(),int(QDialog::Accepted));
+        const auto saved=window.project().retained();
+        const auto copy=saved["project"]["components"][1];
+        QVERIFY(copy["id"]!=definition["id"]); QVERIFY(copy["version"]==1);
+        QVERIFY(copy["futureDefinition"]==definition["futureDefinition"]);
+        QVERIFY(copy["controls"][0]["futureInterface"]==true);
+        QVERIFY(copy["graph"]["nodes"][0]["parameters"]["minimum"]==40);
+        QVERIFY(saved["project"]["graphs"]==initial["project"]["graphs"]);
+        window.scene().undoStack().undo(); QVERIFY(window.project().retained()["project"]==initial["project"]);
+        window.scene().undoStack().redo(); QVERIFY(window.project().retained()["project"]==saved["project"]);
+        QTemporaryDir directory; const auto path=directory.filePath("edited.smartflow"); window.saveProject(path);
+        WorkspaceWindow reopened(data::dataConfiguration()); reopened.execution().setLive(false); reopened.openProject(path);
+        QVERIFY(reopened.project().retained()["project"]["components"][1]==copy);
+        reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
+        QVERIFY(reopened.execution().result()->succeeded());
+        ComponentLibraryDialog library(reopened.project(),&reopened);
+        library.findChild<QComboBox*>("componentCatalog")->setCurrentIndex(1);
+        library.findChild<QComboBox*>("componentInput_table")->setCurrentIndex(1);
+        library.accept(); QCOMPARE(library.result(),int(QDialog::Accepted));
+        reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
+        QVERIFY(reopened.execution().result()->succeeded());
+        const auto id=reopened.project().selectedGraph()["nodes"].back()["id"].get<std::string>();
+        const auto output=reopened.execution().result()->steps.at(id).output;
+        QCOMPARE(dynamic_cast<const data::TableMember*>(output->members().back().get())->rows[1].value,48.0);
+    }
+
+    void editorCancelStaleAndInvalidDraftPreserveDestination()
+    {
+        WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false);
+        window.openProject(SMARTFLOW_COMPONENT_EXAMPLE);
+        const auto initial=window.project().retained();
+        const auto definition=initial["project"]["components"][0];
+        ComponentEditDialog cancelled(window.project(),window.configuration(),project::GraphComponent(definition));
+        cancelled.workspace().project().commands().removeNode(definition["graph"]["nodes"][0]["id"]);
+        cancelled.reject(); QVERIFY(window.project().retained()==initial);
+        ComponentEditDialog stale(window.project(),window.configuration(),project::GraphComponent(definition));
+        auto copy=definition; copy["id"]="new-copy";
+        window.project().commands().catalogComponent(project::GraphComponent(copy));
+        const auto changed=window.project().retained();
+        copy["id"]="another-copy";
+        QVERIFY_EXCEPTION_THROWN(stale.saveCopy(project::GraphComponent(copy)),project::FileError);
+        QVERIFY(window.project().retained()==changed);
+        ComponentEditDialog invalid(window.project(),window.configuration(),project::GraphComponent(definition));
+        copy["outputs"][0]["source"]["portId"]="missing-port";
+        QVERIFY_EXCEPTION_THROWN(invalid.saveCopy(project::GraphComponent(copy)),project::FileError);
+        QVERIFY(window.project().retained()==changed);
+        copy=definition; copy["id"]="missing-boundary"; copy["inputs"]=Document::array();
+        QVERIFY_EXCEPTION_THROWN(invalid.saveCopy(project::GraphComponent(copy)),project::FileError);
+        QVERIFY(window.project().retained()==changed);
+    }
+
     void libraryRemovalConfirmationUndoAndSnapshotReopen()
     {
         WorkspaceWindow window(data::dataConfiguration()); window.execution().setLive(false); window.show();

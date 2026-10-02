@@ -23,13 +23,14 @@ For a new extension, begin with a concrete graph, its data types, and viewer beh
 
 Read [the current roadmap](../ROADMAP.md) and the
 [handoff index](handoffs/README.md) before choosing work. Native implementation is
-complete through N6f, with VS Code launch setup. Do not reimplement delivered graph,
+complete through N6g, with VS Code launch setup. Do not reimplement delivered graph,
 file or component features based on old handoff "next steps".
 
 The user has deferred automated desktop interaction and will test manually. Keep
 full N5 acceptance pending their results; continue unrelated authorized work
-without repeatedly retrying native computer-use. Definition editing, nested
-components and asset distribution require scoped follow-up decisions.
+without repeatedly retrying native computer-use. Definition editing copies are
+implemented; explicit replacement follows decision 0015. Nested components and
+asset distribution require separate scoped follow-up decisions.
 
 ## Handoffs
 

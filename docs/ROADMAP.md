@@ -68,17 +68,17 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 | N6d                 | Collapsed snapshots, exposed controls/ports and grouped results    | [N6d](agents/handoffs/2026-10-02-native-checkpoint-n6d.md)    |
 | N6e                 | Standalone component import/export                                 | [N6e](agents/handoffs/2026-10-02-native-checkpoint-n6e.md)    |
 | N6f                 | Undoable catalog-entry removal, preserving instances               | [N6f](agents/handoffs/2026-10-02-native-checkpoint-n6f.md)    |
+| N6g                 | Isolated component editing saved as immutable copies               | [N6g](agents/handoffs/2026-10-02-native-checkpoint-n6g.md)    |
 | IDE setup           | VS Code CMake Tools presets and native launch configurations       | [IDE](agents/handoffs/2026-10-02-vscode-cmake-tools.md)       |
 
 ## Next work
 
 1. Collect manual packaged scene/data/component interaction and file round-trip
    results before marking full N5 accepted.
-2. Implement component editing only after settling the
-   [proposed scope](architecture/decisions/0015-component-editing-scope.md): first
-   edit a copy under a fresh ID, then explicit compatible instance replacement.
-   Both remain unimplemented; preserve snapshot reproducibility and keep general
-   revision/migration policy separate.
+2. Add explicit compatible instance replacement under the
+   [editing scope](architecture/decisions/0015-component-editing-scope.md).
+   Editing copies is implemented; replacement remains pending. Preserve snapshot
+   reproducibility and keep general revision/migration policy separate.
 3. Address demonstrated usability or correctness issues from manual testing in
    separate verified checkpoints.
 

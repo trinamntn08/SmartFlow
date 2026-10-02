@@ -302,4 +302,14 @@ The library confirms removal with No as the default and refreshes its selection.
 workspace isolation and execution/save/reopen after the entire catalog is removed.
 `native_component_ui` drives No/Yes confirmation, unavailable/empty/stale selections,
 undo/redo and viewer restoration. It writes `component-library-removal-smoke.png`.
-Definition editing and live instance updates remain separate future work.
+N6g adds definition editing copies; live instance updates remain future work.
+
+## N6g isolated component editing
+
+The component library's **Edit a copy...** opens a separate workspace with the
+same canvas/inspector and local history. **Save copy...** chooses the interface
+and publishes a fresh-ID definition through one destination catalog command.
+Registered parameters, ports and all required input boundaries are validated;
+stale drafts reject. Data and scene tests cover independent snapshot execution,
+opaque metadata, cancellation, undo/redo and save/reopen. UI tests write
+`component-editor-smoke.png` for rendering inspection.

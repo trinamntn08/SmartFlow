@@ -1,6 +1,7 @@
 #include <SceneExtension.h>
 #include <SceneViewer.h>
 #include "workspace/WorkspaceWindow.h"
+#include "workspace/ComponentDialogs.h"
 #include "project/DocumentSession.h"
 #include <tp_math_utils/materials/OpenGLMaterial.h>
 #include <QDoubleSpinBox>
@@ -41,6 +42,38 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void editedSceneCopyRetainsOriginalSnapshot()
+    {
+        WorkspaceWindow window(sceneConfiguration()); window.execution().setLive(false); window.show();
+        std::vector<std::string> nodes; std::string cube, terminal;
+        for(const auto& item : window.project().selectedGraph()["nodes"]) {
+            nodes.push_back(item["id"]);
+            if(item["typeId"]=="cube") cube=item["id"];
+            if(item["typeId"]=="scene") terminal=item["id"];
+        }
+        const auto original=window.project().commands().extractComponent(nodes,"scene-original","Scene original",
+            project::Document::array(),project::Document::array({{{"id","scene"},{"source",{{"nodeId",terminal},{"portId","out"}}}}}),
+            project::Document::array({{{"id","size"},{"target",{{"nodeId",cube},{"parameter","size"}}}}}));
+        window.project().commands().instantiateComponent(original,"original-instance",project::Document::object(),project::Document::object(),true);
+        ComponentEditDialog editor(window.project(),window.configuration(),original);
+        editor.workspace().project().commands().setParameter(cube,"size",4);
+        auto copy=original.definition(); copy["id"]="scene-copy";
+        copy["graph"]=editor.workspace().project().selectedGraph();
+        editor.saveCopy(project::GraphComponent(copy));
+        window.project().commands().instantiateComponent(project::GraphComponent(copy),"copy-instance",project::Document::object(),project::Document::object(),true);
+        window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
+        QVERIFY(window.execution().result()->succeeded());
+        const auto result=window.execution().result();
+        const auto originalOutput=result->steps.at("original-instance").output;
+        const auto copyOutput=result->steps.at("copy-instance").output;
+        const auto oldMax=dynamic_cast<const SceneMember*>(originalOutput->members().front().get())->objects.front().geometry.getMinMax().second.x;
+        const auto newMax=dynamic_cast<const SceneMember*>(copyOutput->members().front().get())->objects.front().geometry.getMinMax().second.x;
+        QVERIFY(newMax>oldMax);
+        QTemporaryDir directory; const auto path=directory.filePath("scene-copy.smartflow"); window.saveProject(path);
+        WorkspaceWindow reopened(sceneConfiguration()); reopened.execution().setLive(false); reopened.openProject(path);
+        QVERIFY(reopened.project().retained()["project"]["components"][1]==copy);
+    }
+
     void initTestCase()
     {
         const auto path = qEnvironmentVariable("SMARTFLOW_TEST_FONT");

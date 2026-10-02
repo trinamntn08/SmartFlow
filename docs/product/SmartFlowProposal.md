@@ -17,7 +17,7 @@ support development/manual launches.
 The automated baseline passes Release builds, 17 CTest entries, packaged startup
 and web checks. Full N5 desktop interaction acceptance is pending the user's
 manual results; automated computer-use is deferred. Production rendering, asset
-import/bundling, dynamic plugin loading, nested components, definition editing and
+import/bundling, dynamic plugin loading, nested components, definition migration and
 public distribution remain unimplemented. The TypeScript browser/core/SDK material
 below describes a preserved prototype or future options, not a shipped web app.
 See [the roadmap](../ROADMAP.md) for authoritative delivered status. The vision and
@@ -301,4 +301,8 @@ Each can become substantial work without proving the core interaction.
 - Which extension language and packaging format provide a practical first developer experience?
 - Which project and asset storage model is appropriate for the first delivery?
 
-Both reference workflows and the native extension boundaries are implemented. The next step is to collect manual desktop acceptance results and address concrete issues from testing. Component definition editing/update policy needs a separate scoped decision. Selecting the final application field is not a prerequisite.
+Both reference workflows and the native extension boundaries are implemented.
+Component editing saves independent immutable copies; explicit instance updates
+follow decision 0015 as a separate step. Collect manual desktop acceptance results
+and address concrete issues from testing. Selecting the final application field
+is not a prerequisite.

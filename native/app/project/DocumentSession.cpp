@@ -336,6 +336,32 @@ void DocumentSession::catalogComponent(const GraphComponent& component)
     replace(component.catalog(source));
 }
 
+void DocumentSession::validateComponent(const GraphComponent& component) const
+{
+    const auto& definition=component.definition();
+    auto envelope=create("component-validation");
+    envelope["project"]["graphs"]=Document::array({definition["graph"]});
+    DocumentSession body(envelope,definition["graph"]["id"],delegates,registrations);
+    std::set<std::string> boundaries;
+    for(const auto& input : definition["inputs"])
+        boundaries.insert(input["target"]["nodeId"].get<std::string>()+": missing required input "+input["target"]["portId"].get<std::string>());
+    for(const auto& issue : body.diagnostics())
+        if(!boundaries.count(issue)) throw FileError("Component definition is not supported: "+issue);
+    for(const auto* section : {"inputs","outputs","controls"}) for(const auto& entry : definition[section]) {
+        const auto& endpoint=entry[std::string(section)=="outputs" ? "source" : "target"];
+        const auto node=body.inspectNode(endpoint["nodeId"]);
+        if(!node) throw FileError("Component endpoint node is unavailable");
+        if(std::string(section)=="controls") {
+            if(!node->parameter(endpoint["parameter"].get<std::string>()).name.isValid())
+                throw FileError("Component control is unavailable");
+        } else {
+            const auto& ports=std::string(section)=="inputs" ? node->inputMapping() : node->outputMapping();
+            if(std::none_of(ports.begin(),ports.end(),[&](const auto& port) { return port.portName.toString()==endpoint["portId"]; }))
+                throw FileError("Component exposed port is unavailable");
+        }
+    }
+}
+
 void DocumentSession::removeCatalogComponent(size_t index)
 {
     const auto& project=source["project"];

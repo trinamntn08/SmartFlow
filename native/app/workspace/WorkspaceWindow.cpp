@@ -67,7 +67,7 @@ WorkspaceWindow::WorkspaceWindow()
     : WorkspaceWindow(numericConfiguration()) {}
 
 WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
-    : delegates(configuration.delegates), document(delegates, configuration.nodes), canvasModel(document),
+    : workspaceConfiguration(configuration), delegates(configuration.delegates), document(delegates, configuration.nodes), canvasModel(document),
       canvasScene(canvasModel,document), runner(document, configuration.factory)
 {
     setWindowTitle("SmartFlow - Graph workspace");
@@ -144,6 +144,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     cancelButton = new QPushButton("Cancel");
     cancelButton->setObjectName("cancelGraph");
     auto* live = new QCheckBox("Live updates");
+    live->setObjectName("liveUpdates");
     live->setChecked(true);
     toolbar->addWidget(run);
     toolbar->addWidget(cancelButton);
@@ -424,7 +425,13 @@ void WorkspaceWindow::saveProject(const QString& path)
 
 void WorkspaceWindow::openProject(const QString& path)
 {
-    auto source = project::read(path);
+    loadDocument(project::read(path));
+    filePath = QFileInfo(path).absoluteFilePath();
+    refreshFileState();
+}
+
+void WorkspaceWindow::loadDocument(project::Document source)
+{
     const auto& graphs = source["project"]["graphs"];
     if(graphs.empty()) throw project::FileError("This project has no graph to open.");
     const auto graph = graphs.front()["id"].get<std::string>();
@@ -437,7 +444,7 @@ void WorkspaceWindow::openProject(const QString& path)
     selectedPort.clear(); pinnedPort.clear();
     canvasModel.resetLayout();
     restoreWorkspace();
-    filePath = QFileInfo(path).absoluteFilePath();
+    filePath.clear();
     savedDocument = document.retained();
     refreshInspector();
     refreshResults();

@@ -1,4 +1,6 @@
 #include "ComponentDialogs.h"
+#include "WorkspaceWindow.h"
+#include <QMenuBar>
 #include "project/ComponentFile.h"
 #include <tp_pipeline/StepDelegate.h>
 #include <QCheckBox>
@@ -59,8 +61,10 @@ QString nodeLabel(GraphProject& project, const std::string& id)
 }
 }
 
-ComponentAuthorDialog::ComponentAuthorDialog(GraphProject& project, std::vector<std::string> selection, QWidget* parent)
-    : QDialog(parent), graphProject(project), selection(std::move(selection)), revision(project.revision())
+ComponentAuthorDialog::ComponentAuthorDialog(GraphProject& project, std::vector<std::string> selection, QWidget* parent,
+    Document seed, bool publish)
+    : QDialog(parent), graphProject(project), selection(std::move(selection)), revision(project.revision()),
+      seed(std::move(seed)), publish(publish)
 {
     setObjectName("componentAuthor");
     setWindowTitle("Create component from selection");
@@ -71,6 +75,11 @@ ComponentAuthorDialog::ComponentAuthorDialog(GraphProject& project, std::vector<
     layout->addWidget(hint);
     auto* form=new QFormLayout;
     title=field(form,"Title","componentTitle","New component");
+    if(this->seed.is_object()) {
+        setWindowTitle("Save edited component copy");
+        title->setText(text(this->seed["title"])+" copy");
+        hint->setText("Choose the edited copy's title and exposed interface. Saving adds a new definition; existing definitions and instances retain their snapshots.");
+    }
     identity=freshId().toStdString();
     layout->addLayout(form);
     auto* tabs=new QTabWidget;
@@ -96,6 +105,16 @@ ComponentAuthorDialog::ComponentAuthorDialog(GraphProject& project, std::vector<
         expose->setChecked(required || checked); expose->setEnabled(!required);
         expose->setObjectName(text(section)+"Expose"+QString::number(row));
         auto* name=new QLineEdit(text(section.substr(0,section.size()-1))+QString::number(row+1));
+        if(this->seed.is_object()) {
+            expose->setChecked(required);
+            for(const auto& entry : this->seed[section]) {
+                const auto& saved=entry[section=="outputs" ? "source" : "target"];
+                if(saved["nodeId"]==endpoint["nodeId"] &&
+                   saved[section=="controls" ? "parameter" : "portId"]==endpoint[section=="controls" ? "parameter" : "portId"]) {
+                    expose->setChecked(true); name->setText(text(entry["id"])); break;
+                }
+            }
+        }
         name->setObjectName(text(section)+"Name"+QString::number(row));
         name->setEnabled(expose->isChecked());
         connect(expose,&QCheckBox::toggled,name,&QWidget::setEnabled);
@@ -156,10 +175,69 @@ void ComponentAuthorDialog::accept()
             entries.push_back({{"id",row.name->text().trimmed().toStdString()},
                 {row.section=="outputs" ? "source" : "target",row.endpoint}});
         }
-        graphProject.commands().extractComponent(selection,identity,
-            title->text().trimmed().toStdString(),inputs,outputs,controls);
+        auto extracted=project::GraphComponent::extract(graphProject.retained(),
+            graphProject.selectedGraph()["id"],selection,identity,
+            title->text().trimmed().toStdString(),inputs,outputs,controls).definition();
+        if(seed.is_object()) {
+            authored=seed;
+            for(const auto* key : {"id","title","graph","inputs","outputs","controls"}) authored[key]=extracted[key];
+            for(const auto* section : {"inputs","outputs","controls"}) for(auto& entry : authored[section])
+                for(const auto& saved : seed[section]) {
+                    const auto* key=std::string(section)=="outputs" ? "source" : "target";
+                    const auto* port=std::string(section)=="controls" ? "parameter" : "portId";
+                    if(saved[key]["nodeId"]==entry[key]["nodeId"] && saved[key][port]==entry[key][port]) {
+                        auto retained=saved; retained["id"]=entry["id"]; entry=std::move(retained); break;
+                    }
+                }
+        } else authored=std::move(extracted);
+        const project::GraphComponent component(authored);
+        if(publish) graphProject.commands().catalogComponent(component);
         QDialog::accept();
     } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+}
+
+ComponentEditDialog::ComponentEditDialog(GraphProject& destination, WorkspaceConfiguration configuration,
+    project::GraphComponent component, QWidget* parent)
+    : QDialog(parent), destination(destination), revision(destination.revision()), original(component.definition())
+{
+    setObjectName("componentEditor"); setWindowTitle("Edit a component copy"); resize(1200,850);
+    auto envelope=project::create("component-draft");
+    envelope["project"]["graphs"]=Document::array({original["graph"]});
+    project::DocumentSession inspection(envelope,original["graph"]["id"],configuration.delegates,configuration.nodes);
+    inspection.validateComponent(component);
+    configuration.preset.clear(); configuration.connections.clear();
+    auto* layout=new QVBoxLayout(this);
+    auto* hint=message(this,"componentEditorHint");
+    hint->setText("Edit the body using the canvas and inspector. Save copy chooses its title and exposed interface. Cancel discards the draft. Exposed inputs are unbound here; test their execution after inserting the copy in a project.");
+    layout->addWidget(hint);
+    draft=new WorkspaceWindow(std::move(configuration));
+    draft->setParent(this,Qt::Widget); draft->menuBar()->hide();
+    draft->execution().setLive(false);
+    draft->findChild<QCheckBox*>("liveUpdates")->setChecked(false);
+    draft->loadDocument(std::move(envelope)); layout->addWidget(draft,1);
+    error=message(this,"componentEditorError"); layout->addWidget(error);
+    auto* buttons=new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel);
+    buttons->button(QDialogButtonBox::Save)->setText("Save copy...");
+    buttons->button(QDialogButtonBox::Save)->setObjectName("saveComponentCopy"); layout->addWidget(buttons);
+    connect(buttons,&QDialogButtonBox::rejected,this,&QDialog::reject);
+    connect(buttons,&QDialogButtonBox::accepted,this,[this] {
+        try {
+            if(revision!=this->destination.revision()) throw project::FileError("The destination graph changed. Reopen the component editor.");
+            std::vector<std::string> nodes;
+            for(const auto& node : draft->project().selectedGraph()["nodes"]) nodes.push_back(node["id"]);
+            ComponentAuthorDialog author(draft->project(),std::move(nodes),this,original,false);
+            if(author.exec()==QDialog::Accepted) saveCopy(project::GraphComponent(author.definition()));
+        } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+    });
+}
+
+void ComponentEditDialog::saveCopy(const project::GraphComponent& component)
+{
+    if(revision!=destination.revision()) throw project::FileError("The destination graph changed. Reopen the component editor.");
+    if(component.definition()["id"]==original["id"]) throw project::FileError("An edited copy requires a fresh identity.");
+    destination.commands().session().validateComponent(component);
+    destination.commands().catalogComponent(component);
+    QDialog::accept();
 }
 
 ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* parent)
@@ -180,7 +258,8 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
     auto* importButton=new QPushButton("Import component..."); importButton->setObjectName("importComponentFile");
     exportButton=new QPushButton("Export component..."); exportButton->setObjectName("exportComponentFile");
     removeButton=new QPushButton("Remove from library..."); removeButton->setObjectName("removeCatalogComponent");
-    files->addWidget(importButton); files->addWidget(exportButton); files->addWidget(removeButton); files->addStretch(); layout->addLayout(files);
+    editButton=new QPushButton("Edit a copy..."); editButton->setObjectName("editComponentCopy");
+    files->addWidget(importButton); files->addWidget(exportButton); files->addWidget(editButton); files->addWidget(removeButton); files->addStretch(); layout->addLayout(files);
     auto* scroll=new QScrollArea; scroll->setWidgetResizable(true);
     auto* body=new QWidget; bindings=new QFormLayout(body); scroll->setWidget(body); layout->addWidget(scroll,1);
     error=message(this,"componentError"); layout->addWidget(error);
@@ -211,6 +290,18 @@ ComponentLibraryDialog::ComponentLibraryDialog(GraphProject& project, QWidget* p
             confirm.setDefaultButton(QMessageBox::No);
             if(confirm.exec()!=QMessageBox::Yes) return;
             removeSelected();
+        } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
+    });
+    connect(editButton,&QPushButton::clicked,this,[this] {
+        try {
+            if(revision!=graphProject.revision()) throw project::FileError("The graph changed. Reopen the library before editing.");
+            auto* window=qobject_cast<WorkspaceWindow*>(parentWidget());
+            if(!window) throw project::FileError("Open the component library from the workspace to edit a copy.");
+            ComponentEditDialog editor(graphProject,window->configuration(),project::GraphComponent(catalog.at(size_t(library->currentIndex()))),this);
+            if(editor.exec()==QDialog::Accepted) {
+                revision=graphProject.revision();
+                refreshCatalog(int(graphProject.retained()["project"]["components"].size())-1);
+            }
         } catch(const std::exception& exception) { error->setText(QString::fromUtf8(exception.what())); }
     });
     refreshCatalog();
@@ -268,6 +359,7 @@ void ComponentLibraryDialog::refreshBindings()
     while(bindings->rowCount()) bindings->removeRow(0);
     inputs.clear(); controls.clear(); error->clear(); insert->setEnabled(false);
     exportButton->setEnabled(false);
+    editButton->setEnabled(false);
     removeButton->setEnabled(catalog.is_array() && library->currentIndex()>=0);
     try {
         if(!catalog.is_array()) throw project::FileError("The saved component library has an unsupported format. Its content is retained.");
@@ -279,6 +371,7 @@ void ComponentLibraryDialog::refreshBindings()
         project::DocumentSession body(envelope,component.definition()["graph"]["id"],graphProject.registry(),graphProject.nodePresentations());
         for(const auto& node : component.definition()["graph"]["nodes"])
             if(!body.inspectNode(node["id"])) throw project::FileError("This component requires an unavailable node package or version. Its definition is retained.");
+        editButton->setEnabled(qobject_cast<WorkspaceWindow*>(parentWidget())!=nullptr);
         bool complete=true;
         for(const auto& input : component.definition()["inputs"]) {
             const auto id=input["id"].get<std::string>();

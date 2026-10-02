@@ -13,7 +13,8 @@ The included 3D extension provides Cube/Transform/Material/Scene/Merge and a
 bounded interactive primitive viewer. The separate data app provides sample,
 filter and summary nodes with a table viewer, without scene dependencies.
 Reusable components support collapsed snapshots, exposed ports/controls,
-standalone import/export and undoable library removal (N6a through N6f).
+standalone import/export, undoable library removal and isolated editing copies
+(N6a through N6g).
 
 Release build, 17 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;

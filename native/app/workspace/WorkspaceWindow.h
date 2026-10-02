@@ -25,6 +25,8 @@ public:
     void selectNode(QtNodes::NodeId id);
     // Dialog-free operations throw on failure and preserve the active file state.
     void openProject(const QString& path);
+    void loadDocument(project::Document source);
+    const WorkspaceConfiguration& configuration() const { return workspaceConfiguration; }
     void saveProject(const QString& path);
     QString projectPath() const { return filePath; }
     bool projectDirty() const { return document.retained() != savedDocument; }
@@ -34,6 +36,7 @@ protected:
     bool firstShow = true;
     void closeEvent(QCloseEvent* event) override;
 private:
+    WorkspaceConfiguration workspaceConfiguration;
     void captureWorkspace();
     void scheduleWorkspaceCapture();
     void restoreWorkspace();
