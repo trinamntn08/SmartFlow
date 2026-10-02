@@ -43,6 +43,7 @@ void ExecutionController::setLive(bool enabled)
 
 void ExecutionController::setScheduling(ExecutionMode mode, size_t maxThreads)
 {
+    if(mode!=ExecutionMode::Sequential && mode!=ExecutionMode::Parallel) throw std::invalid_argument("Invalid execution mode");
     if(maxThreads<1 || maxThreads>64) throw std::invalid_argument("Execution thread budget must be between 1 and 64");
     if(executionOptions.mode==mode && executionOptions.maxThreads==maxThreads) return;
     executionOptions.mode=mode; executionOptions.maxThreads=maxThreads;
@@ -98,7 +99,7 @@ void ExecutionController::startRequested()
 void ExecutionController::poll()
 {
     if(!pending) return;
-    const bool current = submittedRevision == project.revision() && submittedGeneration == generation;
+    bool current = submittedRevision == project.revision() && submittedGeneration == generation;
     if(current) {
         auto snapshot=pending->progress->snapshot();
         if(!publishedProgress || snapshot.sequence!=publishedProgress->sequence) {
@@ -108,6 +109,9 @@ void ExecutionController::poll()
             Q_EMIT updated();
         }
     }
+    // A synchronous progress observer can edit the project or request a new run.
+    // Recheck after emitting updated before publishing a ready final future.
+    current = submittedRevision == project.revision() && submittedGeneration == generation;
     if(pending->result.wait_for(std::chrono::seconds(0)) != std::future_status::ready) return;
     try {
         auto value = pending->result.get();

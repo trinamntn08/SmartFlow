@@ -3,12 +3,12 @@
 The first version for user testing is the Windows native C++/Qt application.
 The browser starter is deferred. This is a local development preview, not a
 public installer or a completed N5 release. Implementation is complete through
-N7 and VS Code setup; full N5 packaged interaction acceptance is pending the
+N7, E1-E4 execution and VS Code setup; full N5 packaged interaction acceptance is pending the
 user's manual test results. Automated native computer-use is deferred for now.
 
 **Ready for first manual testing, 2026-10-02:** the installed folder at
-`build/desktop-test` contains the N7 app, examples, runtime dependencies,
-README and testing guides. Seven Windows startup/render checks passed with
+`build/desktop-test` contains the updated execution app, examples, runtime dependencies,
+README and testing guides. Ten Windows startup/render checks passed with
 developer Qt paths removed. Start `bin/smartflow.exe` or `bin/smartflow-data.exe`.
 Use [the test-result sheet](TEST_VERSION.md) to record your interaction results.
 
@@ -63,7 +63,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Test-DesktopPackage.
 ```
 
 The script checks installed/build executable SHA256 equality, required runtime
-files and seven Windows native startup configurations. It clears developer Qt
+files and ten Windows native startup configurations, including parallel scene,
+data and components. It clears developer Qt
 variables, reduces PATH to Windows system folders, launches each test process
 hidden and records rendering screenshots plus `verification/startup-results.json`
 inside the test folder. The environment changes apply only to that script process.
@@ -156,5 +157,5 @@ Report the tested executable/configuration and whether scene, data, component,
 import/export/removal, Undo/Redo and save/relaunch/Open checks passed. Include
 reproduction steps and expected/actual behavior for failures. Use a separate saved
 file to preserve shipped fixtures. Manual results have not yet been reported; the
-current automated baseline is a Release build, 18 CTest entries and successful
+current automated baseline is a Release build, 24 CTest entries and successful
 Windows startup smoke checks. A clean-machine/public-install test remains separate.

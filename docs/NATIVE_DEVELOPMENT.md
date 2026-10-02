@@ -20,6 +20,9 @@ build/native/native/Release/smartflow.exe
 
 `smartflow.exe --smoke-test -platform offscreen` starts the application and
 exits automatically. It does not validate real display/GPU interaction.
+Use toolbar Sequential/Parallel and Threads controls for bounded execution, or
+launch with `--parallel --threads 4`. See [execution](EXECUTION.md) for live states,
+progress, cancellation, extension contracts and node-internal work budgeting.
 The default preview starts with Cube → Transform → Material → Scene, with the
 final Scene output pinned in the viewer. `smartflow.exe --numeric` instead starts
 Number (41) connected to Add (1), yielding 42, without a scene registry or viewer.
@@ -90,7 +93,7 @@ that acceptance is pending until results are reported.
 
 The sections below organize current code/tests by their originating checkpoint.
 Dated handoffs describe the state at that date; later steps supersede earlier
-limitations. The current suite has 18 CTest entries. Release presets/builds are
+limitations. The current suite has 24 CTest entries. Release presets/builds are
 verified; the separate Debug configuration has not been built in this session.
 
 ## N2 pipeline foundation

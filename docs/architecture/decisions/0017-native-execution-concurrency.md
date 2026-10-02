@@ -1,6 +1,6 @@
 # 0017: Bounded native execution and owned invocation data
 
-Date: 2026-10-02. Status: implementation in checkpoints.
+Date: 2026-10-02. Status: implemented through E1-E4.
 
 ## Decision
 
@@ -35,10 +35,11 @@ exhausted graph pool. Unmanaged third-party threads are outside that guarantee.
 
 - E1: policy/options contracts and invocation input/output isolation implemented.
 - E2: bounded dependency scheduling, sequential/parallel options, resource locks
-  and cancellation drain implemented. Native controls/progress and internal-work
-  facilities follow in separate verified checkpoints.
+  and cancellation drain implemented.
 - E3: native controls and live node/component progress implemented; audited
   bundled numeric/data/scene delegates opt into reentrancy.
+- E4: managed node-internal parallel work shares reserved per-run capacity;
+  nested work is serial, and child workers join before return/exception.
 
 ## Consequences
 

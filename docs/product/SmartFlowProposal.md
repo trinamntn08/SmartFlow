@@ -17,7 +17,11 @@ undoable library removal, isolated definition copies and explicit compatible
 instance replacement. VS Code CMake Tools and a local runtime test folder
 support development/manual launches.
 
-The automated baseline passes Release builds, 18 CTest entries, packaged startup
+Native execution now offers sequential/parallel controls, live node/component
+progress and managed node-internal work within a per-run thread budget. See
+[execution](../EXECUTION.md) for semantics and extension obligations.
+
+The automated baseline passes Release builds, 24 CTest entries, packaged startup
 and web checks. Full N5 desktop interaction acceptance is pending the user's
 manual results; automated computer-use is deferred. Production rendering, asset
 import/bundling, dynamic plugin loading, nested components, definition migration and

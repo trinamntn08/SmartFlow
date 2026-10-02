@@ -13,6 +13,14 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     app.setApplicationName("SmartFlow");
+    size_t threads=1;
+    const auto threadIndex=app.arguments().indexOf("--threads");
+    if(threadIndex>=0) {
+        bool valid=false;
+        const auto value=threadIndex+1<app.arguments().size() ? app.arguments().at(threadIndex+1).toInt(&valid) : 0;
+        if(!valid || value<1 || value>64) { std::fprintf(stderr,"--threads requires an integer from 1 to 64\n"); return 7; }
+        threads=size_t(value);
+    }
     // Optional test font for offscreen environments without system font discovery.
     const auto fontIndex = app.arguments().indexOf("--smoke-font");
     if(app.arguments().contains("--smoke-test") && fontIndex >= 0) {
@@ -31,6 +39,10 @@ int main(int argc, char** argv)
 #endif
     else window=std::make_unique<smartflow::WorkspaceWindow>(smartflow::data::dataConfiguration());
     window->show();
+    if(threadIndex>=0 || app.arguments().contains("--parallel")) {
+        window->execution().setScheduling(app.arguments().contains("--parallel") ? smartflow::ExecutionMode::Parallel : smartflow::ExecutionMode::Sequential,threads);
+        window->execution().run();
+    }
     const auto projectIndex=app.arguments().indexOf("--project");
     if(projectIndex>=0) {
         if(projectIndex+1>=app.arguments().size()) {

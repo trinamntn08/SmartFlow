@@ -17,6 +17,8 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 
 - Native node editing, typed connections, parameter inspector and semantic Undo/Redo.
 - Background execution/cancellation and pinned result viewers.
+- Sequential/Parallel and Threads controls, live node/component progress and
+  managed node-internal work sharing the configured per-run budget.
 - Primitive 3D scene workflow plus an independent table/filter/summary workflow.
 - Atomic Save/Open with layout, navigation, selection and viewer restoration.
 - Selectable widget regions with H/V splits, swapping, closing and saved dividers.
@@ -27,9 +29,9 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 
 ## Automated evidence
 
-Release configure/build and the native suite are verified; all 18 CTest entries
-passed after N7. The required web checks pass, including nine persistence tests.
-Seven installed Windows configurations start, execute and render with developer
+Release configure/build and the native suite are verified; all 24 CTest entries
+passed after E1-E4. The required web checks pass, including nine persistence tests.
+Ten installed Windows configurations start, execute and render with developer
 Qt environment variables removed. Installed executable hashes match the build.
 Packaged scene and component screenshots were visually inspected.
 
@@ -45,18 +47,20 @@ layout** to recover defaults. See [workspace widgets](WORKSPACE_WIDGETS.md).
 
 Tested date, executable, Windows version and package source commit:
 
-| Check                           | Expected result                                                   | Your result / reproduction steps |
-| ------------------------------- | ----------------------------------------------------------------- | -------------------------------- |
-| Scene edit and Undo/Redo        | Cube size changes the preview and restores correctly              | Pending                          |
-| Scene navigation                | Orbit, zoom, frame and selection work                             | Pending                          |
-| Data edit and Undo/Redo         | Minimum 30 gives count 2, total 79 and mean 39.5                  | Pending                          |
-| Node/connection edits           | Add/connect/delete, then Undo/Redo restore graph behavior         | Pending                          |
-| Component creation/insertion    | Bound exposed inputs/controls execute as one node                 | Pending                          |
-| Component file exchange/removal | Import/export works; removal preserves existing snapshots         | Pending                          |
-| Edit a copy                     | New entry has edited defaults; original instances stay unchanged  | Pending                          |
-| Update selected instance        | Compatible update works; overrides/pinning persist; Undo restores | Pending                          |
-| Save/relaunch/Open              | Parameters, layout, selection and viewer state restore            | Pending                          |
-| File errors/unsaved prompts     | Errors preserve active work; Save/Discard/Cancel behave correctly | Pending                          |
+| Check                           | Expected result                                                    | Your result / reproduction steps |
+| ------------------------------- | ------------------------------------------------------------------ | -------------------------------- |
+| Scene edit and Undo/Redo        | Cube size changes the preview and restores correctly               | Pending                          |
+| Execution modes and threads     | Sequential/Parallel run correctly with thread limits 1, 2 and 4    | Pending                          |
+| Progress and cancellation       | Node states/counts update; Cancel discards outputs and drains work | Pending                          |
+| Scene navigation                | Orbit, zoom, frame and selection work                              | Pending                          |
+| Data edit and Undo/Redo         | Minimum 30 gives count 2, total 79 and mean 39.5                   | Pending                          |
+| Node/connection edits           | Add/connect/delete, then Undo/Redo restore graph behavior          | Pending                          |
+| Component creation/insertion    | Bound exposed inputs/controls execute as one node                  | Pending                          |
+| Component file exchange/removal | Import/export works; removal preserves existing snapshots          | Pending                          |
+| Edit a copy                     | New entry has edited defaults; original instances stay unchanged   | Pending                          |
+| Update selected instance        | Compatible update works; overrides/pinning persist; Undo restores  | Pending                          |
+| Save/relaunch/Open              | Parameters, layout, selection and viewer state restore             | Pending                          |
+| File errors/unsaved prompts     | Errors preserve active work; Save/Discard/Cancel behave correctly  | Pending                          |
 
 For failures, include the exact steps, expected/actual result and whether the
 failure repeats after relaunch. Manual results should determine the next fixes.

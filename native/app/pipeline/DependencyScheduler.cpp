@@ -1,5 +1,6 @@
 #include "DependencyScheduler.h"
 #include "ExecutionData.h"
+#include <NodeWork.h>
 #include <tp_pipeline/StepDelegate.h>
 #include <tp_utils/Progress.h>
 #include <algorithm>
@@ -91,11 +92,13 @@ std::vector<std::shared_ptr<std::mutex>> resourceMutexes(const NodeExecutionPoli
 }
 
 StepResult runNode(StepContext& context, const std::function<bool()>& cancelled,
-    const std::shared_ptr<ExecutionProgress>& status)
+    const std::shared_ptr<ExecutionProgress>& status, size_t threads)
 {
     StepResult result;
     result.state=StepState::Failed;
     try {
+        detail::NodeWorkContext budget{threads,cancelled};
+        detail::NodeWorkScope scope(budget);
         tp_utils::Progress progress(cancelled ? std::function<bool()>([&] { return !cancelled(); }) :
             std::function<bool()>([] { return true; }), "Execute node");
         progress.setPrintToConsole(false);
@@ -182,7 +185,8 @@ ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& 
     }
     std::vector<StepResult> outputs(count);
     std::vector<std::vector<std::unique_lock<std::mutex>>> locks(count);
-    size_t running=0, finished=0;
+    size_t running=0, finished=0, reserved=0;
+    std::vector<size_t> reservations(count);
     const size_t workers=options.mode==ExecutionMode::Sequential ? 1 : std::min(options.maxThreads,count);
     NodeWorkers pool(workers);
     auto stopping=[&] { return cancelled() || pool.abort.load(); };
@@ -212,6 +216,8 @@ ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& 
                 complete(index,std::move(skipped));
                 continue;
             }
+            const size_t demand=std::min(options.maxThreads,policies[index].threadLimit);
+            if(reserved+demand>options.maxThreads) { ++it; continue; }
             std::vector<std::unique_lock<std::mutex>> acquired;
             bool locked=true;
             for(const auto& resource : resources[index]) {
@@ -239,12 +245,14 @@ ExecutionResult executeScheduled(PipelineDetails& graph, const StepDelegateMap& 
             contexts[index].runStarted=true;
             progress->state(contexts[index].stepDetails->id(),StepState::Running);
             ++running;
-            pool.enqueue([&,index,stopping,progress] { return Completion{index,runNode(contexts[index],stopping,progress)}; });
+            reservations[index]=demand; reserved+=demand;
+            pool.enqueue([&,index,stopping,progress,demand] { return Completion{index,runNode(contexts[index],stopping,progress,demand)}; });
         }
         if(stopping() && !running) break;
         if(finished==count) break;
         for(auto& completion : pool.wait()) {
             --running;
+            reserved-=reservations[completion.index];
             if(stopping()) {
                 completion.result.state=StepState::Cancelled;
                 completion.result.output.reset(); completion.result.error="Cancelled";

@@ -186,13 +186,19 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     mode->setToolTip("Parallel runs independent ready nodes; consumers wait for their inputs.");
     auto* threads=new QSpinBox;
     threads->setObjectName("executionThreads"); threads->setRange(1,64); threads->setValue(1);
-    threads->setToolTip("Maximum number of processing threads. Sequential runs one node at a time.");
+    threads->setKeyboardTracking(false);
+    threads->setToolTip("Total processing thread budget, including managed work inside nodes. Sequential runs one node at a time.");
     toolbar->addWidget(mode); toolbar->addWidget(new QLabel("Threads")); toolbar->addWidget(threads);
     auto schedule=[this,mode,threads] {
         runner.setScheduling(mode->currentIndex()==0 ? ExecutionMode::Sequential : ExecutionMode::Parallel,size_t(threads->value()));
     };
     connect(mode,&QComboBox::currentIndexChanged,this,[schedule](int) { schedule(); });
     connect(threads,&QSpinBox::valueChanged,this,[schedule](int) { schedule(); });
+    connect(&runner,&ExecutionController::updated,this,[this,mode,threads] {
+        const QSignalBlocker modeGuard(mode), threadGuard(threads);
+        mode->setCurrentIndex(runner.options().mode==ExecutionMode::Sequential ? 0 : 1);
+        threads->setValue(int(runner.options().maxThreads));
+    });
     toolbar->addSeparator();
     auto* library = new QComboBox;
     library->setObjectName("nodeLibraryTypes");

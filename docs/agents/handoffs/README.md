@@ -8,7 +8,7 @@ For today's behavior, start with [the roadmap](../../ROADMAP.md),
 [current architecture](../../architecture/README.md),
 [native development](../../NATIVE_DEVELOPMENT.md) and
 [component guide](../../GRAPH_COMPONENTS.md). Implementation is delivered through
-N7 plus VS Code setup. Full N5 packaged interaction acceptance is pending manual
+N7, execution E1-E4 and VS Code setup. Full N5 packaged interaction acceptance is pending manual
 results; automated native computer-use is deferred by the user.
 
 ## Records
@@ -47,3 +47,4 @@ results; automated native computer-use is deferred by the user.
 - [E1: execution contracts and data isolation](2026-10-02-execution-e1.md)
 - [E2: bounded native dependency scheduler](2026-10-02-execution-e2.md)
 - [E3: native execution controls and live progress](2026-10-02-execution-e3.md)
+- [E4: managed node work and refreshed desktop package](2026-10-02-execution-e4.md)

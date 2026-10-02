@@ -118,6 +118,22 @@ private Q_SLOTS:
         gate->open=true; window.execution().run(); QTRY_VERIFY(window.execution().result());
         QVERIFY(window.execution().result()->succeeded());
     }
+    void progressObserverCanInvalidateACompletedFuture() {
+        auto gate=std::make_shared<Gate>(); WorkspaceWindow window(configuration(gate));
+        window.execution().setLive(false); window.execution().cancel(); QTRY_VERIFY(!window.execution().busy());
+        window.execution().setScheduling(ExecutionMode::Parallel,2); window.execution().run();
+        QTRY_COMPARE(gate->active.load(),size_t(2));
+        bool edited=false;
+        QObject::connect(&window.execution(),&ExecutionController::updated,&window,[&] {
+            if(edited || !window.execution().progress() || !window.execution().progress()->finished) return;
+            edited=true;
+            const auto id=window.project().graph().steps().front()->id().toString();
+            window.project().commands().setParameter(id,"value",9.0);
+        });
+        gate->open=true;
+        QTRY_VERIFY(!window.execution().busy()); QVERIFY(edited);
+        QVERIFY(!window.execution().result()); QVERIFY(!window.execution().progress());
+    }
 };
 QTEST_MAIN(ExecutionUiTests)
 #include "ExecutionUiTests.moc"

@@ -53,6 +53,8 @@ explicit options, with one coordinator, private cloned invocation data and
 conservative delegate/resource policies. Native controls select sequential/parallel
 mode and thread limits; synchronized live node/component progress is published on
 the Qt thread with stale-run rejection. See [execution](../EXECUTION.md).
+Managed node-internal helpers share reserved per-run capacity and join their
+workers before returning; nested helper work is serial.
 See the [execution architecture review](execution-review-2026-10-02.md) for evidence,
 required changes and acceptance tests. Streaming, simulation, remote execution and
 production scheduling remain future decisions.
@@ -98,7 +100,7 @@ become core/runtime dependencies.
 
 ## Verification and open work
 
-Current Release builds, 18 CTest entries and packaged startup checks passed. Full
+Current Release builds, 24 CTest entries and packaged startup checks passed. Full
 Windows desktop interaction acceptance is pending manual testing, as recorded in
 [the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
 The primitive viewer is not production GPU rendering; importer/asset handling,

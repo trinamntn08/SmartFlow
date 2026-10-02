@@ -160,6 +160,8 @@ ExecutionHandle PipelineExecution::submit(const tp_pipeline::PipelineDetails& gr
     std::shared_ptr<const tp_pipeline::StepDelegateMap> delegates,
     std::shared_ptr<const tp_data::CollectionFactory> factory, std::vector<ResultGroup> groups, ExecutionOptions options)
 {
+    if(options.mode!=ExecutionMode::Sequential && options.mode!=ExecutionMode::Parallel)
+        throw std::invalid_argument("Invalid execution mode");
     if(options.maxThreads < 1 || options.maxThreads > 64)
         throw std::invalid_argument("Execution thread budget must be between 1 and 64");
     for(const auto& entry : options.policies) {

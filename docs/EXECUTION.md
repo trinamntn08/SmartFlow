@@ -1,7 +1,7 @@
 # Native node execution
 
 Use the toolbar to select **Sequential** or **Parallel** and set **Threads**
-(1..64). Sequential runs one ready node at a time. Parallel runs independent
+(1..64 per run). Sequential runs one ready node at a time. Parallel runs independent
 ready nodes concurrently within the configured limit. With Threads set to 1,
 parallel mode has no branch overlap. A dependency chain still runs upstream
 before downstream regardless of the thread setting.
@@ -46,10 +46,40 @@ aggregation; workers only execute their private contexts. Component bodies wait
 for all external inputs, and external consumers wait for the entire body. A failed
 or invalid output skips its consumers while unrelated branches can finish.
 
-Node-internal reservations and managed parallel work follow in the next checkpoint;
-at E3, Threads bounds graph node workers only. Extensions must currently execute
-single-threaded work to remain within that limit. Selective caching, streaming,
-remote execution and process isolation remain future work.
+## Work inside a node
+
+`native/sdk/NodeWork.h` supplies `parallelFor`, `nodeThreadLimit` and
+`nodeWorkCancelled`. Declare a node's internal `threadLimit` in its execution
+policy; the scheduler reserves that capacity, capped by the run's Threads value.
+Unspecified nodes reserve one thread. Graph workers and managed internal work
+share this budget, so concurrent nodes cannot each consume the entire limit.
+Sequential mode still runs one node at a time, but that node can use its reserved
+internal threads. Set Threads to 1 to make both levels sequential.
+
+Inside a delegate, partition private data by index:
+
+```cpp
+std::vector<double> values(count);
+if(!smartflow::parallelFor(count, [&](size_t index) {
+    values[index] = process(index);
+})) return false; // cancellation
+```
+
+The caller participates, child workers join before return/exception, and nested
+helpers run serially on their current thread. Callbacks must operate on disjoint
+owned data or synchronize their shared state. Poll `nodeWorkCancelled()` inside
+long callbacks. Worker callbacks must not touch Qt UI, graph/registry state or
+launch unmanaged threads; third-party library threads require an explicit budget
+agreement and are not automatically controlled. Factory cloning and the scheduling
+coordinator are outside the processing-thread count. Multiple separate runs each
+have their own budget; named resources coordinate exclusivity across windows.
+
+For repeatable native launches, use `--parallel --threads 4`. `--threads` alone
+uses sequential node scheduling with the given internal-work budget. Invalid
+thread arguments exit 7. These options also update the displayed toolbar controls.
+
+Selective caching, streaming, remote execution and process isolation remain
+future work.
 
 See [decision 0017](architecture/decisions/0017-native-execution-concurrency.md) and
 the [original architecture review](architecture/execution-review-2026-10-02.md).

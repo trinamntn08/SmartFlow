@@ -11,7 +11,8 @@ undo/redo, atomic project Save/Open and workspace/viewer restoration.
 Selectable widget regions support H/V splits, swapping, resizing and saved layouts.
 See [workspace widgets](docs/WORKSPACE_WIDGETS.md).
 Sequential/parallel execution controls and live node/component progress are
-available; see [execution](docs/EXECUTION.md). Node-internal work budgeting follows.
+available, with managed node-internal work sharing the thread budget; see
+[execution](docs/EXECUTION.md).
 
 The included 3D extension provides Cube/Transform/Material/Scene/Merge and a
 bounded interactive primitive viewer. The separate data app provides sample,
@@ -20,7 +21,7 @@ Reusable components support collapsed snapshots, exposed ports/controls,
 standalone import/export, undoable library removal and isolated editing copies
 and explicit compatible instance updates (N6a through N6h).
 
-Release build, native CTest entries, packaged startup and web checks passed.
+Release build, 24 native CTest entries, packaged startup and web checks passed.
 **Full desktop interaction acceptance remains pending the user's manual results**;
 automated computer-use is deferred. The TypeScript browser starter, persistence
 and SDK contracts are preserved for a future extension, not the delivered app.
@@ -79,7 +80,7 @@ npm run preview
 | ------------------------ | ---------------------------------------------------------- | ------------------- |
 | `native/app`             | Native C++/Qt shell and adapters                           | Migration preview   |
 | `native/vendor`          | Copied QtNodes and pipeline foundation, with licenses      | Native dependencies |
-| `native/tests`           | Graph, execution, file, component, panel and viewer checks | 18 CTest entries    |
+| `native/tests`           | Graph, execution, file, component, panel and viewer checks | 24 CTest entries    |
 | `apps/web`               | Browser interface and application composition              | Development starter |
 | `packages/core`          | Domain-independent project and graph model                 | Initial persistence |
 | `packages/extension-sdk` | Public extension contracts                                 | Initial contracts   |
