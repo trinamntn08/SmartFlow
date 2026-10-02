@@ -26,6 +26,9 @@ preserved control values/connections and undo of the exact previous snapshot.
 VS Code CMake Tools configure/build/test presets and launch configurations are
 ready for manual use. A CMake install folder bundles both executables, Qt/MSVC
 runtime dependencies and the scene, data and component examples.
+The refreshed Windows folder is ready for first manual testing through N6h, with
+seven installed startup/render checks and matching executable hashes. See
+[the first test version and result sheet](TEST_VERSION.md).
 
 ## Verification and desktop acceptance
 
@@ -49,39 +52,38 @@ acceptance.
 These rows describe delivered behavior; dated handoffs retain each step's original
 verification and limitations. Later checkpoints supersede earlier pending items.
 
-| Checkpoint          | Delivered behavior                                                 | Record                                                        |
-| ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------- |
-| TypeScript contract | Schema-v1 persistence and provisional SDK contracts                | [contract](agents/handoffs/2026-09-27-contract-checkpoint.md) |
-| N1                  | Copied QtNodes canvas and native shell                             | [N1](agents/handoffs/2026-09-27-native-checkpoint-n1.md)      |
-| N2                  | Audited pipeline foundation and background execution adapter       | [N2](agents/handoffs/2026-09-28-native-checkpoint-n2.md)      |
-| N3                  | Workspace, inspector and command-based edits                       | [N3](agents/handoffs/2026-09-30-native-checkpoint-n3.md)      |
-| N4                  | Included primitive scene extension and viewer                      | [N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md)      |
-| N5a                 | Atomic schema-v1 project file codec                                | [N5a](agents/handoffs/2026-09-30-native-checkpoint-n5a.md)    |
-| N5b                 | Retained-document execution projection                             | [N5b](agents/handoffs/2026-09-30-native-checkpoint-n5b.md)    |
-| N5c                 | Structural retained project commands                               | [N5c](agents/handoffs/2026-09-30-native-checkpoint-n5c.md)    |
-| N5d                 | Retained semantic undo/redo                                        | [N5d](agents/handoffs/2026-10-01-native-checkpoint-n5d.md)    |
-| N5e                 | Canvas/inspector integration and unavailable placeholders          | [N5e](agents/handoffs/2026-10-01-native-checkpoint-n5e.md)    |
-| N5f                 | Open/Save/Save As and dirty-state tracking                         | [N5f](agents/handoffs/2026-10-01-native-checkpoint-n5f.md)    |
-| N5g                 | Layout/navigation, selection, pinned output and viewer persistence | [N5g](agents/handoffs/2026-10-01-native-checkpoint-n5g.md)    |
-| N5h                 | Independent native table workflow                                  | [N5h](agents/handoffs/2026-10-01-native-checkpoint-n5h.md)    |
-| N5i                 | Shipped examples and fresh-process project launch checks           | [N5i](agents/handoffs/2026-10-01-native-checkpoint-n5i.md)    |
-| N6a                 | Reusable definitions and atomic expanded insertion                 | [N6a](agents/handoffs/2026-10-01-native-checkpoint-n6a.md)    |
-| N6b                 | Selection extraction and catalog commands                          | [N6b](agents/handoffs/2026-10-02-native-checkpoint-n6b.md)    |
-| N6c                 | Native authoring/library dialogs                                   | [N6c](agents/handoffs/2026-10-02-native-checkpoint-n6c.md)    |
-| N6d                 | Collapsed snapshots, exposed controls/ports and grouped results    | [N6d](agents/handoffs/2026-10-02-native-checkpoint-n6d.md)    |
-| N6e                 | Standalone component import/export                                 | [N6e](agents/handoffs/2026-10-02-native-checkpoint-n6e.md)    |
-| N6f                 | Undoable catalog-entry removal, preserving instances               | [N6f](agents/handoffs/2026-10-02-native-checkpoint-n6f.md)    |
-| N6g                 | Isolated component editing saved as immutable copies               | [N6g](agents/handoffs/2026-10-02-native-checkpoint-n6g.md)    |
-| N6h                 | Explicit compatible snapshot update for one collapsed instance     | [N6h](agents/handoffs/2026-10-02-native-checkpoint-n6h.md)    |
-| IDE setup           | VS Code CMake Tools presets and native launch configurations       | [IDE](agents/handoffs/2026-10-02-vscode-cmake-tools.md)       |
+| Checkpoint          | Delivered behavior                                                  | Record                                                        |
+| ------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------- |
+| TypeScript contract | Schema-v1 persistence and provisional SDK contracts                 | [contract](agents/handoffs/2026-09-27-contract-checkpoint.md) |
+| N1                  | Copied QtNodes canvas and native shell                              | [N1](agents/handoffs/2026-09-27-native-checkpoint-n1.md)      |
+| N2                  | Audited pipeline foundation and background execution adapter        | [N2](agents/handoffs/2026-09-28-native-checkpoint-n2.md)      |
+| N3                  | Workspace, inspector and command-based edits                        | [N3](agents/handoffs/2026-09-30-native-checkpoint-n3.md)      |
+| N4                  | Included primitive scene extension and viewer                       | [N4](agents/handoffs/2026-09-30-native-checkpoint-n4.md)      |
+| N5a                 | Atomic schema-v1 project file codec                                 | [N5a](agents/handoffs/2026-09-30-native-checkpoint-n5a.md)    |
+| N5b                 | Retained-document execution projection                              | [N5b](agents/handoffs/2026-09-30-native-checkpoint-n5b.md)    |
+| N5c                 | Structural retained project commands                                | [N5c](agents/handoffs/2026-09-30-native-checkpoint-n5c.md)    |
+| N5d                 | Retained semantic undo/redo                                         | [N5d](agents/handoffs/2026-10-01-native-checkpoint-n5d.md)    |
+| N5e                 | Canvas/inspector integration and unavailable placeholders           | [N5e](agents/handoffs/2026-10-01-native-checkpoint-n5e.md)    |
+| N5f                 | Open/Save/Save As and dirty-state tracking                          | [N5f](agents/handoffs/2026-10-01-native-checkpoint-n5f.md)    |
+| N5g                 | Layout/navigation, selection, pinned output and viewer persistence  | [N5g](agents/handoffs/2026-10-01-native-checkpoint-n5g.md)    |
+| N5h                 | Independent native table workflow                                   | [N5h](agents/handoffs/2026-10-01-native-checkpoint-n5h.md)    |
+| N5i                 | Shipped examples and fresh-process project launch checks            | [N5i](agents/handoffs/2026-10-01-native-checkpoint-n5i.md)    |
+| N6a                 | Reusable definitions and atomic expanded insertion                  | [N6a](agents/handoffs/2026-10-01-native-checkpoint-n6a.md)    |
+| N6b                 | Selection extraction and catalog commands                           | [N6b](agents/handoffs/2026-10-02-native-checkpoint-n6b.md)    |
+| N6c                 | Native authoring/library dialogs                                    | [N6c](agents/handoffs/2026-10-02-native-checkpoint-n6c.md)    |
+| N6d                 | Collapsed snapshots, exposed controls/ports and grouped results     | [N6d](agents/handoffs/2026-10-02-native-checkpoint-n6d.md)    |
+| N6e                 | Standalone component import/export                                  | [N6e](agents/handoffs/2026-10-02-native-checkpoint-n6e.md)    |
+| N6f                 | Undoable catalog-entry removal, preserving instances                | [N6f](agents/handoffs/2026-10-02-native-checkpoint-n6f.md)    |
+| N6g                 | Isolated component editing saved as immutable copies                | [N6g](agents/handoffs/2026-10-02-native-checkpoint-n6g.md)    |
+| N6h                 | Explicit compatible snapshot update for one collapsed instance      | [N6h](agents/handoffs/2026-10-02-native-checkpoint-n6h.md)    |
+| IDE setup           | VS Code CMake Tools presets and native launch configurations        | [IDE](agents/handoffs/2026-10-02-vscode-cmake-tools.md)       |
+| Test folder         | Refreshed Windows package, repeatable startup checks and test notes | [Package](agents/handoffs/2026-10-02-first-test-version.md)   |
 
 ## Next work
 
 1. Collect manual packaged scene/data/component interaction and file round-trip
    results before marking full N5 accepted.
-2. Refresh the packaged Windows test folder with N6g/N6h and verify its startup,
-   shipped examples and runtime dependencies before handing it over for testing.
-3. Address demonstrated usability or correctness issues from manual testing in
+2. Address demonstrated usability or correctness issues from manual testing in
    separate verified checkpoints.
 
 Nested components, input fan-out interfaces, asset import/bundling/relocation,

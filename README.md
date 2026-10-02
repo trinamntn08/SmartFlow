@@ -22,6 +22,9 @@ automated computer-use is deferred. The TypeScript browser starter, persistence
 and SDK contracts are preserved for a future extension, not the delivered app.
 See [the roadmap](docs/ROADMAP.md) for checkpoints and remaining work.
 
+The refreshed `build/desktop-test` folder is ready for first manual testing.
+See [the version notes and result sheet](docs/TEST_VERSION.md).
+
 ## Start locally
 
 Use **Components** to create, insert, import/export and remove saved definitions.

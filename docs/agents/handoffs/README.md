@@ -41,3 +41,4 @@ results; automated native computer-use is deferred by the user.
 - [2026-10-02 component editing scope (proposal)](2026-10-02-component-editing-scope.md)
 - [N6g: isolated component editing copies](2026-10-02-native-checkpoint-n6g.md)
 - [N6h: explicit compatible instance replacement](2026-10-02-native-checkpoint-n6h.md)
+- [First Windows version ready for testing](2026-10-02-first-test-version.md)

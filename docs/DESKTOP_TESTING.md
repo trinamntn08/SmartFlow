@@ -6,6 +6,12 @@ public installer or a completed N5 release. Implementation is complete through
 N6h and VS Code setup; full N5 packaged interaction acceptance is pending the
 user's manual test results. Automated native computer-use is deferred for now.
 
+**Ready for first manual testing, 2026-10-02:** the installed folder at
+`build/desktop-test` contains the N6g/N6h app, examples, runtime dependencies,
+README and testing guides. Seven Windows startup/render checks passed with
+developer Qt paths removed. Start `bin/smartflow.exe` or `bin/smartflow-data.exe`.
+Use [the test-result sheet](TEST_VERSION.md) to record your interaction results.
+
 For development runs, use [VS Code CMake Tools](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
 Acceptance runs below use the installed test folder, so they check bundled runtime
 dependencies as well as app behavior.
@@ -49,6 +55,19 @@ $env:PATH = "C:/Qt/6.11.1/msvc2022_64/bin;" + $env:PATH
 ctest --test-dir build/native -C Release --output-on-failure
 build/desktop-test/bin/smartflow.exe --smoke-test
 ```
+
+For repeatable packaged verification, run from the repository root:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Test-DesktopPackage.ps1
+```
+
+The script checks installed/build executable SHA256 equality, required runtime
+files and seven Windows native startup configurations. It clears developer Qt
+variables, reduces PATH to Windows system folders, launches each test process
+hidden and records rendering screenshots plus `verification/startup-results.json`
+inside the test folder. The environment changes apply only to that script process.
+This verifies startup/rendering; manual interaction still uses the steps below.
 
 The packaged smoke check briefly opens a native window and exits after successful
 execution. CTest includes offscreen scene and numeric application startup, graph editing, execution,

@@ -55,6 +55,8 @@ target_link_libraries(smartflow-data PRIVATE smartflow_workspace smartflow_data)
 if(WIN32)
   install(TARGETS smartflow smartflow-data RUNTIME DESTINATION bin)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION examples)
+  install(FILES ${CMAKE_SOURCE_DIR}/packaging/README.txt DESTINATION .)
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/ DESTINATION docs)
   qt_generate_deploy_app_script(TARGET smartflow OUTPUT_SCRIPT smartflow_deploy_script
     NO_COMPILER_RUNTIME NO_TRANSLATIONS)
   install(SCRIPT ${smartflow_deploy_script})
