@@ -64,6 +64,9 @@ public:
         if(!inPorts().empty()) {
             auto* input = context->memberCast<tp_data::DoubleMember>("in");
             if(!input) return false;
+            if(mode == "mutate-input") input->data = 1000.0;
+            if(mode == "forward-input")
+                return context->stepOutput->addSharedMember("out", context->member("in"), context->progress);
             output->data += input->data;
         }
         return context->stepOutput->addSharedMember("out", output, context->progress);
@@ -115,6 +118,36 @@ double value(const ExecutionResult& result, StepDetails* step, const char* outpu
 class PipelineTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void mutableLegacyInputsAreIsolated()
+    {
+        Fixture f;
+        PipelineExecution executor;
+        addParameter(f.target, "mode", std::string("mutate-input"));
+        auto result = f.run(executor);
+        QVERIFY(result.succeeded());
+        QCOMPARE(value(result, f.source, "source-data"), 41.0);
+        QCOMPARE(value(result, f.target, "target-data"), 1001.0);
+        addParameter(f.target, "mode", std::string("forward-input"));
+        result = f.run(executor);
+        QVERIFY(result.succeeded());
+        QCOMPARE(value(result, f.source, "source-data"), 41.0);
+        QCOMPARE(value(result, f.target, "target-data"), 41.0);
+        QCOMPARE(result.steps.at(f.source->id()).output->member("source-data")->name().toString(), std::string("source-data"));
+    }
+
+    void missingCloneFactoryFailsWithoutPublishingOutput()
+    {
+        Fixture f;
+        f.factory = std::make_shared<tp_data::CollectionFactory>();
+        f.factory->finalize();
+        PipelineExecution executor;
+        const auto result = f.run(executor);
+        QVERIFY(!result.succeeded());
+        QCOMPARE(result.steps.at(f.source->id()).state, StepState::Failed);
+        QCOMPARE(result.steps.at(f.target->id()).state, StepState::Skipped);
+        QVERIFY(!result.steps.at(f.source->id()).output);
+    }
+
     void failedUnexposedComponentBranchBlocksConsumers()
     {
         Fixture f;

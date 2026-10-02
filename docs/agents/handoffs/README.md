@@ -44,3 +44,4 @@ results; automated native computer-use is deferred by the user.
 - [First Windows version ready for testing](2026-10-02-first-test-version.md)
 - [N7: selectable workspace widgets](2026-10-02-native-checkpoint-n7.md)
 - [Native execution architecture review](2026-10-02-execution-architecture-review.md)
+- [E1: execution contracts and data isolation](2026-10-02-execution-e1.md)

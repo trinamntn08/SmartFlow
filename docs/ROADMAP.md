@@ -85,6 +85,11 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 
 ## Next work
 
+Execution implementation has begun with E1: source-level safety/options contracts
+and private invocation input/output clones. Scheduling remains sequential at this
+checkpoint. See [E1](agents/handoffs/2026-10-02-execution-e1.md) and
+[decision 0017](architecture/decisions/0017-native-execution-concurrency.md).
+
 1. Collect manual packaged scene/data/component interaction and file round-trip
    results before marking full N5 accepted.
 2. Address demonstrated usability or correctness issues from manual testing in

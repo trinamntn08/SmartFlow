@@ -7,6 +7,8 @@ what runs today; this index is not a claim of completed production delivery.
 
 ## Decisions
 
+- [0017: Bounded native execution and owned invocation data](0017-native-execution-concurrency.md)
+
 - [0001: Independent browser development scaffold](0001-bootstrap.md)
 - [0002: Initial project document and extension contracts](0002-project-contract.md)
 - [0003: Native C++/Qt first, TypeScript deferred](0003-native-first.md)

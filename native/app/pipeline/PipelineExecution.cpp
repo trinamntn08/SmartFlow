@@ -1,4 +1,5 @@
 #include "PipelineExecution.h"
+#include "ExecutionData.h"
 
 #include <tp_pipeline/PipelineManager.h>
 #include <tp_pipeline/StepDelegate.h>
@@ -167,6 +168,7 @@ ExecutionResult execute(PipelineDetails& graph, const StepDelegateMap& delegates
             stepResult.error = "Upstream step failed";
         } else {
             try {
+                context->stepInput = cloneExecutionData(*context->stepInput, factory);
                 context->runOk = context->stepDelegate->executeStep(context);
                 const auto& output = context->stepOutput->output();
                 for(const auto& mapping : context->stepDetails->outputMapping()) {
@@ -186,7 +188,14 @@ ExecutionResult execute(PipelineDetails& graph, const StepDelegateMap& delegates
                 stepResult.error = "Unknown delegate exception";
             }
             stepResult.state = context->runOk ? StepState::Succeeded : StepState::Failed;
-            if(context->runOk) stepResult.output = context->stepOutput->output();
+            if(context->runOk) {
+                try { stepResult.output = cloneExecutionData(*context->stepOutput->output(), factory); }
+                catch(const std::exception& error) {
+                    context->runOk = false;
+                    stepResult.state = StepState::Failed;
+                    stepResult.error = error.what();
+                }
+            }
             else if(stepResult.error.empty()) stepResult.error = "Delegate returned failure";
         }
         manager.returnCompletedStep(context);
