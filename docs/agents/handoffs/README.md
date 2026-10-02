@@ -13,6 +13,8 @@ results; automated native computer-use is deferred by the user.
 
 ## Records
 
+- [Process Gantt: native and browser time analysis](2026-10-02-process-gantt.md)
+
 - [W6: production browser acceptance and native file exchange](2026-10-02-web-w6-delivery.md)
 - [W5b: component authoring and browser workspace](2026-10-02-web-w5b-authoring.md)
 - [W5a: component contracts and collapsed execution](2026-10-02-web-w5a-components.md)

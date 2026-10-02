@@ -22,6 +22,10 @@ void ExecutionProgress::state(const tp_utils::StringID& id, StepState state, std
     std::lock_guard<std::mutex> lock(mutex);
     auto& step=value.steps.at(id);
     if(terminal(step.state)) return;
+    const double now=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-origin).count();
+    if(state==StepState::Ready && !step.readyMs) step.readyMs=now;
+    if(state==StepState::Running && !step.startedMs) { step.startedMs=now; if(!step.readyMs) step.readyMs=now; }
+    if(terminal(state) && step.readyMs) step.endedMs=now;
     step.state=state; step.error=std::move(error);
     if(terminal(state)) { ++value.completed; step.fraction=1.0; }
     ++value.sequence;
@@ -38,9 +42,11 @@ void ExecutionProgress::fraction(const tp_utils::StringID& id, double fraction)
 void ExecutionProgress::finish(bool cancelled, std::vector<std::string> diagnostics)
 {
     std::lock_guard<std::mutex> lock(mutex);
+    value.elapsedMs=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-origin).count();
     value.cancelled=cancelled; value.finished=true; value.diagnostics=std::move(diagnostics);
     for(auto& entry : value.steps) if(!terminal(entry.second.state)) {
         entry.second.state=cancelled ? StepState::Cancelled : StepState::Skipped;
+        if(entry.second.readyMs) entry.second.endedMs=value.elapsedMs;
         entry.second.fraction=1.0; ++value.completed;
     }
     ++value.sequence;
@@ -49,6 +55,7 @@ ExecutionProgressSnapshot ExecutionProgress::snapshot() const
 {
     std::lock_guard<std::mutex> lock(mutex);
     auto output=value;
+    if(!output.finished) output.elapsedMs=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-origin).count();
     output.nodes=output.steps;
     for(const auto& group : groups) {
         StepProgress combined;

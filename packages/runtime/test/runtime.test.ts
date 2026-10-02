@@ -163,3 +163,22 @@ test('request identity rejects superseded progress, revisions and graph changes'
   gate.invalidate();
   assert.equal(gate.accepts(second, 0, 'graph'), false);
 });
+
+test('timings use one monotonic run origin and measure ready queue separately', async () => {
+  const { file, registry } = setup();
+  const result = await runGraph(file, 'graph', registry, { clone: structuredClone });
+  assert.equal(result.state, 'completed');
+  const source = result.timings!.source!;
+  const mutator = result.timings!.mutator!;
+  const observer = result.timings!.observer!;
+  for (const timing of Object.values(result.timings!)) {
+    assert.ok(timing.readyMs! >= 0);
+    assert.ok(timing.startedMs! >= timing.readyMs!);
+    assert.ok(timing.endedMs! >= timing.startedMs!);
+    assert.ok(result.elapsedMs! >= timing.endedMs!);
+  }
+  assert.ok(mutator.readyMs! >= source.endedMs!);
+  assert.ok(observer.startedMs! >= mutator.endedMs!);
+  assert.ok(observer.readyMs! <= mutator.startedMs!);
+  assert.equal(Object.hasOwn(file, 'timings'), false);
+});

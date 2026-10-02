@@ -18,6 +18,7 @@ import { patchWorkspace, readWorkspace, record, WEB_WORKSPACE } from './workspac
 import { GraphCanvas } from './GraphCanvas.tsx';
 import { ParameterEditor } from './ParameterEditor.tsx';
 import { ExecutionClient, createExecutionWorker, type ExecutionState } from './execution-client.ts';
+import { GanttPanel } from './GanttPanel.tsx';
 import { OutputPanel } from './OutputPanel.tsx';
 import { ComponentLibrary } from './ComponentLibrary.tsx';
 
@@ -532,6 +533,10 @@ export function App() {
           </div>
         </aside>
       </div>
+      <GanttPanel
+        execution={execution}
+        select={(id) => action(() => patchWorkspace(session.history, graphId, { selection: [id] }))}
+      />
       <OutputPanel
         editSource={(id) =>
           action(() => {

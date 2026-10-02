@@ -85,6 +85,14 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 | E1-E4               | Owned execution data, bounded graph/internal threads and live progress    | [Execution](agents/handoffs/2026-10-02-execution-e4.md)       |
 | W1b                 | Strict browser JSON/UTF-8 transport and shared native compatibility tests | [Transport](agents/handoffs/2026-10-02-web-w1b-transport.md)  |
 
+## Process Gantt checkpoint
+
+Desktop **Process Gantt** widget and browser profiling panel are implemented,
+following read-only review of the legacy Gantt display. Queue/invocation timings
+remain transient and domain-independent; see [analysis](GANTT_ANALYSIS.md) and
+[checkpoint](agents/handoffs/2026-10-02-process-gantt.md). Native manual packaged
+interaction acceptance remains pending.
+
 ## Next work
 
 E1-E4 are recorded in the execution handoffs below; earlier package/checkpoint

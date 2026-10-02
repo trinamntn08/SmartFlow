@@ -32,6 +32,13 @@ parameter edit. Camera and object selection are workspace edits. This primitive
 preview uses fixed lighting/depth-sorted faces, with at most 64 boxes; it does not
 render imported assets, transparency or intersecting surfaces accurately.
 
+## Process time analysis
+
+The **Process Gantt** panel shows per-node ready-queue and execution spans on a
+shared millisecond timeline. Click a name to select its graph node; larger runs
+use 100-row pages. Timings remain transient; component rows measure the whole
+component invocation. See [Gantt analysis](GANTT_ANALYSIS.md).
+
 ## Components and layout
 
 Create component opens an isolated draft of the current selection. Choose public

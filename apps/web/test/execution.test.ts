@@ -66,6 +66,8 @@ test('client terminates cancelled/superseded workers and ignores all late replie
       identity: message.identity,
       nodeId: 'sample',
       state: 'running',
+      timing: { readyMs: 0, startedMs: 1 },
+      elapsedMs: 2,
     });
     worker.error!('late error');
   };
@@ -82,7 +84,19 @@ test('client terminates cancelled/superseded workers and ignores all late replie
   assert.equal(states.length, count);
   assert.equal(states.at(-1)!.phase, 'obsolete');
   client.run(file(), 1, 'graph');
+  const request = workers[2]!.message!;
+  if (request.kind !== 'run') throw new Error();
+  workers[2]!.reply!({
+    kind: 'status',
+    identity: request.identity,
+    nodeId: 'sample',
+    state: 'running',
+    timing: { readyMs: 0, startedMs: 1 },
+    elapsedMs: 2,
+  });
   client.cancel();
+  assert.equal(states.at(-1)!.statuses.sample, 'cancelled');
+  assert.ok(states.at(-1)!.timings!.sample!.endedMs! >= 1);
   assert.ok(workers[2]!.stopped);
   count = states.length;
   reply(2);

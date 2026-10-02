@@ -1,4 +1,5 @@
 #include "workspace/WorkspaceWindow.h"
+#include "workspace/GanttWidget.h"
 #include <tp_pipeline/StepDelegate.h>
 #include <tp_data/members/NumberMember.h>
 #include <tp_utils/Progress.h>
@@ -95,11 +96,37 @@ private Q_SLOTS:
             if(entry.second.state==StepState::Running) { ++running; QCOMPARE(entry.second.fraction.value(),0.5); }
             if(entry.second.state==StepState::Waiting) ++waiting;
         }
+        for(const auto& entry:snapshot.steps) if(entry.second.state==StepState::Running) {
+            QVERIFY(entry.second.readyMs); QVERIFY(entry.second.startedMs); QVERIFY(!entry.second.endedMs);
+            QVERIFY(*entry.second.readyMs<=*entry.second.startedMs); QVERIFY(*entry.second.startedMs<=snapshot.elapsedMs);
+        }
         QCOMPARE(running,size_t(2)); QCOMPARE(waiting,size_t(1)); QCOMPARE(bar->value(),0);
         QVERIFY(window.grab().save("execution-parallel-smoke.png"));
         gate->open=true; QTRY_VERIFY(window.execution().result().has_value());
         QVERIFY(window.execution().result()->succeeded()); QVERIFY(uiThread);
         QCOMPARE(window.execution().progress()->completed,size_t(3)); QCOMPARE(bar->value(),3);
+        const auto final=*window.execution().progress();
+        for(const auto& entry:final.steps) {
+            QVERIFY(entry.second.endedMs); QVERIFY(*entry.second.startedMs<=*entry.second.endedMs);
+            QVERIFY(*entry.second.endedMs<=final.elapsedMs);
+        }
+        GanttWidget gantt; gantt.resize(1200,360); gantt.refresh(window.project(),final); gantt.show();
+        auto* ganttTree=gantt.findChild<QTreeWidget*>("executionGantt"); QVERIFY(ganttTree);
+        QCOMPARE(ganttTree->topLevelItemCount(),3);
+        QString clicked;
+        gantt.selected=[&](const std::string& id) { clicked=QString::fromStdString(id); };
+        const auto* first=ganttTree->topLevelItem(0);
+        QTest::mouseClick(ganttTree->viewport(),Qt::LeftButton,Qt::NoModifier,ganttTree->visualItemRect(first).center());
+        QCOMPARE(clicked,first->data(0,Qt::UserRole).toString());
+        QVERIFY(gantt.grab().save("execution-gantt-smoke.png"));
+        // Frozen elapsed/timings must not advance after finish.
+        QTest::qWait(20); QCOMPARE(window.execution().progress()->elapsedMs,final.elapsedMs);
+        auto unsupported=window.project().retained();
+        unsupported["project"]["graphs"][0]["nodes"][0]["typeId"]="future";
+        window.loadDocument(std::move(unsupported));
+        QVERIFY(!window.project().diagnostics().empty());
+        gantt.refresh(window.project(),final); // stale snapshot must not request an unsupported projection
+        QCOMPARE(ganttTree->topLevelItemCount(),0);
     }
     void editsRejectOldProgressAndModeChangesCancel() {
         auto gate=std::make_shared<Gate>(); WorkspaceWindow window(configuration(gate));

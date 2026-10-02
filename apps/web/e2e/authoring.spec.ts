@@ -50,7 +50,7 @@ test('isolated copy editing, explicit compatible replacement and exact undo', as
   await page.getByRole('button', { name: 'Apply compatible update' }).click();
   await page.getByRole('button', { name: 'Run graph' }).click();
   await expect(page.getByLabel('Execution state')).toHaveText('completed');
-  await expect(page.getByRole('table')).toContainText('79');
+  await expect(page.getByRole('table', { name: 'Table output' })).toContainText('79');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   const pending = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download project' }).click();

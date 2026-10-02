@@ -102,7 +102,7 @@ void ExecutionController::poll()
     bool current = submittedRevision == project.revision() && submittedGeneration == generation;
     if(current) {
         auto snapshot=pending->progress->snapshot();
-        if(!publishedProgress || snapshot.sequence!=publishedProgress->sequence) {
+        if(!publishedProgress || snapshot.sequence!=publishedProgress->sequence || !snapshot.finished) {
             publishedProgress=std::move(snapshot);
             if(!pending->cancellation->load())
                 message=QString("Running: %1/%2 steps finished").arg(qulonglong(publishedProgress->completed)).arg(qulonglong(publishedProgress->total));

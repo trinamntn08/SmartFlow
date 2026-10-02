@@ -6,6 +6,7 @@
 #include <tp_data/CollectionFactory.h>
 #include <tp_task_queue/TaskQueue.h>
 #include <atomic>
+#include <chrono>
 #include <future>
 #include <memory>
 #include <mutex>
@@ -41,11 +42,13 @@ struct StepProgress {
     StepState state = StepState::Waiting;
     std::optional<double> fraction;
     std::string error;
+    std::optional<double> readyMs, startedMs, endedMs;
 };
 struct ExecutionProgressSnapshot {
     uint64_t runId = 0, sequence = 0;
     size_t total = 0, completed = 0;
     bool finished = false, cancelled = false;
+    double elapsedMs = 0;
     std::vector<std::string> diagnostics;
     // Counts use compiled steps; nodes aggregate components without double counting.
     std::unordered_map<tp_utils::StringID, StepProgress> steps, nodes;
@@ -58,6 +61,7 @@ public:
     void fraction(const tp_utils::StringID& id, double fraction);
     void finish(bool cancelled, std::vector<std::string> diagnostics = {});
 private:
+    std::chrono::steady_clock::time_point origin = std::chrono::steady_clock::now();
     mutable std::mutex mutex;
     ExecutionProgressSnapshot value;
     std::vector<ResultGroup> groups;

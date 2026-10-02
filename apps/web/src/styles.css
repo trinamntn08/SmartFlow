@@ -657,3 +657,27 @@ pre {
   display: block;
   margin-bottom: 12px;
 }
+
+.gantt-panel {
+  margin: 0 12px 12px;
+  overflow: auto;
+  max-height: 340px;
+}
+.gantt-panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.gantt-panel td,
+.gantt-panel th {
+  text-align: left;
+  padding: 4px 8px;
+}
+.gantt-panel td:last-child {
+  width: 45%;
+  min-width: 200px;
+}
+.gantt-panel svg {
+  width: 100%;
+  height: 28px;
+  display: block;
+}

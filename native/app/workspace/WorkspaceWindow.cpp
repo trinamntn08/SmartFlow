@@ -1,3 +1,4 @@
+#include "GanttWidget.h"
 #include "WorkspaceWindow.h"
 #include "ComponentDialogs.h"
 #include "PanelWorkspace.h"
@@ -276,6 +277,12 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     scroll->setWidget(panel);
     panels->addPanel("inspector","Inspector",scroll);
     panels->addPanel("results","Execution results",executionPanel);
+    gantt=new GanttWidget;
+    gantt->selected=[this](const std::string& id) {
+        for(const auto canvasId:canvasModel.allNodeIds())
+            if(canvasModel.projectId(canvasId).toString()==id) { selectNode(canvasId); break; }
+    };
+    panels->addPanel("gantt","Process Gantt",gantt);
     panels->resetLayout();
     setCentralWidget(panels);
     auto* layoutMenu=menuBar()->addMenu("&Layout");
@@ -659,6 +666,7 @@ void WorkspaceWindow::refreshResults()
     results->clear();
     outputLabel->setText("Output: " + runner.status());
     const auto& progress=runner.progress();
+    gantt->refresh(document,progress);
     executionProgress->setRange(0,progress ? int(std::max(size_t(1),progress->total)) : 1);
     executionProgress->setValue(progress ? int(progress->completed) : 0);
     executionProgress->setFormat(progress ? QString("%1/%2 steps finished").arg(qulonglong(progress->completed)).arg(qulonglong(progress->total)) : runner.status());

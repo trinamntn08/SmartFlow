@@ -156,18 +156,25 @@ export function compileGraph(
     diagnostics.push({ message: 'Graph contains a dependency cycle' });
   return { graph, definitions, parameters, order, diagnostics };
 }
+export interface NodeTiming {
+  readyMs?: number;
+  startedMs?: number;
+  endedMs?: number;
+}
 export interface RuntimeOptions {
   externalInputs?: { target: Endpoint; value: unknown }[];
   clone(value: unknown): unknown;
   cancelled?(): boolean;
   yield?(): Promise<void>;
-  onStatus?(nodeId: string, state: NodeState): void;
+  onStatus?(nodeId: string, state: NodeState, timing?: NodeTiming, elapsedMs?: number): void;
 }
 export interface RunResult {
   state: 'completed' | 'failed' | 'cancelled';
   graphId: string;
   outputs: Record<string, Record<string, unknown>>;
   statuses: Record<string, NodeState>;
+  timings?: Record<string, NodeTiming>;
+  elapsedMs?: number;
   diagnostics: Diagnostic[];
   error?: string;
 }
@@ -187,9 +194,16 @@ export async function runGraph(
     Record<string, unknown>
   >;
   const statuses: Record<string, NodeState> = Object.create(null) as Record<string, NodeState>;
+  const origin = performance.now();
+  const elapsed = () => performance.now() - origin;
+  const timings: Record<string, NodeTiming> = Object.create(null) as Record<string, NodeTiming>;
   const status = (id: string, state: NodeState) => {
+    const timing = timings[id] ?? (timings[id] = {});
+    if (state === 'running') timing.startedMs = elapsed();
+    if (state !== 'waiting' && state !== 'running' && timing.readyMs !== undefined)
+      timing.endedMs = elapsed();
     statuses[id] = state;
-    options.onStatus?.(id, state);
+    options.onStatus?.(id, state, { ...timings[id] }, elapsed());
   };
   let current: string | undefined;
   const check = () => {
@@ -209,6 +223,17 @@ export async function runGraph(
         diagnostics: plan.diagnostics,
         error: 'Graph cannot execute; resolve its diagnostics',
       };
+    const pendingInputs = new Map(plan.graph.nodes.map((node) => [node.id, 0]));
+    const consumers = new Map(plan.graph.nodes.map((node) => [node.id, [] as string[]]));
+    for (const edge of plan.graph.connections) {
+      pendingInputs.set(edge.target.nodeId, pendingInputs.get(edge.target.nodeId)! + 1);
+      consumers.get(edge.source.nodeId)!.push(edge.target.nodeId);
+    }
+    for (const node of plan.graph.nodes)
+      if (pendingInputs.get(node.id) === 0) {
+        timings[node.id]!.readyMs = elapsed();
+        status(node.id, 'waiting');
+      }
     for (const id of plan.order) {
       check();
       current = id;
@@ -257,11 +282,27 @@ export async function runGraph(
         throw new Error('Node returned an undeclared output');
       outputs[id] = options.clone(result) as Record<string, unknown>;
       status(id, 'completed');
+      for (const target of consumers.get(id)!) {
+        const remaining = pendingInputs.get(target)! - 1;
+        pendingInputs.set(target, remaining);
+        if (!remaining) {
+          timings[target]!.readyMs = elapsed();
+          status(target, 'waiting');
+        }
+      }
       current = undefined;
       await context.yield();
     }
     check();
-    return { state: 'completed', graphId, outputs, statuses, diagnostics: [] };
+    return {
+      state: 'completed',
+      graphId,
+      outputs,
+      statuses,
+      timings,
+      elapsedMs: elapsed(),
+      diagnostics: [],
+    };
   } catch (error) {
     const cancelled = error instanceof Cancelled || options.cancelled?.();
     if (current) status(current, cancelled ? 'cancelled' : 'failed');
@@ -272,6 +313,8 @@ export async function runGraph(
       graphId,
       outputs: {},
       statuses,
+      timings,
+      elapsedMs: elapsed(),
       diagnostics: [],
       error: error instanceof Error ? error.message : String(error),
     };
@@ -285,7 +328,14 @@ export interface RunIdentity {
 export type WorkerRequest =
   { kind: 'run'; identity: RunIdentity; file: ProjectFile } | { kind: 'cancel'; runId: number };
 export type WorkerReply =
-  | { kind: 'status'; identity: RunIdentity; nodeId: string; state: NodeState }
+  | {
+      kind: 'status';
+      identity: RunIdentity;
+      nodeId: string;
+      state: NodeState;
+      timing?: NodeTiming;
+      elapsedMs?: number;
+    }
   | { kind: 'result'; identity: RunIdentity; result: RunResult };
 /** Independent request/revision gate; stale progress and completion never become current state. */
 export class RunGate {

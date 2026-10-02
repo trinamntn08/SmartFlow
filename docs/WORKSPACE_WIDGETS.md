@@ -7,7 +7,7 @@ Every region has a widget selector and three controls:
 - **X** closes that region. The widget remains available in the selectors.
 
 Choose **Graph**, **Node library**, **Inspector**, **Execution results** or
-**Result viewer** in any region. Choosing a widget that is already visible swaps
+**Result viewer** or **Process Gantt** in any region. Choosing a widget that is already visible swaps
 the two regions. Drag a divider to resize. You can create up to 32 regions;
 there is one live instance of each widget. The numeric configuration has no
 Result viewer. Node creation is now in the **Node library** widget.

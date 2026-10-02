@@ -26,6 +26,12 @@ publishes no outputs. Edits, document replacement and new Run requests reject ol
 progress and outputs. Mode/thread options and progress are transient and do not
 alter project files or undo history.
 
+## Process time analysis
+
+Choose **Process Gantt** in a workspace region to compare ready-queue and
+invocation spans on one millisecond timeline. Browser mode has the same analysis
+panel. See [Gantt analysis](GANTT_ANALYSIS.md) for timing semantics and limitations.
+
 ## Extension execution contracts
 
 `native/sdk/ExecutionPolicy.h` defines reentrancy, resource names and thread limits.

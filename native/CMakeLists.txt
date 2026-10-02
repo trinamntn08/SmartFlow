@@ -36,6 +36,7 @@ add_library(smartflow_pipeline_widgets STATIC
 target_include_directories(smartflow_pipeline_widgets PUBLIC vendor/pipeline-widgets/inc)
 target_link_libraries(smartflow_pipeline_widgets PUBLIC smartflow_legacy smartflow_qtnodes)
 add_library(smartflow_workspace STATIC
+  app/workspace/GanttWidget.cpp app/workspace/GanttWidget.h
   app/workspace/PanelWorkspace.cpp app/workspace/PanelWorkspace.h
   app/workspace/ComponentDialogs.cpp app/workspace/ComponentDialogs.h
   app/workspace/GraphProject.cpp app/workspace/GraphProject.h

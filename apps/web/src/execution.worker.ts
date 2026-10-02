@@ -22,8 +22,15 @@ scope.onmessage = async (event) => {
     clone: (value) => structuredClone(value),
     cancelled: () => cancelled,
     yield: () => new Promise((resolve) => setTimeout(resolve, 0)),
-    onStatus: (nodeId, state) =>
-      scope.postMessage({ kind: 'status', identity: request.identity, nodeId, state }),
+    onStatus: (nodeId, state, timing, elapsedMs) =>
+      scope.postMessage({
+        kind: 'status',
+        identity: request.identity,
+        nodeId,
+        state,
+        timing: timing ?? {},
+        elapsedMs: elapsedMs ?? 0,
+      }),
   });
   scope.postMessage({ kind: 'result', identity: request.identity, result });
   active = undefined;

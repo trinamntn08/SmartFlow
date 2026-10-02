@@ -1,6 +1,7 @@
 import {
   RunGate,
   type NodeState,
+  type NodeTiming,
   type RunIdentity,
   type RunResult,
   type WorkerReply,
@@ -26,6 +27,8 @@ export function createExecutionWorker(): WorkerPort {
 export interface ExecutionState {
   phase: 'idle' | 'running' | 'completed' | 'failed' | 'cancelled' | 'obsolete';
   statuses: Record<string, NodeState>;
+  timings?: Record<string, NodeTiming>;
+  elapsedMs?: number;
   result?: RunResult;
   identity?: RunIdentity;
   error?: string;
@@ -39,6 +42,8 @@ export class ExecutionClient {
   #factory: () => WorkerPort;
   #publish: (state: ExecutionState) => void;
   #pending: Record<string, NodeState> = {};
+  #timings: Record<string, NodeTiming> = {};
+  #origin = 0;
   #timer: ReturnType<typeof setTimeout> | undefined;
   #clearProgress(): void {
     if (this.#timer !== undefined) clearTimeout(this.#timer);
@@ -69,7 +74,9 @@ export class ExecutionClient {
     this.#revision = revision;
     this.#graphId = graphId;
     const identity = this.#gate.begin(revision, graphId);
-    this.#update({ phase: 'running', statuses: {}, identity });
+    this.#timings = {};
+    this.#origin = performance.now();
+    this.#update({ phase: 'running', statuses: {}, timings: {}, identity });
     try {
       const worker = this.#factory();
       this.#worker = worker;
@@ -77,6 +84,14 @@ export class ExecutionClient {
         (reply) => {
           if (!this.#gate.accepts(reply.identity, this.#revision, this.#graphId)) return;
           if (reply.kind === 'status') {
+            if (reply.elapsedMs !== undefined) this.#origin = performance.now() - reply.elapsedMs;
+            if (reply.timing)
+              Object.defineProperty(this.#timings, reply.nodeId, {
+                value: reply.timing,
+                enumerable: true,
+                configurable: true,
+                writable: true,
+              });
             Object.defineProperty(this.#pending, reply.nodeId, {
               value: reply.state,
               enumerable: true,
@@ -92,6 +107,8 @@ export class ExecutionClient {
                   this.#update({
                     ...this.#state,
                     statuses: { ...this.#state.statuses, ...pending },
+                    timings: { ...this.#timings },
+                    elapsedMs: performance.now() - this.#origin,
                   });
               }, 32);
           } else {
@@ -103,6 +120,8 @@ export class ExecutionClient {
               phase: reply.result.state,
               statuses: reply.result.statuses,
               result: reply.result,
+              timings: reply.result.timings ?? {},
+              elapsedMs: reply.result.elapsedMs ?? 0,
               identity,
             });
           }
@@ -130,11 +149,32 @@ export class ExecutionClient {
     }
   }
   cancel(): void {
+    const statuses = { ...this.#state.statuses, ...this.#pending };
     this.#clearProgress();
     this.#gate.invalidate();
     this.#worker?.terminate();
     this.#worker = undefined;
-    this.#update({ phase: 'cancelled', statuses: {} });
+    const elapsedMs = performance.now() - this.#origin;
+    const timings = Object.fromEntries(
+      Object.entries(this.#timings).map(([id, timing]) => [
+        id,
+        {
+          ...timing,
+          ...(timing.readyMs !== undefined ? { endedMs: timing.endedMs ?? elapsedMs } : {}),
+        },
+      ]),
+    );
+    this.#update({
+      phase: 'cancelled',
+      timings,
+      elapsedMs,
+      statuses: Object.fromEntries(
+        Object.entries(statuses).map(([id, state]) => [
+          id,
+          state === 'completed' || state === 'failed' ? state : 'cancelled',
+        ]),
+      ),
+    });
   }
   dispose(): void {
     this.#clearProgress();

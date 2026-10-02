@@ -14,6 +14,7 @@ class QProgressBar;
 
 namespace smartflow {
 class PanelWorkspace;
+class GanttWidget;
 class WorkspaceWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -62,6 +63,7 @@ private:
     QVBoxLayout* inspectorLayout = nullptr;
     QLabel* outputLabel = nullptr;
     QTreeWidget* results = nullptr;
+    GanttWidget* gantt = nullptr;
     QProgressBar* executionProgress = nullptr;
     QPushButton* cancelButton = nullptr;
     QComboBox* outputPorts = nullptr;

@@ -17,6 +17,7 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 
 - Native node editing, typed connections, parameter inspector and semantic Undo/Redo.
 - Background execution/cancellation and pinned result viewers.
+- **Process Gantt** widget with ready-queue/execution timing bars and node selection.
 - Sequential/Parallel and Threads controls, live node/component progress and
   managed node-internal work sharing the configured per-run budget.
 - Primitive 3D scene workflow plus an independent table/filter/summary workflow.
@@ -38,6 +39,13 @@ Packaged scene and component screenshots were visually inspected.
 The package checker records source commit, executable SHA256 values and screenshots
 in `build/desktop-test/verification/startup-results.json`. Startup/offscreen evidence
 does not establish manual file-dialog/desktop interaction or clean-machine acceptance.
+
+## Process Gantt manual check
+
+Choose **Process Gantt** in a region selector, Run each scene/data/component
+example, and inspect queue/run values and bars. Click a row to select its graph
+node. Split/move the widget, Save, relaunch/Open and confirm its placement returns;
+Run again for fresh timings. See [timing semantics](GANTT_ANALYSIS.md).
 
 ## Record results
 

@@ -9,6 +9,8 @@ Updated: 2026-10-02. SmartFlow is a native C++17/Qt6 Windows development preview
 with graph editing, background execution/cancellation, inspector controls,
 undo/redo, atomic project Save/Open and workspace/viewer restoration.
 Selectable widget regions support H/V splits, swapping, resizing and saved layouts.
+Process Gantt analysis is available in desktop and browser mode; see
+[process timings](docs/GANTT_ANALYSIS.md).
 See [workspace widgets](docs/WORKSPACE_WIDGETS.md).
 Sequential/parallel execution controls and live node/component progress are
 available, with managed node-internal work sharing the thread budget; see

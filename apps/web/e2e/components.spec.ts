@@ -10,13 +10,13 @@ test('collapsed component controls execute named outputs and survive undo/reopen
   await page.getByRole('button', { name: 'Run graph' }).click();
   await expect(page.getByLabel('Execution state')).toHaveText('completed');
   await page.getByLabel('Viewed output').selectOption(JSON.stringify(['summary-tool', 'summary']));
-  await expect(page.getByRole('table')).toContainText('79');
+  await expect(page.getByRole('table', { name: 'Table output' })).toContainText('79');
   await page.getByLabel('minimum', { exact: true }).fill('40');
   await page.getByLabel('minimum', { exact: true }).press('Enter');
   await page.getByRole('button', { name: 'Run graph' }).click();
-  await expect(page.getByRole('table')).toContainText('48');
+  await expect(page.getByRole('table', { name: 'Table output' })).toContainText('48');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await page.getByRole('button', { name: 'Run graph' }).click();
-  await expect(page.getByRole('table')).toContainText('79');
+  await expect(page.getByRole('table', { name: 'Table output' })).toContainText('79');
   expect(errors).toEqual([]);
 });
