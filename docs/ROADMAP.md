@@ -119,6 +119,11 @@ implementation by this native migration sequence:
 4. Completed N4: copy the audited geometry/material foundation and dependencies; implement/test the included native primitive/transform/material/viewer slice. Production rendering and broader scene capabilities remain future work.
 5. In progress, N5: file codec (N5a), retained-document execution adapter (N5b), structural document commands (N5c), document undo layer (N5d), retained editor integration (N5e), and file actions (N5f) completed; workspace persistence (N5g) and independent data workflow (N5h) completed; N5i adds shipped examples and packaged project launch checks; real desktop interaction acceptance remains pending. Record full N5 only after acceptance checks pass.
 
+VS Code CMake Tools presets and native launch configurations are prepared for
+manual testing. The user has deferred automated Windows desktop interaction and
+will test manually; full N5 acceptance remains pending their reported results.
+See [the IDE setup](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
+
 Each checkpoint must include actual build/test results and remaining limitations.
 
 ### Earlier TypeScript prototype sequence (deferred)

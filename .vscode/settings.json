@@ -1,5 +1,16 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": true,
+  "cmake.buildBeforeRun": true,
+  "cmake.debugConfig": {
+    "type": "cppvsdbg",
+    "cwd": "${workspaceFolder}",
+    "stopAtEntry": false
+  },
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "[cpp]": { "editor.defaultFormatter": "ms-vscode.cpptools" },
+  "[cmake]": { "editor.defaultFormatter": "ms-vscode.cmake-tools" }
 }

@@ -14,6 +14,8 @@ N6b adds reusable-component extraction and catalog commands. N6c adds the
 them from the saved project library. See [graph components](docs/GRAPH_COMPONENTS.md).
 Components insert as one node by default, with optional expanded insertion.
 
+To build and run in VS Code, use the [CMake Tools setup](docs/NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools).
+
 The first version for user testing is the **Windows desktop app**, built with C++/Qt.
 Follow [desktop testing](docs/DESKTOP_TESTING.md) to build a local test folder and
 launch `build/desktop-test/bin/smartflow.exe` directly. Qt and compiler runtime

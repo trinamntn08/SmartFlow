@@ -38,6 +38,54 @@ need Qt on PATH; the Windows CMake install target copies runtime dependencies
 into a local test folder. A public installer remains a later checkpoint.
 Build outputs and personal CMake presets are ignored.
 
+## Run from VS Code with CMake Tools
+
+Open this repository folder or `smartflow.code-workspace`. Install the recommended
+**CMake Tools** and **C/C++** extensions if they are missing. Your local machine
+has an ignored `CMakeUserPresets.json` already prepared with its Qt MSVC kit.
+The shared `CMakePresets.json` contains portable templates, not machine paths.
+
+1. Run **CMake: Select Configure Preset** and choose
+   **Windows local (Qt / MSVC x64)**, then **CMake: Configure**.
+2. Run **CMake: Select Build Preset** and choose **Windows local Release**.
+   Release reuses the existing verified build. **Windows local Debug** is also
+   available for source debugging; its first build compiles a separate configuration.
+3. Run **CMake: Set Launch/Debug Target** and choose **smartflow** for the 3D app,
+   or **smartflow-data** for the independent table app. The Launch entry in the
+   CMake sidebar also lets you choose the executable.
+4. Click the play button beside **Launch**, or run **CMake: Run Without Debugging**.
+   CMake Tools builds the target first and supplies the Qt runtime through the
+   preset environment. The working directory is the repository root.
+5. For F5 or Ctrl+F5, use a **SmartFlow** configuration in the Run and Debug menu.
+   `SmartFlow: selected CMake target` starts the chosen executable;
+   `SmartFlow: data workflow` passes `--data`; `SmartFlow: component example`
+   loads the shipped collapsed-component project. Choose `smartflow` or
+   `smartflow-data` as the CMake launch target first, rather than a test executable.
+   These configurations resolve the executable and Qt prefix from CMake Tools.
+
+To run tests, choose **Windows local Release tests** with **CMake: Select Test
+Preset**, then **CMake: Run Tests**. The presets also work from a terminal:
+
+```powershell
+cmake --preset windows-local
+cmake --build --preset windows-local-release
+ctest --preset windows-local-release-tests
+```
+
+On another machine, copy
+[the user-preset example](examples/CMakeUserPresets.example.json) to the repository
+root as `CMakeUserPresets.json`, and change `SMARTFLOW_QT_ROOT` to that machine's
+Qt MSVC kit directory (the directory containing `bin` and `lib`). Keep this file
+out of Git. The launch configurations expect the single Qt root used by these
+presets as `CMAKE_PREFIX_PATH`. Qt version upgrades belong in the local preset.
+VS2022 C++ tools, CMake 3.21 or newer, and Qt6 Widgets/OpenGLWidgets/Test are required.
+
+These steps follow the [CMake Tools preset guide](https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/cmake-presets.md)
+and [target launch guide](https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/debug-launch.md).
+Using a build-tree executable is a development workflow. Packaged desktop
+acceptance still uses `build/desktop-test`; the user is testing it manually and
+that acceptance is pending until results are reported.
+
 ## N2 pipeline foundation
 
 The build also produces `smartflow_legacy`, `smartflow_pipeline`, and

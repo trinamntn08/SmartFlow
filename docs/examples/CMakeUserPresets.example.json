@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "windows-local",
+      "displayName": "Windows local (Qt / MSVC x64)",
+      "inherits": "windows-msvc",
+      "environment": {
+        "SMARTFLOW_QT_ROOT": "C:/path/to/Qt/msvc2022_64"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-local-release",
+      "displayName": "Windows local Release",
+      "inherits": "release",
+      "configurePreset": "windows-local"
+    },
+    {
+      "name": "windows-local-debug",
+      "displayName": "Windows local Debug",
+      "inherits": "debug",
+      "configurePreset": "windows-local"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-local-release-tests",
+      "displayName": "Windows local Release tests",
+      "inherits": "release-tests",
+      "configurePreset": "windows-local"
+    }
+  ]
+}

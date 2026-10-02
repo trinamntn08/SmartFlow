@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "inputs": [
+    {
+      "id": "qtRoot",
+      "type": "command",
+      "command": "cmake.cacheVariable",
+      "args": { "name": "CMAKE_PREFIX_PATH" }
+    }
+  ],
+  "configurations": [
+    {
+      "name": "SmartFlow: selected CMake target",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "args": [],
+      "stopAtEntry": false,
+      "environment": [{ "name": "PATH", "value": "${input:qtRoot}/bin;${env:PATH}" }]
+    },
+    {
+      "name": "SmartFlow: data workflow",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "args": ["--data"],
+      "stopAtEntry": false,
+      "environment": [{ "name": "PATH", "value": "${input:qtRoot}/bin;${env:PATH}" }]
+    },
+    {
+      "name": "SmartFlow: component example",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "args": ["--project", "${workspaceFolder}/examples/components.smartflow"],
+      "stopAtEntry": false,
+      "environment": [{ "name": "PATH", "value": "${input:qtRoot}/bin;${env:PATH}" }]
+    }
+  ]
+}

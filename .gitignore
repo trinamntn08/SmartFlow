@@ -34,3 +34,4 @@ Desktop.ini
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/extensions.json
+!.vscode/launch.json

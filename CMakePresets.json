@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "windows-msvc",
+      "hidden": true,
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/native",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "$env{SMARTFLOW_QT_ROOT}",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/desktop-test",
+        "BUILD_TESTING": true
+      },
+      "environment": { "PATH": "$env{SMARTFLOW_QT_ROOT}/bin;$penv{PATH}" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "release", "hidden": true, "configuration": "Release", "jobs": 4 },
+    { "name": "debug", "hidden": true, "configuration": "Debug", "jobs": 4 }
+  ],
+  "testPresets": [
+    {
+      "name": "release-tests",
+      "hidden": true,
+      "configuration": "Release",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    }
+  ]
+}
