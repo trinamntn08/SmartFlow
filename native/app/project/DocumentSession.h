@@ -35,6 +35,7 @@ public:
                  const std::string& sourceNode, const std::string& sourcePort,
                  const std::string& targetNode, const std::string& targetPort);
     void disconnect(const std::string& connectionId);
+    void catalogComponent(const GraphComponent& component);
     ComponentBindings instantiateComponent(const GraphComponent& component, const std::string& instanceId,
         const Document& controls, const Document& inputSources);
     // Replace only an explicitly owned top-level workspace field. This does not

@@ -177,6 +177,12 @@ checks for missing projects and missing path arguments. See
 
 ## N6a reusable graph components
 
+N6b extends the component API with selection extraction and standalone catalog
+commands. `native_components` checks boundary interfaces, unchanged source graphs,
+catalog identity conflicts/no-ops, semantic undo/redo, workspace isolation and
+reopened extracted definitions executing through the data extension. See the
+[component guide](GRAPH_COMPONENTS.md) and [N6b handoff](agents/handoffs/2026-10-02-native-checkpoint-n6b.md).
+
 `smartflow_components` is a project-codec/Qt Core library, without domain or
 canvas imports. DocumentSession/DocumentHistory expose atomic component
 instantiation with retained catalog insertion, typed binding validation and undo.

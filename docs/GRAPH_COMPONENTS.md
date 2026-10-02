@@ -1,6 +1,6 @@
 # Native graph components
 
-Status: model/command foundation, N6a. End-user authoring and collapsed component
+Status: extraction/catalog command foundation, N6b. End-user authoring UI and collapsed component
 nodes are not available yet. A component currently inserts a reusable subgraph as
 ordinary nodes through an atomic document command.
 
@@ -49,6 +49,29 @@ introduced unavailable nodes, bad ports or missing required inputs reject the
 command without changing the active document or redo history. Unrelated existing
 unknown content remains retained and continues to block execution.
 
+## Extraction and catalog commands
+
+`GraphComponent::extract(source, graphId, nodeIds, id, title, inputs, outputs,
+controls)` copies a nonempty, unique node selection and its internal connections.
+The caller supplies the interface arrays from the definition contract. Every
+incoming boundary connection must expose its selected target; every outgoing
+boundary connection must expose its selected source. Multiple outgoing edges can
+share one exposed output. Invalid selections or incomplete boundaries reject.
+Extraction leaves the original graph untouched, retaining its opaque metadata,
+selected nodes and internal edges. The copied body graph ID becomes `body`.
+
+`DocumentHistory::extractComponent(...)` extracts from the active graph and saves
+the definition as one undoable catalog command. `catalogComponent(component)`
+also stores an independently authored definition without inserting nodes. Saving
+an identical definition is a no-op; conflicting ID/version content rejects before
+changing the redo branch. Undo keeps current workspace state.
+
+Catalog storage validates structure without requiring installed node packages.
+Unavailable definitions remain retained and can be reused after their packages
+become available. Instantiation still checks active registrations, typed ports
+and parameter bounds. Extraction does not infer ports, automatically expose
+parameters, replace selected nodes or copy boundary-edge metadata into bindings.
+
 ## Verification and next work
 
 `native_components` tests two table filter/summary instances with distinct
@@ -56,7 +79,10 @@ thresholds and outputs, parameter edits, save/reopen, exact definition/opaque
 retention, atomic undo/redo and rejection. Neither the component library nor its
 data-based tests link scene-domain libraries.
 
-Next: component-authoring/library commands and UI, then a collapsed instance
+N6b also checks extraction, boundary validation, catalog conflicts/no-ops,
+workspace-preserving undo/redo and real file reopening followed by execution.
+
+Next: component-authoring/library UI, then a collapsed instance
 node with exposed parameter controls and execution/result mapping. Recursive
 components, definition migration, live catalog updates and external distribution
 remain later work. See [decision 0012](architecture/decisions/0012-native-graph-component-foundation.md).

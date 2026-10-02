@@ -9,6 +9,9 @@ SmartFlow starts as a native C++/Qt application based on audited source copied f
 
 ## Start locally
 
+N6b adds reusable-component extraction and catalog commands with undo/save/reopen
+coverage. Component authoring UI and collapsed nodes remain pending.
+
 The first version for user testing is the **Windows desktop app**, built with C++/Qt.
 Follow [desktop testing](docs/DESKTOP_TESTING.md) to build a local test folder and
 launch `build/desktop-test/bin/smartflow.exe` directly. Qt and compiler runtime

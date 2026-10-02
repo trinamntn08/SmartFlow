@@ -23,6 +23,10 @@ public:
     void connect(const std::string& id, const std::string& source, const std::string& output,
                  const std::string& target, const std::string& input);
     void disconnect(const std::string& id);
+    void catalogComponent(const GraphComponent& component);
+    GraphComponent extractComponent(const std::vector<std::string>& nodeIds,
+        const std::string& id, const std::string& title, const Document& inputs,
+        const Document& outputs, const Document& controls);
     ComponentBindings instantiateComponent(const GraphComponent& component, const std::string& instanceId,
         const Document& controls, const Document& inputSources);
     // One atomic command for multi-selection edits on a disposable candidate.

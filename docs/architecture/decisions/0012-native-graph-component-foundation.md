@@ -32,6 +32,15 @@ current workspace, per the existing document-history agreement.
 
 ## Boundaries and limits
 
+N6b (2026-10-02) adds explicit selection extraction and standalone catalog
+commands within these boundaries. Extraction copies selected nodes/internal edges
+and retained graph metadata; every connection across the selection boundary must
+have a caller-declared exposed endpoint. It leaves the source graph unchanged.
+Catalog storage is structural and permits unavailable node packages; active
+registration checks remain at instantiation. Identical catalogs are no-ops,
+identity/version conflicts reject, and extraction/catalog storage undo atomically.
+This provides an authoring API without changing project schema or execution.
+
 The components library depends only on the project codec/Qt Core; it has no SDK,
 canvas, renderer or domain dependency. The session/history adapters use public
 registrations. Tests instantiate the data extension without scene libraries.

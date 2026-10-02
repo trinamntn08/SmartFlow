@@ -101,6 +101,20 @@ void DocumentHistory::setWorkspaceField(const std::string& name, const Document&
     Q_EMIT workspaceChanged();
 }
 
+void DocumentHistory::catalogComponent(const GraphComponent& component)
+{
+    edit("Catalog component",[&](auto& candidate) { candidate.catalogComponent(component); });
+}
+
+GraphComponent DocumentHistory::extractComponent(const std::vector<std::string>& nodeIds,
+    const std::string& id, const std::string& title, const Document& inputs,
+    const Document& outputs, const Document& controls)
+{
+    auto component=GraphComponent::extract(current->document(),graphId,nodeIds,id,title,inputs,outputs,controls);
+    catalogComponent(component);
+    return component;
+}
+
 ComponentBindings DocumentHistory::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
     const Document& controls, const Document& inputSources)
 {

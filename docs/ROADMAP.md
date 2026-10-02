@@ -83,6 +83,11 @@ See [the component guide](GRAPH_COMPONENTS.md) and the
 
 ## Next: define and implement the first vertical slice
 
+N6b adds selection-to-component extraction and undoable catalog storage commands,
+with explicit boundary interfaces, retained opaque content and save/reopen reuse.
+The authoring/library UI and collapsed component behavior remain pending. See the
+[N6b handoff](agents/handoffs/2026-10-02-native-checkpoint-n6b.md).
+
 The list below records the earlier TypeScript plan. It is superseded for current
 implementation by this native migration sequence:
 

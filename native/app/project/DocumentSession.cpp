@@ -280,6 +280,11 @@ void DocumentSession::setWorkspaceField(const std::string& name, const Document&
     source.swap(replacement);
 }
 
+void DocumentSession::catalogComponent(const GraphComponent& component)
+{
+    replace(component.catalog(source));
+}
+
 ComponentBindings DocumentSession::instantiateComponent(const GraphComponent& component, const std::string& instanceId,
     const Document& controls, const Document& inputSources)
 {

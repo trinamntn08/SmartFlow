@@ -88,13 +88,46 @@ GraphComponent::GraphComponent(Document definition) : retained(std::move(definit
     }
 }
 
-ComponentInstantiation GraphComponent::instantiate(const Document& source, const std::string& graphId,
-    const std::string& instanceId, const Document& controls, const Document& inputSources) const
+GraphComponent GraphComponent::extract(const Document& source, const std::string& graphId,
+    const std::vector<std::string>& nodeIds, const std::string& id, const std::string& title,
+    const Document& inputs, const Document& outputs, const Document& controls)
 {
-    name(instanceId); validate(source);
-    if(!controls.is_object() || !inputSources.is_object()) throw FileError("Component bindings must be objects");
-    ComponentInstantiation result{source,{}};
-    auto& catalog=result.document["project"]["components"];
+    validate(source);
+    const auto& graphs=source["project"]["graphs"];
+    const auto found=std::find_if(graphs.begin(),graphs.end(),[&](const auto& graph) { return graph["id"]==graphId; });
+    if(found==graphs.end()) throw FileError("Component source graph is missing");
+    const std::set<std::string> selected(nodeIds.begin(),nodeIds.end());
+    if(selected.empty() || selected.size()!=nodeIds.size()) throw FileError("Component selection must be nonempty and unique");
+    auto body=*found;
+    body["id"]="body";
+    body["nodes"]=Document::array(); body["connections"]=Document::array();
+    for(const auto& node : (*found)["nodes"])
+        if(selected.count(node["id"].get<std::string>())) body["nodes"].push_back(node);
+    if(body["nodes"].size()!=selected.size()) throw FileError("Component selection contains a missing node");
+    for(const auto& edge : (*found)["connections"])
+        if(selected.count(edge["source"]["nodeId"].get<std::string>()) &&
+           selected.count(edge["target"]["nodeId"].get<std::string>())) body["connections"].push_back(edge);
+    GraphComponent result({{"format","smartflow.graph-component"},{"schemaVersion",1},{"version",1},
+        {"id",id},{"title",title},{"graph",body},{"inputs",inputs},{"outputs",outputs},{"controls",controls}});
+    for(const auto& edge : (*found)["connections"]) {
+        const bool from=selected.count(edge["source"]["nodeId"].get<std::string>());
+        const bool to=selected.count(edge["target"]["nodeId"].get<std::string>());
+        if(from==to) continue;
+        const auto& endpoint=edge[to ? "target" : "source"];
+        const auto& entries=to ? inputs : outputs;
+        const char* key=to ? "target" : "source";
+        if(std::none_of(entries.begin(),entries.end(),[&](const auto& entry) {
+            return entry[key]["nodeId"]==endpoint["nodeId"] && entry[key]["portId"]==endpoint["portId"];
+        })) throw FileError("Component boundary connection requires an exposed endpoint");
+    }
+    return result;
+}
+
+Document GraphComponent::catalog(const Document& source) const
+{
+    validate(source);
+    auto result=source;
+    auto& catalog=result["project"]["components"];
     if(catalog.is_null()) catalog=Document::array();
     if(!catalog.is_array()) throw FileError("Unsupported component catalog shape");
     bool cataloged=false;
@@ -105,6 +138,16 @@ ComponentInstantiation GraphComponent::instantiate(const Document& source, const
             cataloged=true;
         }
     if(!cataloged) catalog.push_back(retained);
+    validate(result);
+    return result;
+}
+
+ComponentInstantiation GraphComponent::instantiate(const Document& source, const std::string& graphId,
+    const std::string& instanceId, const Document& controls, const Document& inputSources) const
+{
+    name(instanceId); validate(source);
+    if(!controls.is_object() || !inputSources.is_object()) throw FileError("Component bindings must be objects");
+    ComponentInstantiation result{catalog(source),{}};
     auto& graphs=result.document["project"]["graphs"];
     const auto graph=std::find_if(graphs.begin(),graphs.end(),[&](const auto& item) { return item["id"]==graphId; });
     if(graph==graphs.end()) throw FileError("Component destination graph is missing");

@@ -54,6 +54,82 @@ double total(const DocumentSession& session, const WorkspaceConfiguration& confi
 class ComponentTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void extractionCatalogUndoAndReopen()
+    {
+        const auto config=data::dataConfiguration();
+        auto original=source(config);
+        auto& graph=original["project"]["graphs"][0];
+        const auto model=definition();
+        for(const auto& node : model["graph"]["nodes"]) graph["nodes"].push_back(node);
+        graph["connections"]=model["graph"]["connections"];
+        graph["connections"].push_back({{"id","incoming"},{"source",{{"nodeId","sample"},{"portId","out"}}},
+            {"target",{{"nodeId","filter"},{"portId","in"}}}});
+        graph["futureGraph"]={{"large",uint64_t(18446744073709551615ULL)}};
+        DocumentHistory history(original,"graph",config.delegates,config.nodes);
+        const auto component=history.extractComponent({"filter","summary"},"extracted","Extracted summary",
+            model["inputs"],model["outputs"],model["controls"]);
+        QCOMPARE(history.undoStack().count(),1);
+        QVERIFY(history.session().selectedGraph()==graph);
+        QVERIFY(component.definition()["graph"]["nodes"]==model["graph"]["nodes"]);
+        QVERIFY(component.definition()["graph"]["connections"]==model["graph"]["connections"]);
+        QVERIFY(component.definition()["graph"]["futureGraph"]==graph["futureGraph"]);
+        const auto cataloged=history.session().document();
+        history.catalogComponent(component);
+        QCOMPARE(history.undoStack().count(),1); // Identical definitions are a no-op.
+        history.undoStack().undo();
+        QVERIFY(history.session().document()==original);
+        QVERIFY_EXCEPTION_THROWN(history.extractComponent({"filter","summary"},"bad","Bad",
+            Document::array(),model["outputs"],model["controls"]),FileError);
+        QVERIFY(history.undoStack().canRedo());
+        history.setWorkspaceField("current",{{"zoom",3}});
+        history.undoStack().redo();
+        QVERIFY(history.session().document()["project"]==cataloged["project"]);
+        QVERIFY(history.session().document()["workspace"]["current"]["zoom"]==3);
+        QTemporaryDir directory;
+        const auto path=directory.filePath("extracted.smartflow");
+        write(path,history.session().document());
+        DocumentSession reopened(read(path),"graph",config.delegates,config.nodes);
+        const GraphComponent saved(reopened.document()["project"]["components"][0]);
+        const auto instance=reopened.instantiateComponent(saved,"copy",{{"minimum",30}},input());
+        QCOMPARE(total(reopened,config,instance),79.0);
+    }
+
+    void extractionRejectsIncompleteBoundariesAndCatalogConflicts()
+    {
+        const auto config=data::dataConfiguration();
+        auto original=source(config);
+        auto& graph=original["project"]["graphs"][0];
+        const auto model=definition();
+        for(const auto& node : model["graph"]["nodes"]) graph["nodes"].push_back(node);
+        graph["connections"]=model["graph"]["connections"];
+        auto extract=[&](std::vector<std::string> ids, Document outputs) {
+            return GraphComponent::extract(original,"graph",ids,"filter-only","Filter",
+                model["inputs"],outputs,model["controls"]);
+        };
+        QVERIFY_EXCEPTION_THROWN(extract({"filter"},Document::array()),FileError);
+        const Document outputs=Document::array({{{"id","rows"},{"source",{{"nodeId","filter"},{"portId","out"}}}}});
+        const auto component=extract({"filter"},outputs);
+        QVERIFY_EXCEPTION_THROWN(extract({},outputs),FileError);
+        QVERIFY_EXCEPTION_THROWN(extract({"filter","filter"},outputs),FileError);
+        QVERIFY_EXCEPTION_THROWN(extract({"missing"},outputs),FileError);
+        DocumentHistory history(original,"graph",config.delegates,config.nodes);
+        const auto diagnostics=history.session().diagnostics();
+        history.catalogComponent(component);
+        const auto before=history.session().document();
+        auto conflict=component.definition(); conflict["title"]="Conflict";
+        QVERIFY_EXCEPTION_THROWN(history.catalogComponent(GraphComponent(conflict)),FileError);
+        QVERIFY(history.session().document()==before);
+        // Catalog storage preserves unavailable definitions without executing them.
+        auto unknown=component.definition(); unknown["id"]="unknown";
+        unknown["graph"]["nodes"][0]["packageId"]="future";
+        history.catalogComponent(GraphComponent(unknown));
+        QVERIFY(history.session().diagnostics()==diagnostics);
+        QVERIFY(history.session().document()["project"]["components"][1]==unknown);
+        auto malformed=original; malformed["project"]["components"]=Document::object();
+        QVERIFY_EXCEPTION_THROWN(component.catalog(malformed),FileError);
+        QVERIFY(original["project"].contains("components")==false);
+    }
+
     void independentInstancesExposeControlsAndPersistOpaqueDefinition()
     {
         const auto config=data::dataConfiguration();
