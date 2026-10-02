@@ -443,6 +443,16 @@ export function App() {
         </aside>
       </div>
       <OutputPanel
+        editSource={(id) =>
+          action(() => {
+            const node = graph?.nodes.find((node) => node.id === id);
+            if (!node || node.packageId !== 'smartflow.scene-3d' || node.typeId !== 'cube')
+              throw new Error('The source cube is not editable in this graph');
+            const size = node.parameters.size ?? 2;
+            if (typeof size !== 'number') throw new Error('Invalid cube size');
+            session.parameter(graphId, id, 'size', Math.min(100, size + 0.5));
+          })
+        }
         execution={execution}
         workspace={workspace}
         patch={(value) => action(() => patchWorkspace(session.history, graphId, value))}

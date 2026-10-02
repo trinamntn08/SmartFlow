@@ -48,6 +48,13 @@ export function readWorkspace(file: ProjectFile, graphId: string): GraphWorkspac
     viewers: cloneJson(record(browser?.viewers)),
   };
   if (typeof state.pinned === 'string') result.pinned = state.pinned;
+  if (!Object.hasOwn(result.viewers, 'smartflow.scene-3d.viewer@1')) {
+    const scene = record(record(native.viewers)['smartflow.scene-3d.viewer@1']);
+    const portable: JsonObject = {};
+    for (const name of ['yaw', 'pitch', 'span', 'target', 'selection'])
+      if (Object.hasOwn(scene, name)) portable[name] = cloneJson(scene[name]!);
+    if (Object.keys(portable).length) result.viewers['smartflow.scene-3d.viewer@1'] = portable;
+  }
   if (typeof state.pinnedPort === 'string') result.pinnedPort = state.pinnedPort;
   const viewport = record(state.viewport);
   if (

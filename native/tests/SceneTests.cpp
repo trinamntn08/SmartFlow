@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QUndoStack>
 #include <QTemporaryDir>
+#include <QFileInfo>
+#include <QDir>
 #include <QJsonArray>
 #include <QAction>
 #include <QFontDatabase>
@@ -42,6 +44,28 @@ void edit(WorkspaceWindow& window, const char* suffix, const char* name, double 
 class SceneTests : public QObject {
     Q_OBJECT
 private Q_SLOTS:
+    void sharedBrowserSceneExpectations()
+    {
+        const auto path=QFileInfo(QString::fromUtf8(SMARTFLOW_SCENE_EXAMPLE)).dir().filePath("../tests/fixtures/scene-results-v1.json");
+        const auto fixture=project::jsonFile::read(path);
+        WorkspaceWindow window(sceneConfiguration());
+        QTRY_VERIFY(window.execution().result());
+        window.execution().setLive(false);
+        for(const auto& expected : fixture["cases"]) {
+            edit(window,"cube","size",expected["size"].get<double>());
+            edit(window,"transform","rotation Y",expected["rotation"].get<double>());
+            const char* axes[]={"x","y","z"};
+            const char* scales[]={"scale X","scale Y","scale Z"};
+            for(int axis=0;axis<3;++axis) {
+                edit(window,"transform",axes[axis],expected["position"][axis].get<double>());
+                edit(window,"transform",scales[axis],expected["scale"][axis].get<double>());
+            }
+            window.execution().run(); QTRY_VERIFY(!window.execution().busy());
+            QVERIFY(window.execution().result()); QVERIFY(window.execution().result()->succeeded());
+            const auto actual=scene(window,"scene").objects.front().geometry.verts.front().vert;
+            for(int axis=0;axis<3;++axis) QVERIFY(std::abs(actual[axis]-expected["firstVertex"][axis].get<double>())<1e-5);
+        }
+    }
     void parallelSceneMatchesSequential() {
         WorkspaceWindow window(sceneConfiguration());
         QTRY_VERIFY(window.execution().result());

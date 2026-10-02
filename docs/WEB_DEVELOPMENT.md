@@ -1,7 +1,7 @@
 # Browser workspace development
 
 Updated: 2026-10-02. W3b data execution and table outputs are implemented alongside
-the native Windows app. Browser scene rendering and component authoring are pending.
+the native Windows app. W4 scene execution/rendering is implemented; component authoring is pending.
 
 ## Run and edit
 
@@ -24,6 +24,13 @@ Run graph executes in a worker. Cancel run terminates work and discards partial
 outputs. Node states appear on the canvas. Choose a named output in the Output
 panel; table row selection and the pinned output are saved with browser workspace.
 Parameter/graph edits mark previous results obsolete until another run completes.
+
+The scene example runs Cube/Transform/Material/Scene; Merge accepts two scenes.
+Drag the 3D preview to orbit, wheel to zoom, and use Frame scene to center it.
+Click an object to select it. Increase source size is an explicit undoable cube
+parameter edit. Camera and object selection are workspace edits. This primitive
+preview uses fixed lighting/depth-sorted faces, with at most 64 boxes; it does not
+render imported assets, transparency or intersecting surfaces accurately.
 
 New project starts domain-independent. The graph selector switches among retained
 graphs. Projects with no graphs can explicitly add one. Unknown nodes/edges are

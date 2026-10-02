@@ -1,5 +1,7 @@
 import type { JsonObject } from '@smartflow/core';
 import { isTable } from '@smartflow/data';
+import { isScene } from '@smartflow/scene-3d';
+import { SceneViewer } from './SceneViewer.tsx';
 import type { ExecutionState } from './execution-client.ts';
 import { record, type GraphWorkspace } from './workspace.ts';
 
@@ -7,10 +9,12 @@ export function OutputPanel({
   execution,
   workspace,
   patch,
+  editSource,
 }: {
   execution: ExecutionState;
   workspace: GraphWorkspace;
   patch(value: JsonObject): void;
+  editSource(id: string): void;
 }) {
   const outputs = execution.result?.outputs ?? {};
   const choices = Object.entries(outputs).flatMap(([nodeId, ports]) =>
@@ -68,7 +72,17 @@ export function OutputPanel({
           ))}
         </ul>
       )}
-      {isTable(value) ? (
+      {isScene(value) ? (
+        <SceneViewer
+          scene={value}
+          state={record(workspace.viewers['smartflow.scene-3d.viewer@1'])}
+          changed={(state) =>
+            patch({ viewers: { ...workspace.viewers, 'smartflow.scene-3d.viewer@1': state } })
+          }
+          editSource={editSource}
+          editable={execution.phase === 'completed'}
+        />
+      ) : isTable(value) ? (
         <table aria-label="Table output">
           <thead>
             <tr>

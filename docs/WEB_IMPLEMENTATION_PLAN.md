@@ -48,7 +48,7 @@ workspaces only when their implementation begins.
 | W2b (complete) | Browser library, canvas, inspector and file actions             | Create/edit/connect/delete, dirty-state indication, undo/redo and import/download/reopen work through browser interaction; unsupported nodes display placeholders                                |
 | W3a (complete) | Worker runtime and bundled data extension                       | Sample → Filter → Summary matches native example behavior; typed ports, DAG errors, failure, cancellation and stale-result rejection are tested; no scene dependency                             |
 | W3b (complete) | Execution controls/status and table viewer                      | Browser stays responsive during work; run/cancel and output selection work; obsolete results are identified; data graph reopens and executes                                                     |
-| W4             | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
+| W4 (complete)  | Bundled browser scene extension and interactive viewer          | Cube/Transform/Material/Scene/Merge example runs; camera navigation changes workspace; deliberate parameter edits use commands; scene project reopens and executes                               |
 | W5a            | Component contracts, standalone files and collapsed execution   | Existing component example executes with named inputs/outputs/controls; snapshots survive catalog removal; unsupported/nested content is preserved and diagnosed                                 |
 | W5b            | Component authoring and workspace restoration                   | Extraction, import/export, edit-as-copy and explicit compatible update have undoable behavior; saved browser layout and pinned outputs restore                                                   |
 | W6             | Browser acceptance and delivery instructions                    | Both workflows pass interaction and file exchange checks in the documented supported browser set; production build and deployment instructions are verified                                      |
@@ -101,6 +101,6 @@ explicitly implemented nodes and versions. Audience and application field stay o
 
 W2a commands/history and immutable bundled extension lookup are complete;
 see [the checkpoint](agents/handoffs/2026-10-02-web-w2a-history.md).
-W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b execution controls and table viewer are complete; next: W4 scene capability.
+W2b editor/file actions are complete; see [the checkpoint](agents/handoffs/2026-10-02-web-w2b-editor.md). W3a worker/data execution is complete; W3b execution controls and table viewer are complete; W4 scene capability is complete; next: W5 components.
 [W1b evidence](agents/handoffs/2026-10-02-web-w1b-transport.md) records transport
-tests; worker data execution is implemented and browser rendering remains pending.
+tests; worker data execution is implemented and browser primitive scene rendering is implemented.

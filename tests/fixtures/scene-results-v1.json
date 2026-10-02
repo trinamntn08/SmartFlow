@@ -1,0 +1,18 @@
+{
+  "cases": [
+    {
+      "size": 2,
+      "rotation": 0,
+      "position": [0, 0, 0],
+      "scale": [1, 1, 1],
+      "firstVertex": [-1, -1, -1]
+    },
+    {
+      "size": 2,
+      "rotation": 90,
+      "position": [2, 3, 4],
+      "scale": [2, 3, 4],
+      "firstVertex": [-2, 0, 6]
+    }
+  ]
+}
