@@ -24,8 +24,12 @@ Release commits one undoable graph edit. A shared Transform edits all meshes
 it drives. Use-mode edits require exposed component controls.
 See docs/SCENE_INTERACTION.md for supported behavior and module boundaries.
 
-Try selecting a node, editing its inspector value and applying it. Run, Undo
-and Redo should update the results. Save As to a separate file, close the app,
+You can also edit numeric fields directly inside graph nodes: type and Enter
+or leave the field; arrow steps apply immediately. Escape cancels unfinished
+typing. Inline edits share Undo/Redo and execution with the inspector and viewers.
+See docs/INLINE_NODE_CONTROLS.md.
+Selecting a node also provides its inspector with an Apply button.
+Run, Undo and Redo should update the results. Save As to a separate file, close the app,
 relaunch and Open it to check restoration of the graph, layout and pinned viewer.
 
 Components > Component library supports import/export, removal, and Edit a copy.

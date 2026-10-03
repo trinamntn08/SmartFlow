@@ -6,7 +6,7 @@ The application domain and audience remain open; included 3D support is required
 ## Available now
 
 SmartFlow is a working desktop development preview with graph editing, typed
-connections, numeric parameter inspection, semantic undo/redo, background
+connections, inline numeric node controls, semantic undo/redo, background
 execution, cancellation and result viewers. Project files preserve unsupported
 extension content and other graphs; unsupported graphs report diagnostics and
 cannot execute. Open/Save/Save As and workspace restoration are implemented.
@@ -35,15 +35,16 @@ preserved control values/connections and undo of the exact previous snapshot.
 VS Code CMake Tools configure/build/test presets and launch configurations are
 ready for manual use. A CMake install folder bundles both executables, Qt/MSVC
 runtime dependencies and the scene, data and component examples.
-The refreshed Windows folder includes N7, E1-E4 and native Use mode,
-with twelve installed startup/render checks and matching executable hashes. See
+The refreshed Windows folder includes N7, E1-E4, native Use mode, modular scene
+interaction and inline node controls, with thirteen installed startup/render
+checks and matching executable hashes. See
 [the first test version and result sheet](TEST_VERSION.md).
 
 ## Verification and desktop acceptance
 
 The latest implementation/configuration checks passed: native Release build,
-27 CTest entries, Windows startup smoke checks and `npm.cmd run check` (formatting,
-TypeScript, 43 core tests, four SDK tests, six web adapter tests and three Chromium interaction tests and web production build).
+32 CTest entries, Windows startup smoke checks and `npm.cmd run check` (formatting,
+TypeScript, workspace behavior tests and web production build).
 
 **Manual testing reported positive so far.** On 2026-10-03 the user confirmed:
 "already manually tested, it's ok so far". No issues were reported. This feedback
@@ -96,6 +97,14 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 | Use mode            | Component controls/viewers, shared history/execution and separate saved workspace  | [Use](agents/handoffs/2026-10-03-native-use-mode.md)          |
 | Scene S1            | Modular snapshots, stable selection, camera pan/zoom/views and triangle picking    | [S1](agents/handoffs/2026-10-03-scene-s1.md)                  |
 | Scene S2            | Move/rotate/scale previews and atomic viewer commands for graph/component controls | [S2](agents/handoffs/2026-10-03-scene-s2.md)                  |
+| Inline controls     | Editable numeric fields in graph cards, shared commands and compact socket layout  | [Inline](agents/handoffs/2026-10-03-inline-node-controls.md)  |
+
+## Inline node controls checkpoint
+
+Inline numeric controls are embedded in Build-mode nodes, including collapsed
+components' exposed controls. Enter/focus change and spin steps apply through the
+shared project history. See [the guide](INLINE_NODE_CONTROLS.md) and
+[checkpoint](agents/handoffs/2026-10-03-inline-node-controls.md).
 
 ## Process Gantt checkpoint
 

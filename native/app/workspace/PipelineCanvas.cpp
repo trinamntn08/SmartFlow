@@ -1,9 +1,9 @@
 #include "PipelineCanvas.h"
+#include "NodeParameterPanel.h"
 #include <tp_qt_pipeline_widgets/StepDelegateNodeDelegateModel.h>
 #include <tp_pipeline/StepDelegate.h>
 #include <QScopedValueRollback>
 #include <set>
-#include <QLabel>
 #include <QPointer>
 
 namespace smartflow {
@@ -14,28 +14,27 @@ public:
         : StepDelegateNodeDelegateModel(definition), title(std::move(title)) {}
     CanvasNode(std::shared_ptr<const tp_pipeline::StepDelegate> definition, QString title)
         : StepDelegateNodeDelegateModel(definition.get()), title(std::move(title)), owner(std::move(definition)) {}
-    ~CanvasNode() override { delete timingLabel.data(); }
+    ~CanvasNode() override { delete body.data(); }
     QString caption() const override { return title; }
+    void bind(GraphProject& project,const tp_utils::StringID& id) { document=&project; node=id; }
     QWidget* embeddedWidget() override {
-        if(!timingLabel) {
-            timingLabel=new QLabel(timingText);
-            timingLabel->setObjectName("nodeExecutionTime");
-            timingLabel->setFixedSize(80,32);
-            timingLabel->setAlignment(Qt::AlignCenter);
-            timingLabel->setWordWrap(true);
-            timingLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-            timingLabel->setStyleSheet("color: #e0e6eb; background: transparent; font-size: 11px;");
+        if(!body && document) {
+            body=new NodeParameterPanel(*document,node);
+            body->setTiming(timingText);
         }
-        return timingLabel;
+        return body;
     }
+    void refreshParameters() { if(body) body->refresh(); }
     void setTiming(const QString& text) {
         timingText=text;
-        if(timingLabel) { timingLabel->setText(text); timingLabel->setToolTip("Invocation wall time; excludes ready-queue waiting. Components include their complete body span."); }
+        if(body) body->setTiming(text);
     }
     // Routing points belong exclusively to the canvas workspace state.
     void setConnectionAnchors(QtNodes::PortType, QtNodes::PortIndex, const std::vector<QPointF>&) override {}
 private:
-    QPointer<QLabel> timingLabel;
+    QPointer<NodeParameterPanel> body;
+    GraphProject* document=nullptr;
+    tp_utils::StringID node;
     QString timingText="Run: -";
     QString title;
     std::shared_ptr<const tp_pipeline::StepDelegate> owner;
@@ -93,6 +92,9 @@ tp_utils::StringID PipelineCanvas::projectId(QtNodes::NodeId id) const
 
 QVariant PipelineCanvas::nodeData(QtNodes::NodeId id, QtNodes::NodeRole role) const
 {
+    // The widget role lazily builds display state; it never edits the project.
+    if(role==QtNodes::NodeRole::Widget)
+        if(auto* node=const_cast<PipelineCanvas*>(this)->delegateModel<CanvasNode>(id)) node->bind(project,projectId(id));
     if(role==QtNodes::NodeRole::Caption && !project.step(projectId(id)))
         for(const auto& node : project.selectedGraph()["nodes"])
             if(node["id"]==projectId(id).toString())
@@ -178,6 +180,7 @@ void PipelineCanvas::synchronize()
         const auto id=found==identities.end() ? static_cast<QtNodes::AbstractGraphModel&>(*this).newNodeId() : found->second;
         identities[stable]=id;
         if(nodeExists(id)) {
+            if(auto* node=delegateModel<CanvasNode>(id)) node->refreshParameters();
             Q_EMIT nodeUpdated(id); // Recompute captions, including changed unavailable identities.
             continue;
         }

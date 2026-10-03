@@ -118,6 +118,15 @@ void BasicGraphicsScene::setNodePainter(std::unique_ptr<AbstractNodePainter> new
     _nodePainter = std::move(newPainter);
 }
 
+void BasicGraphicsScene::setNodeGeometry(std::unique_ptr<AbstractNodeGeometry> newGeometry)
+{
+    if (!newGeometry)
+        return;
+    _nodeGeometry = std::move(newGeometry);
+    for (auto const &entry : _nodeGraphicsObjects)
+        onNodeUpdated(entry.first);
+}
+
 void BasicGraphicsScene::setConnectionPainter(std::unique_ptr<AbstractConnectionPainter> newPainter)
 {
     _connectionPainter = std::move(newPainter);

@@ -137,6 +137,11 @@ with an explanatory error. Save/relaunch/Open must retain the chosen snapshot.
 
 ## Current limitations
 
+In Build mode, edit values directly inside graph nodes. Type then Enter or leave
+the field; arrows adjust immediately. Escape cancels unfinished typing. Check
+Undo/Redo, live output changes and save/relaunch/Open. Component cards expose
+public controls only. See [inline node controls](INLINE_NODE_CONTROLS.md).
+
 For the new scene interaction checkpoint, open
 `examples/scene-interaction-tool.smartflow` in the scene app. Select the cube;
 try Move on each axis, Rotate Y and Scale. Drag previews; release commits one
@@ -167,5 +172,5 @@ reproduction steps and expected/actual behavior for failures. Use a separate sav
 file to preserve shipped fixtures. The user reported that the preceding desktop
 version passed their manual testing so far; detailed checklist coverage and the
 new scene gestures remain unreported. The current automated baseline is a Release
-build, 31 CTest entries and 13 installed Windows startup/render checks. A
+build, 32 CTest entries and 13 installed Windows startup/render checks. A
 clean-machine/public-install test remains separate.

@@ -1,7 +1,8 @@
 # Windows test version: refreshed 2026-10-03
 
 Status: user reports the preceding version's manual testing is OK so far
-(feedback received 2026-10-03). This refresh adds native Use mode.
+(feedback received 2026-10-03). This refresh includes native Use mode, modular
+scene interaction and inline node controls.
 Individual checklist coverage and the tested executable/environment were not specified.
 Full checklist acceptance and clean-machine compatibility remain unrecorded.
 
@@ -19,12 +20,15 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 ## Delivered in this version
 
 - Native node editing, typed connections, parameter inspector and semantic Undo/Redo.
+- Compact numeric controls directly inside graph nodes, including components'
+  exposed controls. Enter or leaving the field applies; arrow steps apply immediately.
 - Background execution/cancellation and pinned result viewers.
 - **Run: ... ms** on graph nodes and a **Run ms** results column.
 - **Process Gantt** widget with ready-queue/execution timing bars and node selection.
 - Sequential/Parallel and Threads controls, live node/component progress and
   managed node-internal work sharing the configured per-run budget.
 - Primitive 3D scene workflow plus an independent table/filter/summary workflow.
+- Camera pan/zoom/views, object picking and undoable Move/Rotate Y/Scale gestures.
 - Atomic Save/Open with layout, navigation, selection and viewer restoration.
 - Selectable widget regions with H/V splits, swapping, closing and saved dividers.
 - Components with collapsed snapshots, exposed ports/controls, import/export and removal.
@@ -44,14 +48,13 @@ then Save As and reopen. Choose Build to return to the graph. See
 
 ## Automated evidence
 
-Release configure/build and the native suite are verified; all 24 CTest entries
-passed after E1-E4. The required web checks pass, including nine persistence tests.
-Twelve installed Windows configurations start, execute and render with developer
-Qt environment variables removed. Installed executable hashes match the build.
-Packaged scene and component screenshots were visually inspected.
-All 27 native CTest entries pass, including Use mode interaction/save tests;
-packaged scene-tool and data-tool screenshots were also visually inspected.
-Real desktop interaction acceptance of the new Use interface remains unreported.
+Release configure/build and all 32 native CTest entries pass, including inline
+canvas typing, focus change, cancellation, undo, shared widget synchronization,
+components and save/reopen. The required web checks pass. Thirteen installed
+Windows configurations start, execute and render with developer Qt environment
+variables removed. Installed executable hashes match the build. Native inline
+node and packaged scene/component screenshots were visually inspected.
+Real desktop interaction acceptance of the new controls remains unreported.
 
 The package checker records source commit, executable SHA256 values and screenshots
 in `build/desktop-test/verification/startup-results.json`. Startup/offscreen evidence

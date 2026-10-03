@@ -281,7 +281,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     results->setRootIsDecorated(false);
     executionLayout->addWidget(outputLabel);
     executionLayout->addWidget(results, 1);
-    auto* hint = new QLabel("Drag ports to connect. Select a node to edit, then Apply.\n\nSave preserves graph content, canvas layout and viewer settings.");
+    auto* hint = new QLabel("Drag ports to connect. Edit values inside nodes, or select a node for its inspector.\n\nSave preserves graph content, canvas layout and viewer settings.");
     hint->setWordWrap(true);
     executionLayout->addWidget(hint);
     auto* scroll = new QScrollArea;

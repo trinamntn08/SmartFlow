@@ -46,6 +46,10 @@ Viewer navigation/selection saves workspace state. Parameter edits use explicit
 project/history commands. Undo of semantic edits preserves the current workspace.
 No domain object is required in an empty project.
 
+Build-mode [inline node controls](../INLINE_NODE_CONTROLS.md) use the same project
+commands as the inspector and viewers. Their compact widget and geometry live in
+the workspace adapter, with stable node IDs and no concrete domain imports.
+
 Native Build/Use modes share those commands and the executor. `UseWorkspace`
 presents one collapsed component's exposed controls and outputs through the
 configured viewer factory. Per-graph `smartflow.native-use@1` workspace state
@@ -131,7 +135,7 @@ camera, renderer/picker and object gestures; application adapters resolve edits
 to ordinary parameters or exposed component controls. Independent data command
 tests link no scene libraries. See [native scene interaction](../SCENE_INTERACTION.md).
 
-Current Release builds, 31 CTest entries and packaged startup checks passed. Full
+Current Release builds, 32 CTest entries and packaged startup checks passed. Full
 Windows desktop interaction acceptance is pending manual testing, as recorded in
 [the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
 The primitive viewer is not production GPU rendering; importer/asset handling,

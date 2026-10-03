@@ -33,6 +33,7 @@ what runs today; this index is not a claim of completed production delivery.
 - [0022: Bounded browser primitive scene preview](0022-browser-scene-preview.md)
 - [0023: Native Use mode from component interfaces](0023-native-use-mode.md)
 - [0024: Generic viewer commands and native scene interaction](0024-native-viewer-commands.md)
+- [0025: Native inline node controls](0025-native-inline-node-controls.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
 0018 activates web planning alongside native development, updating 0003's web

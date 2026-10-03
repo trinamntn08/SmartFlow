@@ -18,6 +18,8 @@ additional domains; its final audience and application field remain open.
 ## What you can do
 
 - **Build graphs** with typed connections, editable parameters, and undo/redo.
+  Numeric parameters can be edited directly inside nodes; see
+  [inline controls](docs/INLINE_NODE_CONTROLS.md).
 - **Run and inspect** workflows with background execution, cancellation,
   sequential or parallel scheduling, live progress, and timing analysis.
 - **Explore results** in an interactive primitive 3D viewer or a table viewer.

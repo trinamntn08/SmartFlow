@@ -57,6 +57,9 @@ public:
 
     void setNodePainter(std::unique_ptr<AbstractNodePainter> newPainter);
 
+    // SmartFlow adaptation: app-owned layout, independent of document semantics.
+    void setNodeGeometry(std::unique_ptr<AbstractNodeGeometry> newGeometry);
+
     void setConnectionPainter(std::unique_ptr<AbstractConnectionPainter> newPainter);
 
     virtual QUndoStack &undoStack();

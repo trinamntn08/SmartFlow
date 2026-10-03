@@ -5,8 +5,7 @@
 namespace smartflow {
 class WorkspaceScene final : public QtNodes::DataFlowGraphicsScene {
 public:
-    WorkspaceScene(PipelineCanvas& canvas, GraphProject& project)
-        : DataFlowGraphicsScene(canvas), canvas(canvas), project(project) {}
+    WorkspaceScene(PipelineCanvas& canvas, GraphProject& project);
     QUndoStack& undoStack() override { return project.commands().undoStack(); }
     void createNode(const QString& type, const QPointF& position) override;
     void deleteSelected() override;

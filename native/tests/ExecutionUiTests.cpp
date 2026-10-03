@@ -20,7 +20,8 @@ namespace {
 QList<QLabel*> timingLabels(WorkspaceWindow& window) {
     QList<QLabel*> labels;
     for(auto* item:window.scene().items()) if(auto* proxy=qgraphicsitem_cast<QGraphicsProxyWidget*>(item))
-        if(auto* label=qobject_cast<QLabel*>(proxy->widget()); label && label->objectName()=="nodeExecutionTime") labels.push_back(label);
+        if(auto* widget=proxy->widget())
+            if(auto* label=widget->findChild<QLabel*>("nodeExecutionTime")) labels.push_back(label);
     return labels;
 }
 struct Gate { std::atomic_bool open{false}; std::atomic<size_t> active{0}; };

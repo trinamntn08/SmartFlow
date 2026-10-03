@@ -137,6 +137,7 @@ void DocumentSession::compile()
         for(auto it=parameters.begin(); it!=parameters.end(); ++it)
             if(!definition.parameter(it.key()).name.isValid())
                 problems.push_back(id + ": unsupported parameter " + it.key());
+        step->setParametersOrder(definition.orderedParameterNames());
         std::vector<tp_pipeline::PortMapping> inputs,outputs;
         for(const auto& port : delegate->inPorts()) inputs.push_back({port.type,port.name,{},{}});
         for(const auto& port : delegate->outPorts())
@@ -182,6 +183,10 @@ void DocumentSession::compile()
                 parameter.name=control.key(); visible->setParamerter(parameter);
             }
             std::vector<PortMapping> inputs,outputs;
+            std::vector<StringID> controlOrder;
+            for(const auto& control : instance.node["component"]["controls"])
+                controlOrder.emplace_back(control["id"].get<std::string>());
+            visible->setParametersOrder(controlOrder);
             auto mapPorts=[&](const Document& endpoints, bool input, auto& mappings) {
                 // Retain definition order for stable canvas port indexes.
                 const auto& interface=instance.node["component"][input ? "inputs" : "outputs"];

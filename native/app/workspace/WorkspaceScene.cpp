@@ -1,8 +1,14 @@
 #include "WorkspaceScene.h"
+#include "NodeBodyGeometry.h"
 #include <QtNodes/internal/ConnectionGraphicsObject.hpp>
 #include <set>
 
 namespace smartflow {
+WorkspaceScene::WorkspaceScene(PipelineCanvas& canvas,GraphProject& project)
+    : DataFlowGraphicsScene(canvas),canvas(canvas),project(project)
+{
+    setNodeGeometry(std::make_unique<NodeBodyGeometry>(canvas));
+}
 void WorkspaceScene::createNode(const QString& type, const QPointF& position)
 {
     const auto id=canvas.addNode(type);

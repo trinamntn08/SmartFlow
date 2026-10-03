@@ -31,7 +31,10 @@ The default preview starts with Cube → Transform → Material → Scene, with 
 final Scene output pinned in the viewer. `smartflow.exe --numeric` instead starts
 Number (41) connected to Add (1), yielding 42, without a scene registry or viewer.
 Right-click or use Add node, then drag matching ports to connect. Select a node,
-edit its inspector value, and click Apply. Undo/redo covers parameter edits,
+edit its inspector value, and click Apply. Numeric fields are also editable
+directly in graph nodes: type then Enter or leave the field, or use arrows.
+No Apply button is needed there. See [inline controls](INLINE_NODE_CONTROLS.md).
+Undo/redo covers parameter edits,
 creation, deletion, connections, and movement. Live updates recompute after edits;
 disable them to use Run explicitly. Cancel discards the active result. Select
 nodes or result rows to inspect outputs. Pin output keeps one result in the viewer
@@ -100,7 +103,7 @@ that acceptance is pending until results are reported.
 
 The sections below organize current code/tests by their originating checkpoint.
 Dated handoffs describe the state at that date; later steps supersede earlier
-limitations. The current suite has 31 CTest entries. Release presets/builds are
+limitations. The current suite has 32 CTest entries. Release presets/builds are
 verified; the separate Debug configuration has not been built in this session.
 
 ## N2 pipeline foundation

@@ -72,3 +72,4 @@ results; automated native computer-use is deferred by the user.
 - [W2b: browser editor and file actions](2026-10-02-web-w2b-editor.md)
 - [S1: modular scene snapshots and camera controllers](2026-10-03-scene-s1.md)
 - [S2: object interaction and generic viewer commands](2026-10-03-scene-s2.md)
+- [Native inline node controls](2026-10-03-inline-node-controls.md)

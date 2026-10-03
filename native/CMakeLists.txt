@@ -37,6 +37,7 @@ add_library(smartflow_pipeline_widgets STATIC
 target_include_directories(smartflow_pipeline_widgets PUBLIC vendor/pipeline-widgets/inc)
 target_link_libraries(smartflow_pipeline_widgets PUBLIC smartflow_legacy smartflow_qtnodes)
 add_library(smartflow_workspace STATIC
+  app/workspace/NodeParameterPanel.cpp app/workspace/NodeBodyGeometry.cpp
   app/workspace/ViewerCommandAdapter.cpp
   app/workspace/UseWorkspace.cpp app/workspace/UseWorkspace.h
   app/workspace/GanttWidget.cpp app/workspace/GanttWidget.h
@@ -72,6 +73,11 @@ if(WIN32)
   install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
 endif()
 if(BUILD_TESTING)
+  add_executable(inline_node_tests tests/InlineNodeTests.cpp)
+  target_link_libraries(inline_node_tests PRIVATE smartflow_workspace smartflow_data smartflow_scene_3d Qt6::Test)
+  target_compile_definitions(inline_node_tests PRIVATE SMARTFLOW_COMPONENT_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/components.smartflow")
+  add_test(NAME native_inline_nodes COMMAND inline_node_tests -platform offscreen -o -,txt -o inline-node-results.xml,junitxml)
+  set_tests_properties(native_inline_nodes PROPERTIES TIMEOUT 60)
   add_executable(viewer_command_tests tests/ViewerCommandTests.cpp)
   target_link_libraries(viewer_command_tests PRIVATE smartflow_workspace smartflow_data Qt6::Test)
   target_compile_definitions(viewer_command_tests PRIVATE SMARTFLOW_COMPONENT_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/components.smartflow")
