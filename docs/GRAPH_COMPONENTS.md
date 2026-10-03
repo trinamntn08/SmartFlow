@@ -6,6 +6,10 @@ insert as one node by default, with ordinary-node insertion also available.
 
 ## Desktop workflow
 
+Collapsed instances also provide the controls and outputs for native
+[Use mode](USE_MODE.md), a simplified tool interface sharing the same project,
+execution and undo history.
+
 1. Select nodes on the canvas (use Ctrl to add nodes to the selection), then open
    **Components > Create from selection**.
 2. Give the component a title. The Inputs, Outputs and Controls tabs list

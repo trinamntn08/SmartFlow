@@ -1,6 +1,6 @@
 # Architecture boundaries
 
-Updated: 2026-10-02. Native C++17/Qt6 is primary, per
+Updated: 2026-10-03. Native C++17/Qt6 is primary, per
 [decision 0003](decisions/0003-native-first.md); the first test delivery is Windows,
 per [decision 0009](decisions/0009-desktop-test-release.md).
 
@@ -45,6 +45,12 @@ Separate state responsibilities:
 Viewer navigation/selection saves workspace state. Parameter edits use explicit
 project/history commands. Undo of semantic edits preserves the current workspace.
 No domain object is required in an empty project.
+
+Native Build/Use modes share those commands and the executor. `UseWorkspace`
+presents one collapsed component's exposed controls and outputs through the
+configured viewer factory. Per-graph `smartflow.native-use@1` workspace state
+keeps mode and tool viewer navigation independent of Build layout and pinning.
+See [Use mode](../USE_MODE.md) and [decision 0023](decisions/0023-native-use-mode.md).
 
 The executor validates an acyclic graph, runs off the UI thread, propagates failures
 and discards cancelled output. Revision checks prevent stale runs replacing current
@@ -119,7 +125,7 @@ production/file exchange acceptance are complete. See [the web guide](../WEB_DEV
 
 ## Verification and open work
 
-Current Release builds, 24 CTest entries and packaged startup checks passed. Full
+Current Release builds, 27 CTest entries and packaged startup checks passed. Full
 Windows desktop interaction acceptance is pending manual testing, as recorded in
 [the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
 The primitive viewer is not production GPU rendering; importer/asset handling,

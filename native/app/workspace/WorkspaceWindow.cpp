@@ -2,6 +2,7 @@
 #include "WorkspaceWindow.h"
 #include "ComponentDialogs.h"
 #include "PanelWorkspace.h"
+#include "UseWorkspace.h"
 #include <tp_qt_pipeline_widgets/parameter_editors/DoubleParameterEditor.h>
 #include <tp_data/members/NumberMember.h>
 #include <tp_data/Collection.h>
@@ -33,6 +34,7 @@
 #include <QJsonDocument>
 #include <QScopedValueRollback>
 #include <QSignalBlocker>
+#include <QStackedWidget>
 #include <tp_data/AbstractMember.h>
 #include <cmath>
 #include <set>
@@ -108,6 +110,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     saveAs->setShortcut(QKeySequence::SaveAs);
     connect(saveAs, &QAction::triggered, this, [this] { saveFromDialog(true); });
     auto* components=menuBar()->addMenu("&Components");
+    componentMenu=components;
     auto* createComponent=components->addAction("Create from selection...");
     createComponent->setObjectName("createComponent");
     auto* insertComponent=components->addAction("Component library...");
@@ -162,8 +165,13 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
         }
         updateComponent->setEnabled(instance);
     });
-    auto* toolbar = addToolBar("Graph");
+    auto* toolbar = addToolBar("Workflow");
     toolbar->setMovable(false);
+    workspaceMode=new QComboBox;
+    workspaceMode->setObjectName("workspaceMode");
+    workspaceMode->addItems({"Build", "Use"});
+    toolbar->addWidget(workspaceMode);
+    toolbar->addSeparator();
     auto* undo = canvasScene.undoStack().createUndoAction(this, "Undo");
     undo->setShortcut(QKeySequence::Undo);
     auto* redo = canvasScene.undoStack().createRedoAction(this, "Redo");
@@ -231,15 +239,17 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     if(configuration.createViewer) {
         viewer = configuration.createViewer();
         panels->addPanel("viewer","Result viewer",viewer);
-        toolbar->addWidget(new QLabel("Output:"));
+        buildOutputs=addToolBar("Build output");
+        buildOutputs->setMovable(false);
+        buildOutputs->addWidget(new QLabel("Output:"));
         outputPorts=new QComboBox;
         outputPorts->setObjectName("outputPort");
-        toolbar->addWidget(outputPorts);
+        buildOutputs->addWidget(outputPorts);
         connect(outputPorts,qOverload<int>(&QComboBox::currentIndexChanged),this,[this] {
             selectedPort=outputPorts->currentText();
             refreshResults(); scheduleWorkspaceCapture();
         });
-        auto* pin = toolbar->addAction("Pin output");
+        auto* pin = buildOutputs->addAction("Pin output");
         pin->setObjectName("pinOutput");
         connect(pin, &QAction::triggered, this, [this] {
             pinned = selected;
@@ -284,14 +294,22 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     };
     panels->addPanel("gantt","Process Gantt",gantt);
     panels->resetLayout();
-    setCentralWidget(panels);
-    auto* layoutMenu=menuBar()->addMenu("&Layout");
+    workspaces=new QStackedWidget;
+    workspaces->addWidget(panels);
+    toolWorkspace=new UseWorkspace(document,runner,configuration.createViewer);
+    workspaces->addWidget(toolWorkspace);
+    setCentralWidget(workspaces);
+    layoutMenu=menuBar()->addMenu("&Layout");
     auto* resetLayout=layoutMenu->addAction("Reset widget layout");
     resetLayout->setObjectName("resetWidgetLayout");
     connect(resetLayout,&QAction::triggered,this,[this] {
         panelStateSupported=true; panels->resetLayout(); scheduleWorkspaceCapture();
     });
     panels->changed=[this] { scheduleWorkspaceCapture(); };
+    toolWorkspace->changed=[this] { scheduleWorkspaceCapture(); };
+    connect(workspaceMode,qOverload<int>(&QComboBox::currentIndexChanged),this,[this](int index) {
+        setUseMode(index==1);
+    });
 
     connect(run, &QPushButton::clicked, &runner, &ExecutionController::run);
     connect(cancelButton, &QPushButton::clicked, &runner, &ExecutionController::cancel);
@@ -380,11 +398,22 @@ bool WorkspaceWindow::eventFilter(QObject* watched, QEvent* event)
 void WorkspaceWindow::captureWorkspace()
 {
     if(restoringWorkspace) return;
+    auto useState=document.retained()["workspace"].value("smartflow.native-use@1",project::Document::object());
+    const auto graph=document.selectedGraph()["id"].get<std::string>();
+    if(useState.is_object()) {
+        auto& tool=useState[graph];
+        if(tool.is_null()) tool=project::Document::object();
+        if(tool.is_object()) {
+            const auto fresh=toolWorkspace->saveState();
+            if(fresh.is_object()) tool.update(fresh);
+            if(modeStateSupported) tool["mode"]=usingTool ? "use" : "build";
+        }
+        document.commands().setWorkspaceField("smartflow.native-use@1",useState);
+    }
     const auto& workspace=document.retained()["workspace"];
     auto state=workspace.value("smartflow.native-editor@1",project::Document::object());
     // Unrecognized future shapes are left untouched.
     if(!state.is_object()) return;
-    const auto graph=document.selectedGraph()["id"].get<std::string>();
     if(state.contains(graph) && !state[graph].is_object()) return;
     auto& current=state[graph];
     if(current.is_null()) current=project::Document::object();
@@ -403,11 +432,13 @@ void WorkspaceWindow::captureWorkspace()
     current["pinned"]=pinned.toString();
     current["pinnedPort"]=pinnedPort.toStdString();
     current["selectedPort"]=selectedPort.toStdString();
-    if(panelStateSupported) current["panels"]=panels->saveLayout();
+    if(panelStateSupported && !usingTool) current["panels"]=panels->saveLayout();
     auto* view=findChild<QtNodes::GraphicsView*>("graphCanvas");
     const auto center=view->mapToScene(view->viewport()->rect().center());
     auto navigation=current.value("navigation",project::Document::object());
-    if(navigation.is_object()) {
+    // The hidden Build viewport has different geometry. Retain its last visible
+    // navigation while the user is operating the tool.
+    if(navigation.is_object() && !usingTool) {
         navigation["scale"]=view->transform().m11();
         navigation["x"]=center.x(); navigation["y"]=center.y();
         current["navigation"]=navigation;
@@ -484,6 +515,29 @@ void WorkspaceWindow::restoreWorkspace()
         else view->centerOn(0,0);
     }
     navigationRestoredOnLoad=navigationRestored;
+    auto useState=workspace.value("smartflow.native-use@1",project::Document::object());
+    const auto tool=useState.is_object() ? useState.value(graph,project::Document::object()) : project::Document::object();
+    toolWorkspace->restoreState(tool);
+    const auto mode=tool.is_object() ? tool.value("mode",project::Document("build")) : project::Document();
+    setUseMode(mode=="use");
+    modeStateSupported=!tool.is_object() || !tool.contains("mode") || mode=="build" || mode=="use";
+}
+
+void WorkspaceWindow::setUseMode(bool enabled)
+{
+    if(usingTool==enabled) return;
+    // Flush Build navigation before its widgets are hidden. The graph layout
+    // and selection stay alive and are never replaced by the tool view.
+    captureWorkspace();
+    usingTool=enabled;
+    modeStateSupported=true;
+    const QSignalBlocker guard(workspaceMode);
+    workspaceMode->setCurrentIndex(enabled ? 1 : 0);
+    workspaces->setCurrentWidget(enabled ? static_cast<QWidget*>(toolWorkspace) : static_cast<QWidget*>(panels));
+    componentMenu->setEnabled(!enabled);
+    layoutMenu->setEnabled(!enabled);
+    if(buildOutputs) buildOutputs->setVisible(!enabled);
+    captureWorkspace();
 }
 
 void WorkspaceWindow::refreshFileState()
@@ -581,6 +635,7 @@ void WorkspaceWindow::closeEvent(QCloseEvent* event)
 WorkspaceWindow::~WorkspaceWindow()
 {
     panels->changed={};
+    toolWorkspace->changed={};
     // Scene teardown emits selection changes after later members (including
     // the runner and selected ID) have been destroyed. Disconnect while all
     // members still exist, before QObject's automatic disconnection occurs.

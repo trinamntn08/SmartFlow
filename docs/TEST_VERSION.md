@@ -1,6 +1,7 @@
-# Windows first test version: 2026-10-02
+# Windows test version: refreshed 2026-10-03
 
-Status: user reports manual testing is OK so far (feedback received 2026-10-03).
+Status: user reports the preceding version's manual testing is OK so far
+(feedback received 2026-10-03). This refresh adds native Use mode.
 Individual checklist coverage and the tested executable/environment were not specified.
 Full checklist acceptance and clean-machine compatibility remain unrecorded.
 
@@ -30,14 +31,27 @@ a separate file. Follow [the full procedure](DESKTOP_TESTING.md) for details.
 - Isolated **Edit a copy** drafts and explicit **Update selected instance** with
   compatibility validation, preserved values and exact snapshot undo.
 - Retention of unknown extension/project content with unsupported-execution diagnostics.
+- Build/Use switching, exposed component controls and output viewers, shared
+  undo/execution, and independently saved tool selection/viewer navigation.
+
+## Try Use mode
+
+Open `examples/scene-tool.smartflow` in the scene app; it opens in Use mode.
+Open `examples/components.smartflow` in the data app and choose **Use** in the
+toolbar. Change an exposed control and Apply, try Undo/Redo, select an output,
+then Save As and reopen. Choose Build to return to the graph. See
+[Use mode](USE_MODE.md) for the full procedure and supported scope.
 
 ## Automated evidence
 
 Release configure/build and the native suite are verified; all 24 CTest entries
 passed after E1-E4. The required web checks pass, including nine persistence tests.
-Ten installed Windows configurations start, execute and render with developer
+Twelve installed Windows configurations start, execute and render with developer
 Qt environment variables removed. Installed executable hashes match the build.
 Packaged scene and component screenshots were visually inspected.
+All 27 native CTest entries pass, including Use mode interaction/save tests;
+packaged scene-tool and data-tool screenshots were also visually inspected.
+Real desktop interaction acceptance of the new Use interface remains unreported.
 
 The package checker records source commit, executable SHA256 values and screenshots
 in `build/desktop-test/verification/startup-results.json`. Startup/offscreen evidence

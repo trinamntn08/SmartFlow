@@ -1,0 +1,379 @@
+{
+  "format": "smartflow",
+  "schemaVersion": 1,
+  "project": {
+    "id": "example-scene-tool",
+    "packages": [
+      {
+        "id": "smartflow.scene-3d",
+        "version": "1"
+      },
+      {
+        "id": "smartflow.components",
+        "version": "1"
+      }
+    ],
+    "assets": [],
+    "graphs": [
+      {
+        "id": "graph",
+        "nodes": [
+          {
+            "id": "scene-tool",
+            "packageId": "smartflow.components",
+            "typeId": "instance",
+            "version": 1,
+            "parameters": {
+              "size": 3,
+              "position X": 0,
+              "rotation Y": 25,
+              "red": 0.18,
+              "green": 0.58,
+              "blue": 0.88
+            },
+            "component": {
+              "format": "smartflow.graph-component",
+              "schemaVersion": 1,
+              "id": "scene-preview-tool",
+              "title": "Scene preview",
+              "version": 1,
+              "graph": {
+                "id": "body",
+                "nodes": [
+                  {
+                    "id": "cube",
+                    "packageId": "smartflow.scene-3d",
+                    "typeId": "cube",
+                    "version": 1,
+                    "parameters": {
+                      "size": 3
+                    }
+                  },
+                  {
+                    "id": "transform",
+                    "packageId": "smartflow.scene-3d",
+                    "typeId": "transform",
+                    "version": 1,
+                    "parameters": {
+                      "x": 0,
+                      "y": 0,
+                      "z": 0,
+                      "rotation Y": 25,
+                      "scale X": 1,
+                      "scale Y": 1,
+                      "scale Z": 1
+                    }
+                  },
+                  {
+                    "id": "material",
+                    "packageId": "smartflow.scene-3d",
+                    "typeId": "material",
+                    "version": 1,
+                    "parameters": {
+                      "red": 0.18,
+                      "green": 0.58,
+                      "blue": 0.88
+                    }
+                  },
+                  {
+                    "id": "scene",
+                    "packageId": "smartflow.scene-3d",
+                    "typeId": "scene",
+                    "version": 1,
+                    "parameters": {}
+                  }
+                ],
+                "connections": [
+                  {
+                    "id": "edge-1",
+                    "source": {
+                      "nodeId": "cube",
+                      "portId": "out"
+                    },
+                    "target": {
+                      "nodeId": "transform",
+                      "portId": "in"
+                    }
+                  },
+                  {
+                    "id": "edge-2",
+                    "source": {
+                      "nodeId": "transform",
+                      "portId": "out"
+                    },
+                    "target": {
+                      "nodeId": "material",
+                      "portId": "in"
+                    }
+                  },
+                  {
+                    "id": "edge-3",
+                    "source": {
+                      "nodeId": "material",
+                      "portId": "out"
+                    },
+                    "target": {
+                      "nodeId": "scene",
+                      "portId": "in"
+                    }
+                  }
+                ]
+              },
+              "inputs": [],
+              "outputs": [
+                {
+                  "id": "scene",
+                  "source": {
+                    "nodeId": "scene",
+                    "portId": "out"
+                  }
+                }
+              ],
+              "controls": [
+                {
+                  "id": "size",
+                  "target": {
+                    "nodeId": "cube",
+                    "parameter": "size"
+                  }
+                },
+                {
+                  "id": "position X",
+                  "target": {
+                    "nodeId": "transform",
+                    "parameter": "x"
+                  }
+                },
+                {
+                  "id": "rotation Y",
+                  "target": {
+                    "nodeId": "transform",
+                    "parameter": "rotation Y"
+                  }
+                },
+                {
+                  "id": "red",
+                  "target": {
+                    "nodeId": "material",
+                    "parameter": "red"
+                  }
+                },
+                {
+                  "id": "green",
+                  "target": {
+                    "nodeId": "material",
+                    "parameter": "green"
+                  }
+                },
+                {
+                  "id": "blue",
+                  "target": {
+                    "nodeId": "material",
+                    "parameter": "blue"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "connections": []
+      }
+    ],
+    "components": [
+      {
+        "format": "smartflow.graph-component",
+        "schemaVersion": 1,
+        "id": "scene-preview-tool",
+        "title": "Scene preview",
+        "version": 1,
+        "graph": {
+          "id": "body",
+          "nodes": [
+            {
+              "id": "cube",
+              "packageId": "smartflow.scene-3d",
+              "typeId": "cube",
+              "version": 1,
+              "parameters": {
+                "size": 3
+              }
+            },
+            {
+              "id": "transform",
+              "packageId": "smartflow.scene-3d",
+              "typeId": "transform",
+              "version": 1,
+              "parameters": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "rotation Y": 25,
+                "scale X": 1,
+                "scale Y": 1,
+                "scale Z": 1
+              }
+            },
+            {
+              "id": "material",
+              "packageId": "smartflow.scene-3d",
+              "typeId": "material",
+              "version": 1,
+              "parameters": {
+                "red": 0.18,
+                "green": 0.58,
+                "blue": 0.88
+              }
+            },
+            {
+              "id": "scene",
+              "packageId": "smartflow.scene-3d",
+              "typeId": "scene",
+              "version": 1,
+              "parameters": {}
+            }
+          ],
+          "connections": [
+            {
+              "id": "edge-1",
+              "source": {
+                "nodeId": "cube",
+                "portId": "out"
+              },
+              "target": {
+                "nodeId": "transform",
+                "portId": "in"
+              }
+            },
+            {
+              "id": "edge-2",
+              "source": {
+                "nodeId": "transform",
+                "portId": "out"
+              },
+              "target": {
+                "nodeId": "material",
+                "portId": "in"
+              }
+            },
+            {
+              "id": "edge-3",
+              "source": {
+                "nodeId": "material",
+                "portId": "out"
+              },
+              "target": {
+                "nodeId": "scene",
+                "portId": "in"
+              }
+            }
+          ]
+        },
+        "inputs": [],
+        "outputs": [
+          {
+            "id": "scene",
+            "source": {
+              "nodeId": "scene",
+              "portId": "out"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "id": "size",
+            "target": {
+              "nodeId": "cube",
+              "parameter": "size"
+            }
+          },
+          {
+            "id": "position X",
+            "target": {
+              "nodeId": "transform",
+              "parameter": "x"
+            }
+          },
+          {
+            "id": "rotation Y",
+            "target": {
+              "nodeId": "transform",
+              "parameter": "rotation Y"
+            }
+          },
+          {
+            "id": "red",
+            "target": {
+              "nodeId": "material",
+              "parameter": "red"
+            }
+          },
+          {
+            "id": "green",
+            "target": {
+              "nodeId": "material",
+              "parameter": "green"
+            }
+          },
+          {
+            "id": "blue",
+            "target": {
+              "nodeId": "material",
+              "parameter": "blue"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "workspace": {
+    "smartflow.native-editor@1": {
+      "graph": {
+        "positions": {
+          "scene-tool": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "selection": [
+          "scene-tool"
+        ],
+        "pinned": "scene-tool",
+        "pinnedPort": "scene",
+        "selectedPort": "scene",
+        "viewers": {
+          "smartflow.scene-3d.viewer@1": {
+            "yaw": 60,
+            "pitch": 15,
+            "span": 8,
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "selection": 0
+          }
+        }
+      }
+    },
+    "smartflow.native-use@1": {
+      "graph": {
+        "mode": "use",
+        "component": "scene-tool",
+        "output": "scene",
+        "viewers": {
+          "smartflow.scene-3d.viewer@1": {
+            "yaw": 60,
+            "pitch": 15,
+            "span": 8,
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "selection": 0
+          }
+        }
+      }
+    }
+  }
+}

@@ -31,6 +31,7 @@ what runs today; this index is not a claim of completed production delivery.
 - [0020: Retained browser editor with React Flow](0020-browser-canvas.md)
 - [0021: Revision-gated browser worker execution](0021-browser-worker-execution.md)
 - [0022: Bounded browser primitive scene preview](0022-browser-scene-preview.md)
+- [0023: Native Use mode from component interfaces](0023-native-use-mode.md)
 
 0003 selects native C++/Qt, superseding earlier browser implementation proposals.
 0018 activates web planning alongside native development, updating 0003's web

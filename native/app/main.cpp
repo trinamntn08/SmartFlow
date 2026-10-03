@@ -52,6 +52,7 @@ int main(int argc, char** argv)
         try { window->openProject(app.arguments().at(projectIndex+1)); }
         catch(const std::exception& error) { std::fprintf(stderr,"Open failed: %s\n",error.what()); return 6; }
     }
+    if(app.arguments().contains("--use")) window->setUseMode(true);
     QTimer smokeTimer;
     QElapsedTimer elapsed;
     if (app.arguments().contains("--smoke-test")) {
@@ -68,7 +69,9 @@ int main(int argc, char** argv)
                 app.exit(2);
                 return;
             }
-            app.quit();
+            // A command-line workspace override can make a loaded project
+            // dirty. Smoke checks exit directly instead of opening a save prompt.
+            app.exit(0);
         });
         smokeTimer.start(50);
     }

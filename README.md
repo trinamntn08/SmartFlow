@@ -12,7 +12,7 @@ with tables without requiring any 3D content. The platform is designed to suppor
 additional domains; its final audience and application field remain open.
 
 > **Development preview:** graph editing, execution, project saving, and viewers
-> are implemented. Full packaged desktop interaction testing is still pending.
+> are implemented. The user's initial manual testing is OK so far.
 > A public installer and production plugin system are future work.
 
 ## What you can do
@@ -23,6 +23,8 @@ additional domains; its final audience and application field remain open.
 - **Explore results** in an interactive primitive 3D viewer or a table viewer.
 - **Reuse components** with exposed ports and controls, a component library,
   and standalone import/export.
+- **Use a prepared tool** through its exposed component controls and result viewer,
+  then switch back to Build to edit the graph. See [Use mode](docs/USE_MODE.md).
 - **Save your workspace** with project files that retain graph settings,
   canvas positions, viewer state, and panel layouts.
 - **Arrange panels** by splitting, resizing, and swapping workspace regions.

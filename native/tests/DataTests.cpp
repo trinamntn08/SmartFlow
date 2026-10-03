@@ -113,7 +113,7 @@ private Q_SLOTS:
         QTRY_VERIFY(window.execution().result().has_value());
         QVERIFY(window.execution().result()->succeeded());
         QCOMPARE(output(window,"summary").rows[1].value,79.0);
-        auto* table=window.findChild<QTableWidget*>("outputTable");
+        auto* table=window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable");
         QCOMPARE(table->item(2,1)->text(),QString("39.5"));
         QVERIFY(!table->selectionModel()->selectedRows().isEmpty());
         QCOMPARE(table->selectionModel()->selectedRows().front().row(),1);
@@ -146,7 +146,7 @@ private Q_SLOTS:
         QCOMPARE(output(original,"summary").rows[1].value,104.0);
         original.scene().undoStack().redo();
         QTRY_VERIFY(original.execution().result().has_value());
-        auto* table=original.findChild<QTableWidget*>("outputTable");
+        auto* table=original.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable");
         QCOMPARE(table->rowCount(),3);
         const auto revision=original.project().revision();
         table->selectRow(1);
@@ -163,7 +163,7 @@ private Q_SLOTS:
         QTRY_VERIFY(reopened.execution().result().has_value());
         QVERIFY(reopened.execution().result()->succeeded());
         QCOMPARE(output(reopened,"summary").rows[1].value,79.0);
-        auto* restored=reopened.findChild<QTableWidget*>("outputTable");
+        auto* restored=reopened.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable");
         QCOMPARE(restored->rowCount(),3);
         QCOMPARE(restored->item(1,1)->text(),QString("79"));
         QCOMPARE(restored->selectionModel()->selectedRows().front().row(),1);

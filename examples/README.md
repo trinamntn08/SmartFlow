@@ -10,6 +10,8 @@ From the repository root after preparing the desktop folder:
 build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples/scene.smartflow"
 build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/data.smartflow"
 build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/components.smartflow"
+build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples/scene-tool.smartflow"
+build/desktop-test/bin/smartflow-data.exe --use --project "$PWD/build/desktop-test/examples/components.smartflow"
 ```
 
 `scene.smartflow` restores Cube size 3, an orbited camera (yaw 60, pitch 15),
@@ -21,6 +23,11 @@ component node. Its minimum control is 30, with the exposed summary output pinne
 (count 2, total 79, mean 39.5). Change minimum in the inspector, use Undo/Redo, or
 choose rows in the Output selector and click Pin output. The saved library can
 insert additional instances without changing the original definition.
+
+`scene-tool.smartflow` wraps the scene graph in one component and opens in Use
+mode with exposed size, position, rotation and material controls. The data
+component example also supports Use mode with `--use`. Choose Build in the
+toolbar to inspect the underlying graph. See [Use mode](../docs/USE_MODE.md).
 
 The primary executable can also use `--data --project <data-file>`. Select the
 matching application configuration; the current preview does not infer or load

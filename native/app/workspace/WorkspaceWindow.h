@@ -11,10 +11,14 @@ class QTreeWidget;
 class QPushButton;
 class QComboBox;
 class QProgressBar;
+class QStackedWidget;
+class QToolBar;
+class QMenu;
 
 namespace smartflow {
 class PanelWorkspace;
 class GanttWidget;
+class UseWorkspace;
 class WorkspaceWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -31,6 +35,8 @@ public:
     void loadDocument(project::Document source);
     const WorkspaceConfiguration& configuration() const { return workspaceConfiguration; }
     void saveProject(const QString& path);
+    void setUseMode(bool enabled);
+    bool useMode() const { return usingTool; }
     QString projectPath() const { return filePath; }
     bool projectDirty() const { return document.retained() != savedDocument; }
 protected:
@@ -41,6 +47,14 @@ protected:
 private:
     WorkspaceConfiguration workspaceConfiguration;
     PanelWorkspace* panels = nullptr;
+    QStackedWidget* workspaces = nullptr;
+    UseWorkspace* toolWorkspace = nullptr;
+    QComboBox* workspaceMode = nullptr;
+    QToolBar* buildOutputs = nullptr;
+    QMenu* componentMenu = nullptr;
+    QMenu* layoutMenu = nullptr;
+    bool usingTool = false;
+    bool modeStateSupported = true;
     bool panelStateSupported = true;
     bool navigationRestoredOnLoad = false;
     void captureWorkspace();

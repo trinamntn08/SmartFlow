@@ -14,6 +14,7 @@ interaction acceptance is pending the user's manual results.
 - [Desktop testing](DESKTOP_TESTING.md): packaged manual acceptance and result reporting.
 - [Browser workflows](WEB_DEVELOPMENT.md) and [local browser delivery](WEB_DELIVERY.md): completed preview scope, support and acceptance evidence.
 - [Graph components](GRAPH_COMPONENTS.md): authoring, snapshots, controls/ports, import/export and removal.
+- [Build and Use modes](USE_MODE.md): prepared component tools with controls and result viewers.
 - [Examples](../examples/README.md): scene, data, collapsed projects and standalone definition.
 - [Scene extension](../extensions/scene-3d/README.md) and [data extension](../extensions/data/README.md): implemented domain scope and limits.
 - [Agent workflow](agents/WORKFLOW.md) and [contributing](../CONTRIBUTING.md): instructions, verification and handoff practice.

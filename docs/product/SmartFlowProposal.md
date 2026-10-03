@@ -92,12 +92,15 @@ Keeping these behaviors distinct avoids surprising graph changes.
 
 ### Build and use modes
 
-Eventually, the app can offer two modes:
+The native prototype now offers two modes:
 
 - **Build:** edit the graph and create reusable components.
 - **Use:** interact with exposed controls and viewers through a simplified interface.
 
 Use mode turns a graph into a small application.
+The first implementation uses a collapsed component's exposed numeric controls
+and outputs, with shared project commands and execution. See [Use mode](../USE_MODE.md)
+for current scope. A standalone application export remains future work.
 
 ## 3. Core concepts and modularity
 

@@ -77,7 +77,7 @@ private Q_SLOTS:
         QCOMPARE(QString::fromStdString(window.project().retained()["workspace"].dump()),QString::fromStdString(unchanged["workspace"].dump()));
         window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
         QVERIFY(window.execution().result()->succeeded());
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
         window.scene().undoStack().undo(); QVERIFY(window.project().retained()["project"]==unchanged["project"]);
         window.scene().undoStack().redo();
         ComponentUpdateDialog cancelled(window.project(),instance); cancelled.reject();
@@ -199,7 +199,7 @@ private Q_SLOTS:
         QVERIFY(window.project().retained()["project"]["components"].empty());
         window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
         QVERIFY(window.execution().result()->succeeded());
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
         window.scene().undoStack().undo(); window.scene().undoStack().undo();
         QVERIFY(window.project().retained()["project"]==source["project"]);
         window.scene().undoStack().redo(); window.scene().undoStack().redo();
@@ -209,7 +209,7 @@ private Q_SLOTS:
         QTemporaryDir directory; const auto path=directory.filePath("removed-library.smartflow"); window.saveProject(path);
         WorkspaceWindow reopened(data::dataConfiguration()); reopened.execution().setLive(false); reopened.show(); reopened.openProject(path);
         reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
-        QCOMPARE(reopened.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        QCOMPARE(reopened.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
         QVERIFY(reopened.project().retained()["project"]["graphs"]==source["project"]["graphs"]);
         ComponentLibraryDialog empty(reopened.project());
         QVERIFY(!empty.findChild<QPushButton*>("removeCatalogComponent")->isEnabled());
@@ -314,13 +314,13 @@ private Q_SLOTS:
         QCOMPARE(window.canvas().allNodeIds().size(),size_t(2));
         QCOMPARE(window.findChild<QComboBox*>("outputPort")->currentText(),QString("summary"));
         window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
         QVERIFY(window.grab().save("component-example-smoke.png"));
         const auto snapshot=window.project().retained()["project"]["graphs"][0]["nodes"][1]["component"];
         window.findChild<QDoubleSpinBox*>("parameter_minimum")->setValue(45);
         window.findChild<QPushButton*>("applyParameter")->click();
         window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
         QVERIFY(window.project().retained()["project"]["graphs"][0]["nodes"][1]["component"]==snapshot);
         QCOMPARE(window.execution().result()->steps.size(),size_t(2));
     }
@@ -360,16 +360,16 @@ private Q_SLOTS:
         window.findChild<QAction*>("pinOutput")->trigger();
         window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
         QCOMPARE(window.execution().result()->steps.size(),size_t(4));
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("79"));
         window.findChild<QComboBox*>("outputPort")->setCurrentText("rows");
         window.findChild<QAction*>("pinOutput")->trigger();
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->rowCount(),2);
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->rowCount(),2);
         window.findChild<QComboBox*>("outputPort")->setCurrentText("summary");
         window.findChild<QAction*>("pinOutput")->trigger();
         window.findChild<QDoubleSpinBox*>("parameter_minimum")->setValue(45);
         window.findChild<QPushButton*>("applyParameter")->click();
         window.execution().run(); QTRY_VERIFY(window.execution().result().has_value());
-        QCOMPARE(window.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        QCOMPARE(window.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
         window.scene().undoStack().undo();
         QCOMPARE(window.project().step(instance)->parameterValue<double>("minimum"),30.0);
         window.scene().undoStack().redo();
@@ -382,7 +382,7 @@ private Q_SLOTS:
         QVERIFY(reopened.project().retained()==saved);
         QCOMPARE(reopened.canvas().allNodeIds().size(),size_t(4));
         reopened.execution().run(); QTRY_VERIFY(reopened.execution().result().has_value());
-        QCOMPARE(reopened.findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
+        QCOMPARE(reopened.findChild<QWidget*>("tableViewer")->findChild<QTableWidget*>("outputTable")->item(1,1)->text(),QString("48"));
         reopened.scene().deleteSelected(); QCOMPARE(reopened.canvas().allNodeIds().size(),size_t(3));
         reopened.scene().undoStack().undo();
         QVERIFY(reopened.project().retained()["project"]==saved["project"]);

@@ -13,6 +13,9 @@ results; automated native computer-use is deferred by the user.
 
 ## Records
 
+- [Native Use mode: component tools and saved workspace](2026-10-03-native-use-mode.md)
+- [Positive manual test feedback on the preceding desktop version](2026-10-03-manual-test-feedback.md)
+
 - [Per-node execution times on the graph](2026-10-02-node-execution-times.md)
 
 - [Process Gantt: native and browser time analysis](2026-10-02-process-gantt.md)

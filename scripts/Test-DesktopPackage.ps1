@@ -34,6 +34,8 @@ $cases = @(
     @{ Name = 'scene-example'; App = 'smartflow.exe'; Options = @('--project', (Join-Path $packagePath 'examples/scene.smartflow')) },
     @{ Name = 'data-example'; App = 'smartflow-data.exe'; Options = @('--project', (Join-Path $packagePath 'examples/data.smartflow')) },
     @{ Name = 'component-example'; App = 'smartflow-data.exe'; Options = @('--project', (Join-Path $packagePath 'examples/components.smartflow')) },
+    @{ Name = 'scene-tool'; App = 'smartflow.exe'; Options = @('--project', (Join-Path $packagePath 'examples/scene-tool.smartflow')) },
+    @{ Name = 'data-tool'; App = 'smartflow-data.exe'; Options = @('--use', '--project', (Join-Path $packagePath 'examples/components.smartflow')) },
     @{ Name = 'scene-parallel'; App = 'smartflow.exe'; Options = @('--parallel', '--threads', '4', '--project', (Join-Path $packagePath 'examples/scene.smartflow')) },
     @{ Name = 'data-parallel'; App = 'smartflow-data.exe'; Options = @('--parallel', '--threads', '4', '--project', (Join-Path $packagePath 'examples/data.smartflow')) },
     @{ Name = 'component-parallel'; App = 'smartflow-data.exe'; Options = @('--parallel', '--threads', '4', '--project', (Join-Path $packagePath 'examples/components.smartflow')) }

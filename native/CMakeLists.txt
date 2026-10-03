@@ -36,6 +36,7 @@ add_library(smartflow_pipeline_widgets STATIC
 target_include_directories(smartflow_pipeline_widgets PUBLIC vendor/pipeline-widgets/inc)
 target_link_libraries(smartflow_pipeline_widgets PUBLIC smartflow_legacy smartflow_qtnodes)
 add_library(smartflow_workspace STATIC
+  app/workspace/UseWorkspace.cpp app/workspace/UseWorkspace.h
   app/workspace/GanttWidget.cpp app/workspace/GanttWidget.h
   app/workspace/PanelWorkspace.cpp app/workspace/PanelWorkspace.h
   app/workspace/ComponentDialogs.cpp app/workspace/ComponentDialogs.h
@@ -67,6 +68,16 @@ if(WIN32)
   install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
 endif()
 if(BUILD_TESTING)
+  add_executable(use_workspace_tests tests/UseWorkspaceTests.cpp)
+  target_link_libraries(use_workspace_tests PRIVATE smartflow_workspace smartflow_data smartflow_scene_3d Qt6::Test)
+  target_compile_definitions(use_workspace_tests PRIVATE
+    SMARTFLOW_COMPONENT_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/components.smartflow"
+    SMARTFLOW_SCENE_TOOL_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/scene-tool.smartflow")
+  add_test(NAME native_use_workspace COMMAND use_workspace_tests -platform offscreen -o -,txt -o use-workspace-results.xml,junitxml)
+  set_tests_properties(native_use_workspace PROPERTIES TIMEOUT 60)
+  add_test(NAME native_scene_tool_startup COMMAND smartflow --project ${CMAKE_SOURCE_DIR}/examples/scene-tool.smartflow --smoke-test -platform offscreen)
+  add_test(NAME native_data_tool_startup COMMAND smartflow-data --use --project ${CMAKE_SOURCE_DIR}/examples/components.smartflow --smoke-test -platform offscreen)
+  set_tests_properties(native_scene_tool_startup native_data_tool_startup PROPERTIES TIMEOUT 15)
   add_executable(file_exchange_check tests/FileExchangeCheck.cpp)
   target_link_libraries(file_exchange_check PRIVATE smartflow_workspace smartflow_data smartflow_scene_3d)
   add_executable(node_work_tests tests/NodeWorkTests.cpp)
