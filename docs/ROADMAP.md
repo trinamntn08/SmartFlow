@@ -105,6 +105,8 @@ Inline numeric controls are embedded in Build-mode nodes, including collapsed
 components' exposed controls. Enter/focus change and spin steps apply through the
 shared project history. See [the guide](INLINE_NODE_CONTROLS.md) and
 [checkpoint](agents/handoffs/2026-10-03-inline-node-controls.md).
+The field layout now uses aligned full-width rows with consistent insets;
+see [layout review](agents/handoffs/2026-10-03-inline-node-layout.md).
 
 ## Process Gantt checkpoint
 

@@ -1,12 +1,13 @@
 # Inline native node controls
 
 Build mode shows a node's numeric parameters directly inside its graph card.
-Sockets appear above compact labeled value fields and execution timing. Ordinary
+Sockets appear above full-width rows with labels left and values right. Rows use
+the same inset and spacing, with quiet execution timing below. Ordinary
 nodes follow their delegate's parameter order; collapsed components follow their
 authored public-control order. Unknown node content stays unavailable and retained.
 
-Click a value, type and press Enter, or leave the field, to apply it. Arrow buttons
-and Up/Down apply each step immediately. Escape discards unfinished typing. No
+Click a value, type and press Enter, or leave the field, to apply it. Up/Down
+applies each step immediately. Escape discards unfinished typing. No
 Apply button is required. An unfocused field ignores the wheel so canvas zoom does
 not accidentally edit values; a focused field can use the wheel to adjust them.
 

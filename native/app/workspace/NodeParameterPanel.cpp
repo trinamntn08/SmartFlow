@@ -15,8 +15,8 @@ namespace {
 class CompactNumber final : public QDoubleSpinBox {
 public:
     using QDoubleSpinBox::QDoubleSpinBox;
-    QSize sizeHint() const override { return {94,24}; }
-    QSize minimumSizeHint() const override { return {80,24}; }
+    QSize sizeHint() const override { return {78,26}; }
+    QSize minimumSizeHint() const override { return {60,26}; }
     void setCommittedValue(double next)
     {
         setValue(next);
@@ -63,13 +63,15 @@ NodeParameterPanel::NodeParameterPanel(GraphProject& document,tp_utils::StringID
     setProperty("projectNodeId",QString::fromStdString(node.toString()));
     setFixedWidth(164);
     setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    setStyleSheet("QWidget { color: #e0e6eb; background: transparent; font-size: 11px; }"
-                  "QDoubleSpinBox { background: #41464e; border: 1px solid #565d68; border-radius: 3px; padding: 2px; }"
-                  "QDoubleSpinBox:focus { border-color: #86b8e0; }"
+    setStyleSheet("QWidget { color: #e0e6eb; background: transparent; font-size: 12px; }"
+                  "QWidget#nodeParameterRow { background: #3e434b; border-radius: 3px; }"
+                  "QDoubleSpinBox { border: none; padding: 0; }"
+                  "QDoubleSpinBox:focus { background: #4c5969; border-radius: 2px; }"
+                  "QLabel#nodeExecutionTime { color: #a5adb8; font-size: 10px; }"
                   "QDoubleSpinBox:disabled { color: #929aa5; }");
-    layout=new QVBoxLayout(this); layout->setContentsMargins(0,2,0,2); layout->setSpacing(5);
+    layout=new QVBoxLayout(this); layout->setContentsMargins(0,0,0,0); layout->setSpacing(8);
     timing=new QLabel("Run: -",this); timing->setObjectName("nodeExecutionTime");
-    timing->setAttribute(Qt::WA_TransparentForMouseEvents); timing->setAlignment(Qt::AlignCenter);
+    timing->setAttribute(Qt::WA_TransparentForMouseEvents); timing->setAlignment(Qt::AlignLeft);
     timing->setToolTip("Invocation wall time; excludes ready-queue waiting. Components include their complete body span.");
     layout->addWidget(timing);
     refresh();
@@ -91,22 +93,27 @@ void NodeParameterPanel::refresh()
         if(controls) { layout->removeWidget(controls); controls->hide(); controls->deleteLater(); }
         fields.clear(); shape=std::move(nextShape);
         controls=new QWidget(this); auto* rows=new QVBoxLayout(controls);
-        rows->setContentsMargins(0,0,0,0); rows->setSpacing(3);
+        rows->setContentsMargins(0,0,0,0); rows->setSpacing(4);
         layout->insertWidget(0,controls);
         for(const auto& parameter : parameters) {
-            auto* row=new QHBoxLayout; row->setSpacing(4); rows->addLayout(row);
+            auto* rowWidget=new QWidget(controls); rowWidget->setObjectName("nodeParameterRow");
+            rowWidget->setFixedHeight(26); rows->addWidget(rowWidget);
+            auto* row=new QHBoxLayout(rowWidget); row->setContentsMargins(8,0,8,0); row->setSpacing(4);
             const auto name=QString::fromStdString(parameter.name.toString());
-            auto* label=new QLabel(name,controls); label->setTextFormat(Qt::PlainText);
+            auto title=name; if(!title.isEmpty()) title[0]=title[0].toUpper();
+            auto* label=new QLabel(title,rowWidget); label->setTextFormat(Qt::PlainText);
+            label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
             label->setFixedWidth(66); label->setToolTip(name); row->addWidget(label);
             if(parameter.type!=tp_pipeline::doubleSID() || !std::holds_alternative<double>(parameter.value)) {
-                auto* retained=new QLabel("Read-only",controls); retained->setToolTip("Editor unavailable; saved parameter retained.");
+                auto* retained=new QLabel("Read-only",rowWidget); retained->setToolTip("Editor unavailable; saved parameter retained.");
                 row->addWidget(retained,1); continue;
             }
-            auto* editor=new CompactNumber(controls); editor->setObjectName("nodeParameter_"+name);
+            auto* editor=new CompactNumber(rowWidget); editor->setObjectName("nodeParameter_"+name);
             editor->setAccessibleName(name); editor->setDecimals(10); editor->setKeyboardTracking(false);
             editor->setMinimumWidth(0); editor->setFixedHeight(24); editor->setAlignment(Qt::AlignRight);
+            editor->setButtonSymbols(QAbstractSpinBox::NoButtons);
             editor->setFocusPolicy(Qt::StrongFocus); editor->setGroupSeparatorShown(false);
-            editor->setToolTip(name+" — Enter or leave the field to apply; arrows adjust immediately.");
+            editor->setToolTip(name+" — Enter or leave the field to apply; Up/Down adjusts immediately.");
             label->setBuddy(editor); row->addWidget(editor,1); fields.push_back({parameter.name,editor});
             connect(editor,qOverload<double>(&QDoubleSpinBox::valueChanged),this,[this,id=parameter.name](double value) { commit(id,value); });
         }
