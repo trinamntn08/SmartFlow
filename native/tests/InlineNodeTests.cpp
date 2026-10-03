@@ -13,6 +13,7 @@
 #include <QLayout>
 #include <QSlider>
 #include <QStyleOptionSlider>
+#include <QWheelEvent>
 #include <QTemporaryDir>
 #include <QFontDatabase>
 #include <tp_data/members/NumberMember.h>
@@ -178,6 +179,39 @@ private Q_SLOTS:
         window.scene().undoStack().undo(); QCOMPARE(editor->value(),500000.0);
         editor->setValue(-1000000); QCOMPARE(slider->value(),0);
         QTest::keyClick(slider,Qt::Key_Left); QCOMPARE(editor->value(),-1000000.0);
+    }
+    void exponentialWheelSupportsZeroNegativeFineAndTrackpad()
+    {
+        WorkspaceWindow window; window.show(); window.execution().setLive(false);
+        window.activateWindow(); QCoreApplication::processEvents();
+        const auto number=findNode(window,"smartflow.numeric.number@1"); const auto id=window.canvas().projectId(number);
+        auto* editor=field(window,number,"value");
+        auto* slider=body(window,number)->findChild<QSlider*>("nodeSlider_value"); QVERIFY(slider);
+        auto* graphView=window.findChild<QtNodes::GraphicsView*>("graphCanvas");
+        QTest::mouseClick(graphView->viewport(),Qt::LeftButton,Qt::NoModifier,fieldPosition(window,number,"value"));
+        QVERIFY(editor->hasFocus());
+        auto scroll=[&](QWidget* target,int angle,int pixels=0,Qt::KeyboardModifiers modifiers=Qt::NoModifier) {
+            target->setFocus();
+            QWheelEvent event(QPointF(target->rect().center()),target->mapToGlobal(target->rect().center()),
+                QPoint(0,pixels),QPoint(0,angle),Qt::NoButton,modifiers,Qt::NoScrollPhase,false);
+            QApplication::sendEvent(target,&event);
+        };
+        editor->setValue(0); scroll(editor,120); const auto nearZero=editor->value(); QVERIFY(nearZero>0);
+        scroll(editor,-120); QVERIFY(std::abs(editor->value())<1e-8);
+        editor->setValue(-100); scroll(editor,120); QVERIFY(editor->value()>-100); QVERIFY(editor->value()<0);
+        editor->setValue(1000); scroll(editor,120); const auto large=editor->value()-1000;
+        QVERIFY(large>nearZero); scroll(editor,-120); QVERIFY(std::abs(editor->value()-1000)<1e-8);
+        scroll(editor,120,0,Qt::ShiftModifier); QVERIFY(editor->value()-1000<large/5);
+        editor->setValue(1000); scroll(slider,30); const auto fractional=editor->value()-1000;
+        QVERIFY(fractional>0); QVERIFY(fractional<large/2);
+        editor->setValue(1000); scroll(slider,0,10); QVERIFY(std::abs(editor->value()-1000-fractional)<1e-8);
+        QCOMPARE(window.project().step(id)->parameterValue<double>("value"),editor->value());
+        window.scene().undoStack().undo(); QCOMPARE(editor->value(),1000.0);
+        editor->setValue(1000000); scroll(editor,120); QCOMPARE(editor->value(),1000000.0);
+        editor->clearFocus(); slider->clearFocus(); const auto revision=window.project().revision();
+        QWheelEvent ignored(QPointF(editor->rect().center()),editor->mapToGlobal(editor->rect().center()),
+            QPoint(),QPoint(0,120),Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
+        QApplication::sendEvent(editor,&ignored); QCOMPARE(window.project().revision(),revision);
     }
     void dataComponentControlsAndOpaqueRoundTrip()
     {

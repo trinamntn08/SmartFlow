@@ -17,6 +17,17 @@
 
 namespace smartflow {
 namespace {
+double wheelValue(const QDoubleSpinBox& editor,const QWheelEvent& event)
+{
+    const auto delta=!event.pixelDelta().isNull() ? event.pixelDelta().y()/40.0 : event.angleDelta().y()/120.0;
+    const auto fine=event.modifiers().testFlag(Qt::ShiftModifier) ? 0.1 : 1.0;
+    constexpr double rate=0.05;
+    const auto scale=std::max(editor.singleStep(),1e-10)/rate;
+    // A signed exponential curve stays continuous across zero and negative values.
+    const auto coordinate=std::asinh(editor.value()/scale)+delta*rate*fine;
+    const auto value=scale*std::sinh(std::clamp(coordinate,-700.0,700.0));
+    return std::clamp(value,editor.minimum(),editor.maximum());
+}
 class ParameterSlider final : public QSlider {
 public:
     explicit ParameterSlider(QWidget* parent) : QSlider(Qt::Horizontal,parent) {
@@ -25,6 +36,7 @@ public:
     }
     std::function<void()> cancel;
     std::function<void()> apply;
+    std::function<void(QWheelEvent&)> scroll;
     QTimer updates;
     bool pending=false;
     quint64 group=0;
@@ -80,7 +92,7 @@ protected:
     }
     void wheelEvent(QWheelEvent* event) override
     {
-        if(hasFocus()) QSlider::wheelEvent(event); else event->ignore();
+        if(hasFocus() && scroll) { scroll(*event); event->accept(); } else event->ignore();
     }
 private:
     double lower=0,upper=1,domainMinimum=0,domainMaximum=1;
@@ -117,7 +129,7 @@ protected:
     }
     void wheelEvent(QWheelEvent* event) override
     {
-        if(hasFocus()) QDoubleSpinBox::wheelEvent(event);
+        if(hasFocus()) { setValue(wheelValue(*this,*event)); event->accept(); }
         else event->ignore(); // The canvas can zoom without accidentally editing.
     }
     void keyPressEvent(QKeyEvent* event) override
@@ -196,6 +208,7 @@ void NodeParameterPanel::refresh()
             auto* slider=new ParameterSlider(rowWidget); slider->setObjectName("nodeSlider_"+name);
             slider->setAccessibleName(title+" slider"); slider->setFixedHeight(10); slider->setFocusPolicy(Qt::StrongFocus);
             stack->addWidget(slider); fields.push_back({parameter.name,editor,slider});
+            slider->scroll=[editor](QWheelEvent& event) { editor->setValue(wheelValue(*editor,event)); };
             connect(slider,&QSlider::sliderPressed,this,[this,slider,editor] {
                 slider->group=project ? project->commands().newEditGroup() : 0;
                 slider->startValue=editor->value();

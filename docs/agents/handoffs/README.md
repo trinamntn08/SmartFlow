@@ -76,3 +76,4 @@ results; automated native computer-use is deferred by the user.
 - [Simpler aligned inline node fields](2026-10-03-inline-node-layout.md)
 - [Inline numeric parameter sliders](2026-10-03-inline-node-sliders.md)
 - [Live graph updates during slider dragging](2026-10-03-live-node-sliders.md)
+- [Exponential parameter wheel adjustment](2026-10-03-exponential-parameter-wheel.md)

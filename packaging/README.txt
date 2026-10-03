@@ -30,6 +30,7 @@ typing. Inline edits share Undo/Redo and execution with the inspector and viewer
 See docs/INLINE_NODE_CONTROLS.md.
 Each numeric row has a slider: drag to change the graph and viewer live.
 The drag is one undoable edit. Escape restores the start. Precise typing remains.
+Scroll over a focused field or slider for proportional adjustments; Shift is finer.
 Selecting a node also provides its inspector with an Apply button.
 Run, Undo and Redo should update the results. Save As to a separate file, close the app,
 relaunch and Open it to check restoration of the graph, layout and pinned viewer.

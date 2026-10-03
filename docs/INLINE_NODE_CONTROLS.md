@@ -20,6 +20,11 @@ Click a value, type and press Enter, or leave the field, to apply it. Up/Down
 applies each step immediately. Escape discards unfinished typing. No
 Apply button is required. An unfocused field ignores the wheel so canvas zoom does
 not accidentally edit values; a focused field can use the wheel to adjust them.
+Focused fields and sliders use a signed exponential wheel curve: fine changes
+near zero and proportional changes for larger magnitudes, including negatives.
+Shift makes scrolling ten times finer. Fractional wheel and trackpad pixel deltas
+are retained rather than rounded to whole notches. Declared bounds still apply;
+keyboard Up/Down keeps the ordinary parameter step.
 
 Edits share project commands, undo/redo, dirty tracking and background execution
 with the inspector, Use mode and viewers. Live updates recompute after committed
