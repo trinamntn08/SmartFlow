@@ -97,7 +97,7 @@ that acceptance is pending until results are reported.
 
 The sections below organize current code/tests by their originating checkpoint.
 Dated handoffs describe the state at that date; later steps supersede earlier
-limitations. The current suite has 27 CTest entries. Release presets/builds are
+limitations. The current suite has 28 CTest entries. Release presets/builds are
 verified; the separate Debug configuration has not been built in this session.
 
 ## N2 pipeline foundation

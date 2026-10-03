@@ -96,7 +96,8 @@ public:
         auto value = [&](const char* name) { return float(context->stepDetails->parameterValue<double>(name)); };
         auto output = std::make_shared<SceneMember>();
         if(operation == Operation::Cube) {
-            output->objects.push_back({context->stepDetails->id(), cube(value("size"))});
+            output->objects.push_back({context->stepDetails->id(), cube(value("size")),
+                scopedObjectId(context->stepDetails->id(),"cube",{}),{}});
         } else {
             auto* input = context->memberCast<SceneMember>(operation == Operation::Merge ? "first" : "in");
             if(!input) return false;
@@ -105,7 +106,12 @@ public:
                 auto* second = context->memberCast<SceneMember>("second");
                 if(!second || output->objects.size() + second->objects.size() > 64)
                     throw std::runtime_error("Scene preview supports at most 64 objects");
-                output->objects.insert(output->objects.end(), second->objects.begin(), second->objects.end());
+                for(auto& object : output->objects)
+                    object.id = scopedObjectId(context->stepDetails->id(),"first",object.id);
+                for(auto object : second->objects) {
+                    object.id = scopedObjectId(context->stepDetails->id(),"second",object.id);
+                    output->objects.push_back(std::move(object));
+                }
             }
             if(operation == Operation::Transform) {
                 tp_math_utils::MeshKeyFrame transform;
@@ -118,6 +124,7 @@ public:
                     // Legacy transform rotates normals only. Recompute after
                     // nonuniform scale so lighting follows the transformed faces.
                     object.geometry.calculateFaceNormals();
+                    object.transform = TransformSource{context->stepDetails->id(),transform};
                 }
             }
             if(operation == Operation::Material)

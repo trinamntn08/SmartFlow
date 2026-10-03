@@ -94,6 +94,7 @@ verification and limitations. Later checkpoints supersede earlier pending items.
 | E1-E4               | Owned execution data, bounded graph/internal threads and live progress            | [Execution](agents/handoffs/2026-10-02-execution-e4.md)       |
 | W1b                 | Strict browser JSON/UTF-8 transport and shared native compatibility tests         | [Transport](agents/handoffs/2026-10-02-web-w1b-transport.md)  |
 | Use mode            | Component controls/viewers, shared history/execution and separate saved workspace | [Use](agents/handoffs/2026-10-03-native-use-mode.md)          |
+| Scene S1            | Modular snapshots, stable selection, camera pan/zoom/views and triangle picking   | [S1](agents/handoffs/2026-10-03-scene-s1.md)                  |
 
 ## Process Gantt checkpoint
 

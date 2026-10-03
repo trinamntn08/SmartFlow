@@ -1,0 +1,5 @@
+add_library(smartflow_scene_controls STATIC
+  tp_math_utils/src/Plane.cpp tp_math_utils/src/Intersection.cpp)
+set_target_properties(smartflow_scene_controls PROPERTIES AUTOMOC OFF)
+target_include_directories(smartflow_scene_controls PUBLIC tp_math_utils/inc ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(smartflow_scene_controls PUBLIC smartflow_scene_math)

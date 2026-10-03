@@ -1,0 +1,53 @@
+{
+  "sourceCommit": "d6f457e8415445d00eaf7e9fbf9e5047768ea637",
+  "files": [
+    {
+      "source": "tp_math_utils/inc/tp_math_utils/Plane.h",
+      "copy": "tp_math_utils/inc/tp_math_utils/Plane.h",
+      "sourceSha256": "b841b6ca2536bf6cb9d9d061788875928c1174e1439a7cf4494b3a23ded8ddd8",
+      "copiedSha256": "b841b6ca2536bf6cb9d9d061788875928c1174e1439a7cf4494b3a23ded8ddd8"
+    },
+    {
+      "source": "tp_math_utils/inc/tp_math_utils/Ray.h",
+      "copy": "tp_math_utils/inc/tp_math_utils/Ray.h",
+      "sourceSha256": "2f6e8c19a2fc1e1bb0ac3ecc7d8e0ac15a99cbbcaeb411c234e74595130425ed",
+      "copiedSha256": "2f6e8c19a2fc1e1bb0ac3ecc7d8e0ac15a99cbbcaeb411c234e74595130425ed"
+    },
+    {
+      "source": "tp_math_utils/inc/tp_math_utils/Intersection.h",
+      "copy": "tp_math_utils/inc/tp_math_utils/Intersection.h",
+      "sourceSha256": "eac40926a688030ab179ab37e975b527cc974bd44964b3e71898585db23e68b7",
+      "copiedSha256": "eac40926a688030ab179ab37e975b527cc974bd44964b3e71898585db23e68b7"
+    },
+    {
+      "source": "tp_math_utils/src/Plane.cpp",
+      "copy": "tp_math_utils/src/Plane.cpp",
+      "sourceSha256": "b8167312b2c8a971da4dbd62fee85875381cd2f810c9b803968957ef48187f86",
+      "copiedSha256": "b8167312b2c8a971da4dbd62fee85875381cd2f810c9b803968957ef48187f86"
+    },
+    {
+      "source": "tp_math_utils/src/Intersection.cpp",
+      "copy": "tp_math_utils/src/Intersection.cpp",
+      "sourceSha256": "54ac732c05be9261be9dc05d1569223ad60e6576b47f5bfe8ed8b12c6eb41984",
+      "copiedSha256": "54ac732c05be9261be9dc05d1569223ad60e6576b47f5bfe8ed8b12c6eb41984"
+    },
+    {
+      "source": "tp_math_utils/LICENSE",
+      "copy": "tp_math_utils/LICENSE",
+      "sourceSha256": "cab25d45f5e39d7b788dcbcb073496d0d585410937b16d48876fdfba4e3877fe",
+      "copiedSha256": "cab25d45f5e39d7b788dcbcb073496d0d585410937b16d48876fdfba4e3877fe"
+    },
+    {
+      "source": "tp_maps/LICENSE",
+      "copy": "tp_maps/LICENSE",
+      "sourceSha256": "7394c0554a2b5bdb597f78a7ad14a80f086b3dc69b7b9b781d9301cef41b7e9b",
+      "copiedSha256": "7394c0554a2b5bdb597f78a7ad14a80f086b3dc69b7b9b781d9301cef41b7e9b"
+    }
+  ],
+  "adaptationSources": [
+    {
+      "source": "tp_maps/src/controllers/CADController.cpp",
+      "sourceSha256": "20d559b0e7042c33085f3755ed605ed545eded5fc3f6d74fe13fdc4d36bfbdba"
+    }
+  ]
+}

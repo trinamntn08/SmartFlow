@@ -125,7 +125,7 @@ production/file exchange acceptance are complete. See [the web guide](../WEB_DEV
 
 ## Verification and open work
 
-Current Release builds, 27 CTest entries and packaged startup checks passed. Full
+Current Release builds, 28 CTest entries and packaged startup checks passed. Full
 Windows desktop interaction acceptance is pending manual testing, as recorded in
 [the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
 The primitive viewer is not production GPU rendering; importer/asset handling,

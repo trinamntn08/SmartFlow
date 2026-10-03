@@ -1,181 +1,80 @@
 #include "SceneViewer.h"
-#include <tp_math_utils/materials/OpenGLMaterial.h>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QKeyEvent>
 #include <QPainter>
-#include <QJsonArray>
-#include <algorithm>
-#include <cmath>
+#include <QComboBox>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QSignalBlocker>
 
 namespace smartflow::scene3d {
 SceneViewer::SceneViewer()
 {
-    setObjectName("sceneViewer");
-    setMinimumSize(360, 270);
-    setFocusPolicy(Qt::StrongFocus);
-    setToolTip("Drag to orbit. Wheel to zoom. Double-click to frame. Click an object to select it.");
+    setObjectName("sceneViewer"); setMinimumSize(360,270); setFocusPolicy(Qt::StrongFocus);
+    setToolTip("Left drag: orbit. Middle drag or Shift-drag: pan. Wheel: zoom at cursor. F: frame. Click: select.");
+    tools=new QWidget(this); auto* layout=new QHBoxLayout(tools); layout->setContentsMargins(8,4,8,4);
+    viewChoice=new QComboBox(tools); viewChoice->setObjectName("sceneView");
+    viewChoice->addItems({"Orbit","Front","Right","Top"}); layout->addWidget(viewChoice);
+    auto* frame=new QPushButton("Frame",tools); frame->setObjectName("sceneFrame"); layout->addWidget(frame); layout->addStretch();
+    connect(viewChoice,&QComboBox::currentIndexChanged,this,[this](int index) { camera.view=CameraView(index); workspaceChanged(); });
+    connect(frame,&QPushButton::clicked,this,[this] { frameScene(); });
 }
-
-void SceneViewer::present(std::shared_ptr<const tp_data::Collection> output)
-{
-    collection = std::move(output);
-    scene = nullptr;
-    if(collection)
-        for(const auto& member : collection->members())
-            if(const auto* found = dynamic_cast<const SceneMember*>(member.get())) { scene = found; break; }
-    // Keep workspace selection while results are temporarily invalidated.
-    if(scene && selection >= int(scene->objects.size())) selection = -1;
-    pickFaces.clear();
-    update();
-}
-
+QRectF SceneViewer::viewport() const { return QRectF(0,46,width(),std::max(1,height()-76)); }
+void SceneViewer::resizeEvent(QResizeEvent*) { tools->setGeometry(0,0,width(),40); }
+void SceneViewer::workspaceChanged() { update(); if(workspaceStateChanged) workspaceStateChanged(); }
+void SceneViewer::present(std::shared_ptr<const tp_data::Collection> output) { snapshot.present(std::move(output)); update(); }
 QJsonObject SceneViewer::workspaceState() const
 {
-    return {{"yaw",yaw},{"pitch",pitch},{"span",span},
-            {"target",QJsonArray{target.x,target.y,target.z}},{"selection",selection}};
+    auto state=camera.state(); state["selection"]=selectedObject(); state["selectedObjectId"]=snapshot.selectedId(); return state;
 }
-
 void SceneViewer::restoreWorkspaceState(const QJsonObject& state)
 {
-    // Invalid or future fields are retained by the host, never trusted as geometry.
-    const auto number = [&](const char* key, double low, double high, float fallback) {
-        const auto value=state.value(key);
-        const auto n=value.toDouble(fallback);
-        return value.isDouble() && std::isfinite(n) && n>=low && n<=high ? float(n) : fallback;
-    };
-    yaw=number("yaw",-1000000,1000000,35);
-    pitch=number("pitch",-85,85,25);
-    span=number("span",0.1,1000000,6);
-    target=glm::vec3(0);
-    const auto values=state.value("target").toArray();
-    if(values.size()==3)
-        for(int i=0; i<3; ++i)
-            if(values[i].isDouble() && std::isfinite(values[i].toDouble()) && std::abs(values[i].toDouble())<=1000000)
-                target[i]=float(values[i].toDouble());
-    selection=int(number("selection",-1,63,-1));
-    update();
+    camera.restore(state); snapshot.restoreSelection(state);
+    const QSignalBlocker blocker(viewChoice); viewChoice->setCurrentIndex(int(camera.view)); update();
 }
-
-size_t SceneViewer::objectCount() const { return scene ? scene->objects.size() : 0; }
-
 QString SceneViewer::describe(const tp_data::Collection& output) const
 {
     for(const auto& member : output.members())
-        if(const auto* value = dynamic_cast<const SceneMember*>(member.get()))
-            return QString("%1 object(s)").arg(value->objects.size());
+        if(const auto* value=dynamic_cast<const SceneMember*>(member.get())) return QString("%1 object(s)").arg(value->objects.size());
     return {};
 }
-
 void SceneViewer::frameScene()
 {
-    if(!scene || scene->objects.empty()) return;
-    glm::vec3 low(INFINITY), high(-INFINITY);
-    for(const auto& object : scene->objects)
-        for(const auto& vertex : object.geometry.verts) {
-            low = glm::min(low, vertex.vert);
-            high = glm::max(high, vertex.vert);
-        }
-    target = (low + high) / 2.0f;
-    span = std::max(0.1f, glm::length(high-low) * 1.4f);
-    update();
-    if(workspaceStateChanged) workspaceStateChanged();
+    glm::vec3 low,high; if(snapshot.bounds(low,high)) { camera.frame(low,high); workspaceChanged(); }
 }
-
 void SceneViewer::paintEvent(QPaintEvent*)
 {
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(rect(), QColor(27, 32, 41));
-    painter.setPen(QColor(208, 217, 229));
-    painter.drawText(14, 23, "3D preview");
-    painter.drawText(14, height()-14, "Drag: orbit   Wheel: zoom   Double-click: frame   Click: select");
-    pickFaces.clear();
-    if(!scene) {
-        painter.drawText(rect(), Qt::AlignCenter, "No current scene output");
-        return;
-    }
-    const float y = glm::radians(yaw), p = glm::radians(pitch);
-    const glm::vec3 forward(std::sin(y)*std::cos(p), std::sin(p), std::cos(y)*std::cos(p));
-    const glm::vec3 right(std::cos(y), 0, -std::sin(y));
-    const glm::vec3 up = glm::cross(forward, right);
-    const float pixels = float(std::min(width(), height()-60)) / span;
-    const QPointF center(width()/2.0, height()/2.0);
-    auto project = [&](glm::vec3 v) {
-        v -= target;
-        return center + QPointF(glm::dot(v,right)*pixels, -glm::dot(v,up)*pixels);
-    };
-    painter.setPen(QPen(QColor(48, 57, 69), 1));
-    for(int i=-5; i<=5; ++i) {
-        painter.drawLine(project({float(i),-1,-5}), project({float(i),-1,5}));
-        painter.drawLine(project({-5,-1,float(i)}), project({5,-1,float(i)}));
-    }
-    struct Face { QPolygonF polygon; QColor color; float depth; int object; };
-    std::vector<Face> faces;
-    int index = 0;
-    for(const auto& object : scene->objects) {
-        glm::vec3 albedo(0.65f);
-        object.geometry.material.viewOpenGL([&](const auto& material) { albedo = material.albedo; });
-        object.geometry.forEachTriangle([&](const auto& a, const auto& b, const auto& c, int, int, int) {
-            auto normal = glm::cross(b.vert-a.vert, c.vert-a.vert);
-            if(glm::length(normal) < 1e-7f) return;
-            normal = glm::normalize(normal);
-            if(glm::dot(normal, forward) <= 0) return;
-            const float light = 0.28f + 0.72f * std::max(0.0f, glm::dot(normal, glm::normalize(glm::vec3(-1,2,3))));
-            const auto color = glm::clamp(albedo * light, glm::vec3(0), glm::vec3(1));
-            faces.push_back({QPolygonF({project(a.vert), project(b.vert), project(c.vert)}),
-                QColor::fromRgbF(color.r, color.g, color.b),
-                glm::dot((a.vert+b.vert+c.vert)/3.0f-target, forward), index});
-        });
-        ++index;
-    }
-    // Painter ordering is suitable for the small nonintersecting primitive
-    // preview. Intersecting surfaces require a future depth-buffered renderer.
-    std::stable_sort(faces.begin(), faces.end(), [](const auto& a, const auto& b) { return a.depth < b.depth; });
-    for(const auto& face : faces) {
-        painter.setBrush(face.color);
-        painter.setPen(QPen(face.object == selection ? QColor(255,207,94) : face.color.darker(115),
-                            face.object == selection ? 2 : 1));
-        painter.drawPolygon(face.polygon);
-        pickFaces.push_back({face.polygon, face.object});
-    }
-    painter.setPen(QColor(208, 217, 229));
-    painter.drawText(14, 44, QString("%1 object(s)%2").arg(objectCount()).arg(
-        selection >= 0 ? QString(" - selected object %1").arg(selection+1) : QString()));
+    QPainter painter(this); painter.setRenderHint(QPainter::Antialiasing); painter.fillRect(rect(),QColor(27,32,41));
+    painter.setPen(QColor(208,217,229));
+    painter.drawText(12,height()-12,QString("%1 object(s)   Drag: orbit   Shift: pan   Wheel: zoom").arg(objectCount()));
+    if(!snapshot.scene()) { painter.drawText(viewport(),Qt::AlignCenter,"No current scene output"); return; }
+    painter.save(); painter.setClipRect(viewport());
+    renderer.paint(painter,viewport(),camera,*snapshot.scene(),selectedObject()); painter.restore();
 }
-
 void SceneViewer::mousePressEvent(QMouseEvent* event)
 {
-    if(event->button() != Qt::LeftButton) return;
-    lastPosition = pressPosition = event->position();
-    dragged = false;
+    if(event->button()!=Qt::LeftButton && event->button()!=Qt::MiddleButton && event->button()!=Qt::RightButton) return;
+    setFocus(); lastPosition=pressPosition=event->position(); dragged=false;
 }
 void SceneViewer::mouseMoveEvent(QMouseEvent* event)
 {
-    if(!(event->buttons() & Qt::LeftButton)) return;
-    const auto delta = event->position() - lastPosition;
-    dragged = dragged || (event->position()-pressPosition).manhattanLength() > 3;
-    yaw += float(delta.x()) * 0.5f;
-    pitch = std::clamp(pitch + float(delta.y()) * 0.5f, -85.0f, 85.0f);
-    lastPosition = event->position();
-    update();
-    if(workspaceStateChanged) workspaceStateChanged();
+    if(!(event->buttons() & (Qt::LeftButton|Qt::MiddleButton|Qt::RightButton))) return;
+    const auto delta=event->position()-lastPosition;
+    dragged=dragged || (event->position()-pressPosition).manhattanLength()>3;
+    if((event->buttons() & Qt::MiddleButton) || (event->modifiers() & Qt::ShiftModifier)) camera.pan(delta,viewport());
+    else { camera.orbit(delta); const QSignalBlocker blocker(viewChoice); viewChoice->setCurrentIndex(0); }
+    lastPosition=event->position(); workspaceChanged();
 }
 void SceneViewer::mouseReleaseEvent(QMouseEvent* event)
 {
-    if(event->button() != Qt::LeftButton || dragged) return;
-    selection = -1;
-    for(auto it=pickFaces.rbegin(); it!=pickFaces.rend(); ++it)
-        if(it->polygon.containsPoint(event->position(), Qt::OddEvenFill)) { selection=it->object; break; }
-    update();
-    if(workspaceStateChanged) workspaceStateChanged();
+    if(event->button()!=Qt::LeftButton || dragged || !snapshot.scene()) return;
+    snapshot.select(renderer.pick(event->position(),viewport(),camera,*snapshot.scene())); workspaceChanged();
 }
-void SceneViewer::wheelEvent(QWheelEvent* event)
-{
-    const float factor = std::exp(std::clamp(-float(event->angleDelta().y())/1000.0f, -1.0f, 1.0f));
-    span = std::clamp(span * factor, 0.1f, 1000000.0f);
-    update();
-    if(workspaceStateChanged) workspaceStateChanged();
-    event->accept();
-}
+void SceneViewer::wheelEvent(QWheelEvent* event) { camera.zoom(float(event->angleDelta().y()),event->position(),viewport()); workspaceChanged(); event->accept(); }
 void SceneViewer::mouseDoubleClickEvent(QMouseEvent*) { frameScene(); }
-} // namespace smartflow::scene3d
+void SceneViewer::keyPressEvent(QKeyEvent* event)
+{
+    if(event->key()==Qt::Key_F) { frameScene(); event->accept(); } else OutputViewer::keyPressEvent(event);
+}
+}

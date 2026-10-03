@@ -1,9 +1,12 @@
 #pragma once
-#include "SceneExtension.h"
-#include <QPolygonF>
+#include <WorkspaceExtension.h>
+#include "model/SceneSnapshot.h"
+#include "controllers/CameraController.h"
+#include "rendering/SceneRenderer.h"
+class QComboBox;
 
 namespace smartflow::scene3d {
-// Small opaque-mesh preview. Camera/selection state is persisted as opaque workspace data.
+// Composition only: immutable scene, camera controller and renderer are independent modules.
 class SceneViewer final : public OutputViewer {
 public:
     SceneViewer();
@@ -13,9 +16,9 @@ public:
     QJsonObject workspaceState() const override;
     void restoreWorkspaceState(const QJsonObject& state) override;
     void frameScene();
-    size_t objectCount() const;
-    QPointF cameraAngles() const { return {yaw, pitch}; }
-    int selectedObject() const { return selection; }
+    size_t objectCount() const { return snapshot.scene() ? snapshot.scene()->objects.size() : 0; }
+    QPointF cameraAngles() const { return {camera.yaw,camera.pitch}; }
+    int selectedObject() const { return snapshot.selectedIndex(); }
 protected:
     void paintEvent(QPaintEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
@@ -23,15 +26,17 @@ protected:
     void mouseReleaseEvent(QMouseEvent*) override;
     void wheelEvent(QWheelEvent*) override;
     void mouseDoubleClickEvent(QMouseEvent*) override;
+    void keyPressEvent(QKeyEvent*) override;
+    void resizeEvent(QResizeEvent*) override;
 private:
-    std::shared_ptr<const tp_data::Collection> collection;
-    const SceneMember* scene = nullptr;
-    float yaw = 35, pitch = 25, span = 6;
-    glm::vec3 target{0};
+    QRectF viewport() const;
+    void workspaceChanged();
+    SceneSnapshot snapshot;
+    CameraController camera;
+    SceneRenderer renderer;
+    QWidget* tools;
+    QComboBox* viewChoice;
     QPointF lastPosition, pressPosition;
-    bool dragged = false;
-    int selection = -1;
-    struct PickFace { QPolygonF polygon; int object; };
-    std::vector<PickFace> pickFaces;
+    bool dragged=false;
 };
-} // namespace smartflow::scene3d
+}
