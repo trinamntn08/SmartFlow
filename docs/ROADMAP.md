@@ -109,6 +109,8 @@ The field layout now uses aligned full-width rows with consistent insets;
 see [layout review](agents/handoffs/2026-10-03-inline-node-layout.md).
 Numeric rows also include sliders with one undoable edit per drag; see
 [slider checkpoint](agents/handoffs/2026-10-03-inline-node-sliders.md).
+Slider edits now apply during dragging and trigger live execution, while retaining
+one undo step; see [live slider follow-up](agents/handoffs/2026-10-03-live-node-sliders.md).
 
 ## Process Gantt checkpoint
 

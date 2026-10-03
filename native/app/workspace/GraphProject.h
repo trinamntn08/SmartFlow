@@ -25,7 +25,7 @@ public:
     tp_pipeline::StepDetails* step(const tp_utils::StringID& id) const;
     tp_pipeline::StepDetails* create(const tp_utils::StringID& type);
     void remove(const tp_utils::StringID& id);
-    bool setParameter(const tp_utils::StringID& id, const tp_pipeline::Parameter& parameter);
+    bool setParameter(const tp_utils::StringID& id, const tp_pipeline::Parameter& parameter, quint64 group=0);
     bool connectInput(const tp_utils::StringID& target, size_t input,
                       const tp_utils::StringID& source, size_t output);
     void disconnectInput(const tp_utils::StringID& target, size_t input);

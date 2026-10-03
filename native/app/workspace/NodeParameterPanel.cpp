@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QSlider>
 #include <QMouseEvent>
+#include <QTimer>
 #include <algorithm>
 #include <functional>
 #include <cmath>
@@ -18,12 +19,20 @@ namespace smartflow {
 namespace {
 class ParameterSlider final : public QSlider {
 public:
-    explicit ParameterSlider(QWidget* parent) : QSlider(Qt::Horizontal,parent) { setRange(0,10000); }
+    explicit ParameterSlider(QWidget* parent) : QSlider(Qt::Horizontal,parent) {
+        setRange(0,10000); updates.setInterval(40); updates.setSingleShot(true);
+        QObject::connect(&updates,&QTimer::timeout,this,[this] { if(pending) { pending=false; if(apply) apply(); updates.start(); } });
+    }
     std::function<void()> cancel;
+    std::function<void()> apply;
+    QTimer updates;
+    bool pending=false;
+    quint64 group=0;
+    double startValue=0;
     void synchronize(double minimum,double maximum,double step,double value)
     {
         const QSignalBlocker blocker(this);
-        if(isSliderDown()) discardPointer=true;
+        if(isSliderDown()) { discardPointer=true; group=0; updates.stop(); pending=false; }
         setSliderDown(false);
         if(!initialized || minimum!=domainMinimum || maximum!=domainMaximum || value<lower || value>upper) {
             domainMinimum=minimum; domainMaximum=maximum; lower=minimum; upper=maximum; initialized=true;
@@ -38,7 +47,7 @@ public:
         setSingleStep(span>0 ? int(std::clamp(std::round(step/span*10000),1.0,10000.0)) : 1);
         setPageStep(std::min(10000,singleStep()*10));
         setValue(span>0 ? int(std::round((value-lower)/span*10000)) : 0);
-        setToolTip(QString("Drag to adjust (%1 to %2). Release to apply; Escape cancels.").arg(lower).arg(upper));
+        setToolTip(QString("Drag to adjust live (%1 to %2). Escape restores the starting value.").arg(lower).arg(upper));
     }
     double number() const { return lower+(upper-lower)*value()/10000.0; }
 protected:
@@ -187,15 +196,32 @@ void NodeParameterPanel::refresh()
             auto* slider=new ParameterSlider(rowWidget); slider->setObjectName("nodeSlider_"+name);
             slider->setAccessibleName(title+" slider"); slider->setFixedHeight(10); slider->setFocusPolicy(Qt::StrongFocus);
             stack->addWidget(slider); fields.push_back({parameter.name,editor,slider});
-            slider->cancel=[this] { refresh(); };
-            connect(slider,&QSlider::valueChanged,this,[this,editor,slider,id=parameter.name](int) {
-                if(refreshing) return;
-                if(slider->isSliderDown()) {
-                    const QSignalBlocker blocker(editor);
-                    editor->setCommittedValue(slider->number());
-                } else commit(id,slider->number());
+            connect(slider,&QSlider::sliderPressed,this,[this,slider,editor] {
+                slider->group=project ? project->commands().newEditGroup() : 0;
+                slider->startValue=editor->value();
             });
-            connect(slider,&QSlider::sliderReleased,this,[this,slider,id=parameter.name] { commit(id,slider->number()); });
+            slider->cancel=[this,slider,id=parameter.name] {
+                slider->updates.stop(); slider->pending=false;
+                if(slider->group) {
+                    const QScopedValueRollback<bool> guard(applyingSlider,true);
+                    commit(id,slider->startValue,slider->group);
+                }
+                refresh();
+            };
+            slider->apply=[this,slider,id=parameter.name] {
+                const QScopedValueRollback<bool> guard(applyingSlider,true);
+                commit(id,slider->number(),slider->group);
+            };
+            connect(slider,&QSlider::valueChanged,this,[this,slider](int) {
+                if(refreshing) return;
+                if(slider->isSliderDown() && slider->updates.isActive()) slider->pending=true;
+                else { slider->apply(); if(slider->isSliderDown()) slider->updates.start(); }
+            });
+            connect(slider,&QSlider::sliderReleased,this,[slider] {
+                slider->updates.stop();
+                if(slider->pending) { slider->pending=false; slider->apply(); }
+                slider->group=0;
+            });
             connect(editor,qOverload<double>(&QDoubleSpinBox::valueChanged),this,[this,id=parameter.name](double value) { commit(id,value); });
         }
         controls->setVisible(!parameters.empty());
@@ -209,12 +235,13 @@ void NodeParameterPanel::refresh()
         field.editor->setEnabled(parameter.enabled);
         static_cast<CompactNumber*>(field.editor.data())->setCommittedValue(tpGetVariantValue<double>(parameter.value));
         auto* slider=static_cast<ParameterSlider*>(field.slider.data());
-        slider->synchronize(field.editor->minimum(),field.editor->maximum(),field.editor->singleStep(),field.editor->value());
+        if(!(applyingSlider && slider->isSliderDown()))
+            slider->synchronize(field.editor->minimum(),field.editor->maximum(),field.editor->singleStep(),field.editor->value());
         slider->setEnabled(parameter.enabled && field.editor->minimum()<field.editor->maximum());
     }
     layout->activate(); setFixedHeight(sizeHint().height());
 }
-void NodeParameterPanel::commit(const tp_utils::StringID& name,double value)
+void NodeParameterPanel::commit(const tp_utils::StringID& name,double value,quint64 group)
 {
     if(refreshing || !project || !std::isfinite(value)) return;
     if(revision!=project->revision()) { refresh(); return; }
@@ -222,7 +249,7 @@ void NodeParameterPanel::commit(const tp_utils::StringID& name,double value)
     auto parameter=step->parameter(name);
     if(!parameter.enabled || parameter.type!=tp_pipeline::doubleSID()) return;
     parameter.value=value;
-    if(!project->setParameter(node,parameter)) refresh();
+    if(!project->setParameter(node,parameter,group)) refresh();
 }
 void NodeParameterPanel::setTiming(const QString& text) { timing->setText(text); }
 }

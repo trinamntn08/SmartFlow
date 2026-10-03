@@ -6,9 +6,10 @@ the same inset and spacing, with quiet execution timing below. Ordinary
 nodes follow their delegate's parameter order; collapsed components follow their
 authored public-control order. Unknown node content stays unavailable and retained.
 
-Each numeric row includes a horizontal slider. Dragging previews the number in
-the field; release applies one undoable edit and recomputes with Live enabled.
-Escape cancels the drag. Slider keyboard steps and track clicks apply immediately.
+Each numeric row includes a horizontal slider. Dragging applies live changes to
+the graph and recomputes with Live enabled, with updates bounded to about 25 per
+second. Release flushes the final value; the entire drag remains one undo step.
+Escape restores the starting value. Slider keyboard steps and track clicks apply immediately.
 Typing, undo and edits in other widgets keep the slider synchronized. An external
 project change cancels an unfinished drag rather than overwriting the newer value.
 The slider uses the declared bounds; domains wider than 10,000 use a smaller

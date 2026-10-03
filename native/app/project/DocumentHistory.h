@@ -19,7 +19,8 @@ public:
 
     void createNode(const std::string& id, const std::string& type);
     void removeNode(const std::string& id);
-    void setParameter(const std::string& id, const std::string& name, const Document& value);
+    quint64 newEditGroup() { return ++editGroupCounter; }
+    void setParameter(const std::string& id, const std::string& name, const Document& value, quint64 group=0);
     void connect(const std::string& id, const std::string& source, const std::string& output,
                  const std::string& target, const std::string& input);
     void disconnect(const std::string& id);
@@ -32,7 +33,7 @@ public:
     ComponentBindings instantiateComponent(const GraphComponent& component, const std::string& instanceId,
         const Document& controls, const Document& inputSources, bool collapsed = false);
     // One atomic command for multi-selection edits on a disposable candidate.
-    void edit(const QString& label, const std::function<void(DocumentSession&)>& operation);
+    void edit(const QString& label, const std::function<void(DocumentSession&)>& operation, quint64 group=0);
     void setWorkspaceField(const std::string& name, const Document& value);
     // Prepare before replacing. Failed loads preserve the session and history;
     // successful replacement invalidates old commands and execution revisions.
@@ -50,5 +51,6 @@ private:
     std::unique_ptr<DocumentSession> current;
     QUndoStack history;
     quint64 semanticRevision = 0;
+    quint64 editGroupCounter = 0;
 };
 } // namespace smartflow::project

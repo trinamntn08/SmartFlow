@@ -111,7 +111,7 @@ void GraphProject::remove(const StringID& id)
 {
     history.removeNode(id.toString());
 }
-bool GraphProject::setParameter(const StringID& id, const Parameter& parameter)
+bool GraphProject::setParameter(const StringID& id, const Parameter& parameter, quint64 group)
 {
     auto* item=step(id);
     if(!item) return false;
@@ -124,7 +124,7 @@ bool GraphProject::setParameter(const StringID& id, const Parameter& parameter)
     else if(const auto* boolean=std::get_if<bool>(&parameter.value)) value=*boolean;
     else return false;
     const auto nodeId=id.toString(), name=parameter.name.toString();
-    try { history.setParameter(nodeId,name,value); }
+    try { history.setParameter(nodeId,name,value,group); }
     catch(const project::FileError&) { return false; }
     return true;
 }

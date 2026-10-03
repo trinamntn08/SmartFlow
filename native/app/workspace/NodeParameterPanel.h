@@ -16,7 +16,7 @@ public:
     void refresh();
     void setTiming(const QString& text);
 private:
-    void commit(const tp_utils::StringID& name,double value);
+    void commit(const tp_utils::StringID& name,double value,quint64 group=0);
     struct Field { tp_utils::StringID name; QPointer<QDoubleSpinBox> editor; QPointer<QSlider> slider; };
     QPointer<GraphProject> project;
     tp_utils::StringID node;
@@ -27,5 +27,6 @@ private:
     std::vector<std::string> shape;
     quint64 revision=0;
     bool refreshing=false;
+    bool applyingSlider=false;
 };
 }

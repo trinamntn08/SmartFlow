@@ -30,7 +30,7 @@ void ExecutionController::invalidate()
     if(pending) pending->cancel();
     requested = live;
     message = live ? "Waiting for latest edit..." : "Outdated - run to update";
-    if(live) debounce.start();
+    if(live && !debounce.isActive()) debounce.start(); // Continuous edits must not postpone every run.
     Q_EMIT updated();
 }
 

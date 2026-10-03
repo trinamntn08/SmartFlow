@@ -13,13 +13,22 @@ Document semanticDocument(const Document& source)
 
 class DocumentHistory::Command final : public QUndoCommand {
 public:
-    Command(DocumentHistory& owner, QString label, Document before, Document after)
-        : QUndoCommand(std::move(label)), owner(owner), before(std::move(before)), after(std::move(after)) {}
+    Command(DocumentHistory& owner, QString label, Document before, Document after, quint64 group)
+        : QUndoCommand(std::move(label)), owner(owner), before(std::move(before)), after(std::move(after)), group(group) {}
     void undo() override { owner.restore(before); }
     void redo() override { owner.restore(after); }
+    int id() const override { return group ? 1 : -1; }
+    bool mergeWith(const QUndoCommand* command) override {
+        const auto* next=dynamic_cast<const Command*>(command);
+        if(!next || &owner!=&next->owner || group!=next->group || after!=next->before) return false;
+        after=next->after;
+        setObsolete(before==after);
+        return true;
+    }
 private:
     DocumentHistory& owner;
     Document before, after;
+    quint64 group;
 };
 
 DocumentHistory::DocumentHistory(Document source, std::string graphId,
@@ -35,14 +44,14 @@ std::unique_ptr<DocumentSession> DocumentHistory::prepare(Document source, const
     return std::make_unique<DocumentSession>(std::move(source),graph,delegates,registrations);
 }
 
-void DocumentHistory::edit(const QString& label, const std::function<void(DocumentSession&)>& operation)
+void DocumentHistory::edit(const QString& label, const std::function<void(DocumentSession&)>& operation, quint64 group)
 {
     auto candidate=prepare(current->document(),graphId);
     operation(*candidate); // Reject before QUndoStack can discard its redo branch.
     auto before=semanticDocument(current->document());
     auto after=semanticDocument(candidate->document());
     if(before==after) return;
-    history.push(new Command(*this,label,std::move(before),std::move(after)));
+    history.push(new Command(*this,label,std::move(before),std::move(after),group));
 }
 
 void DocumentHistory::restore(const Document& semanticSnapshot)
@@ -77,9 +86,9 @@ void DocumentHistory::removeNode(const std::string& id)
     edit("Delete node",[&](auto& session) { session.removeNode(id); });
 }
 
-void DocumentHistory::setParameter(const std::string& id, const std::string& name, const Document& value)
+void DocumentHistory::setParameter(const std::string& id, const std::string& name, const Document& value, quint64 group)
 {
-    edit("Edit " + QString::fromStdString(name),[&](auto& session) { session.setParameter(id,name,value); });
+    edit("Edit " + QString::fromStdString(name),[&](auto& session) { session.setParameter(id,name,value); },group);
 }
 
 void DocumentHistory::connect(const std::string& id, const std::string& source, const std::string& output,
