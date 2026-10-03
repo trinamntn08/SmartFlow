@@ -1,6 +1,8 @@
 # Windows first test version: 2026-10-02
 
-Status: ready for manual testing. Full desktop interaction acceptance awaits results.
+Status: user reports manual testing is OK so far (feedback received 2026-10-03).
+Individual checklist coverage and the tested executable/environment were not specified.
+Full checklist acceptance and clean-machine compatibility remain unrecorded.
 
 ## Launch
 
@@ -49,6 +51,11 @@ node. Split/move the widget, Save, relaunch/Open and confirm its placement retur
 Run again for fresh timings. See [timing semantics](GANTT_ANALYSIS.md).
 
 ## Record results
+
+On 2026-10-03 the user reported: "already manually tested, it's ok so far".
+No issues were reported. The rows below retain their original pending status
+because results were not supplied individually; they do not mean no testing took
+place. See the [feedback checkpoint](agents/handoffs/2026-10-03-manual-test-feedback.md).
 
 Also test the region selectors, H/V split, X close and divider resizing. Confirm
 the saved arrangement returns after relaunch/Open; use **Layout > Reset widget

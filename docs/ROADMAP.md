@@ -1,6 +1,6 @@
 # Roadmap and current state
 
-Updated: 2026-10-02. Native C++17/Qt6 on Windows is the primary implementation.
+Updated: 2026-10-03. Native C++17/Qt6 on Windows is the primary implementation.
 The application domain and audience remain open; included 3D support is required.
 
 ## Available now
@@ -39,11 +39,14 @@ The latest implementation/configuration checks passed: native Release build,
 24 CTest entries, Windows startup smoke checks and `npm.cmd run check` (formatting,
 TypeScript, 43 core tests, four SDK tests, six web adapter tests and three Chromium interaction tests and web production build).
 
-**Full N5 desktop interaction acceptance remains pending.** Automated native
-computer-use reported an unavailable pipe. The user has deferred that automation
-and will test manually. No manual results have been reported yet. Build-tree
-launch, offscreen tests and packaged startup do not establish packaged
-edit/undo/save/relaunch/Open acceptance or clean-machine compatibility.
+**Manual testing reported positive so far.** On 2026-10-03 the user confirmed:
+"already manually tested, it's ok so far". No issues were reported. This feedback
+supports moving on to the next product experiment; repeating initial manual
+testing is not the immediate priority. Individual checklist coverage, executable
+version and test environment were not specified, so full N5 checklist acceptance
+and clean-machine compatibility are not established by this summary. See the
+[feedback checkpoint](agents/handoffs/2026-10-03-manual-test-feedback.md).
+Automated native computer-use remains deferred after an unavailable pipe.
 
 Use [desktop testing](DESKTOP_TESTING.md) to record those results and
 [VS Code setup](NATIVE_DEVELOPMENT.md#run-from-vs-code-with-cmake-tools) to run the
@@ -92,7 +95,8 @@ following read-only review of the legacy Gantt display. Queue/invocation timings
 remain transient and domain-independent; see [analysis](GANTT_ANALYSIS.md) and
 [checkpoint](agents/handoffs/2026-10-02-process-gantt.md). Per-node timing labels and a native results duration column are included; see
 [follow-up checkpoint](agents/handoffs/2026-10-02-node-execution-times.md).
-Native manual packaged interaction acceptance remains pending.
+The user's manual testing feedback is positive so far; specific Process Gantt
+checklist coverage was not reported.
 
 ## Next work
 
@@ -108,14 +112,15 @@ E4 managed internal work sharing the run budget. See [execution](EXECUTION.md),
 [E1](agents/handoffs/2026-10-02-execution-e1.md) and
 [decision 0017](architecture/decisions/0017-native-execution-concurrency.md).
 
-1. Collect manual packaged scene/data/component interaction and file round-trip
-   results before marking full N5 accepted.
-2. Address demonstrated usability or correctness issues from manual testing in
-   separate verified checkpoints.
-3. Validate packaged sequential/parallel controls and progress during manual
-   testing. Bounded graph and managed internal parallel work are implemented.
-   See [execution](EXECUTION.md) and the
-   [original review](architecture/execution-review-2026-10-02.md).
+1. Choose the next bounded product experiment while keeping the audience and
+   domain open. Real data input/output and simplified exposed-control interfaces
+   are brainstorming candidates, not approved implementation scope.
+2. Address any demonstrated usability or correctness issues in separate verified
+   checkpoints. The user's initial manual feedback is positive so far.
+3. Record specific desktop checklist coverage when available before marking full
+   N5 accepted; this does not block independent product exploration. Bounded graph
+   and managed internal parallel work are implemented. See [execution](EXECUTION.md)
+   and the [original review](architecture/execution-review-2026-10-02.md).
 
 Nested components, input fan-out interfaces, asset import/bundling/relocation,
 production 3D rendering, broader scene hierarchies, richer table schemas and
@@ -139,7 +144,8 @@ survive that exchange. Browser numeric transport restrictions remain explicit un
 [decision 0019](architecture/decisions/0019-browser-json-transport.md).
 See [delivery and supported-browser evidence](WEB_DELIVERY.md) and
 [W6 handoff](agents/handoffs/2026-10-02-web-w6-delivery.md).
-Native packaged manual acceptance continues independently and remains pending.
+Native manual testing has positive user feedback; full checklist acceptance
+remains unrecorded independently of browser acceptance.
 
 ## Open decisions
 
