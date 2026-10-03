@@ -1,4 +1,5 @@
 #include "UseWorkspace.h"
+#include "ViewerCommandAdapter.h"
 #include <tp_qt_pipeline_widgets/parameter_editors/DoubleParameterEditor.h>
 #include <QComboBox>
 #include <QDoubleSpinBox>
@@ -43,6 +44,7 @@ UseWorkspace::UseWorkspace(GraphProject& project, ExecutionController& execution
     resultLayout->addWidget(outputs);
     if(createViewer) {
         viewer = createViewer();
+        attachViewerCommands(*viewer,document,[this] { return componentId; });
         viewer->setObjectName("useResultViewer");
         resultLayout->addWidget(viewer, 1);
         viewer->workspaceStateChanged = [this] { if(changed) changed(); };
@@ -83,7 +85,7 @@ UseWorkspace::UseWorkspace(GraphProject& project, ExecutionController& execution
 
 UseWorkspace::~UseWorkspace()
 {
-    if(viewer) viewer->workspaceStateChanged = {};
+    if(viewer) { viewer->workspaceStateChanged = {}; viewer->commands = {}; }
 }
 
 void UseWorkspace::refreshControls()

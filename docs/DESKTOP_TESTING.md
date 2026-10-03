@@ -6,9 +6,9 @@ public installer or a completed N5 release. Implementation is complete through
 N7, E1-E4 execution and VS Code setup; full N5 packaged interaction acceptance is pending the
 user's manual test results. Automated native computer-use is deferred for now.
 
-**Ready for first manual testing, 2026-10-02:** the installed folder at
-`build/desktop-test` contains the updated execution app, examples, runtime dependencies,
-README and testing guides. Ten Windows startup/render checks passed with
+**Updated for scene interaction, 2026-10-03:** the installed folder at
+`build/desktop-test` contains the updated scene/controller app, examples, runtime dependencies,
+README and testing guides. Thirteen Windows startup/render checks passed with
 developer Qt paths removed. Start `bin/smartflow.exe` or `bin/smartflow-data.exe`.
 Use [the test-result sheet](TEST_VERSION.md) to record your interaction results.
 
@@ -63,8 +63,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Test-DesktopPackage.
 ```
 
 The script checks installed/build executable SHA256 equality, required runtime
-files and ten Windows native startup configurations, including parallel scene,
-data and components. It clears developer Qt
+files and thirteen Windows native startup configurations, including scene/data
+Use tools, scene interaction and parallel scene/data/components. It clears developer Qt
 variables, reduces PATH to Windows system folders, launches each test process
 hidden and records rendering screenshots plus `verification/startup-results.json`
 inside the test folder. The environment changes apply only to that script process.
@@ -137,6 +137,14 @@ with an explanatory error. Save/relaunch/Open must retain the chosen snapshot.
 
 ## Current limitations
 
+For the new scene interaction checkpoint, open
+`examples/scene-interaction-tool.smartflow` in the scene app. Select the cube;
+try Move on each axis, Rotate Y and Scale. Drag previews; release commits one
+undoable edit. Escape cancels and Ctrl snaps. Undo/Redo and save/relaunch/Open
+should reproduce the transform. Try pan, zoom at the cursor and Front/Right/Top
+views. The older scene-tool exposes X/rotation only and explains unexposed edits.
+See [scene controls](SCENE_INTERACTION.md) for scope and shortcuts.
+
 - Canvas positions/navigation, selection and viewer camera/pinning are saved.
   Selectable widget regions and divider sizes are saved; outer window geometry is not.
   Files without saved workspace state use a fitted canvas and terminal output by default.
@@ -156,6 +164,8 @@ with an explanatory error. Save/relaunch/Open must retain the chosen snapshot.
 Report the tested executable/configuration and whether scene, data, component,
 import/export/removal, Undo/Redo and save/relaunch/Open checks passed. Include
 reproduction steps and expected/actual behavior for failures. Use a separate saved
-file to preserve shipped fixtures. Manual results have not yet been reported; the
-current automated baseline is a Release build, 24 CTest entries and successful
-Windows startup smoke checks. A clean-machine/public-install test remains separate.
+file to preserve shipped fixtures. The user reported that the preceding desktop
+version passed their manual testing so far; detailed checklist coverage and the
+new scene gestures remain unreported. The current automated baseline is a Release
+build, 31 CTest entries and 13 installed Windows startup/render checks. A
+clean-machine/public-install test remains separate.

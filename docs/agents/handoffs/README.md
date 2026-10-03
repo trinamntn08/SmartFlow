@@ -70,3 +70,5 @@ results; automated native computer-use is deferred by the user.
 - [W1b: strict browser project transport](2026-10-02-web-w1b-transport.md)
 - [W2a: retained commands and extension lookup](2026-10-02-web-w2a-history.md)
 - [W2b: browser editor and file actions](2026-10-02-web-w2b-editor.md)
+- [S1: modular scene snapshots and camera controllers](2026-10-03-scene-s1.md)
+- [S2: object interaction and generic viewer commands](2026-10-03-scene-s2.md)

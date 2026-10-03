@@ -9,6 +9,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <optional>
 
 namespace smartflow {
 // Initial native contribution contracts for statically bundled extensions.
@@ -22,6 +23,26 @@ struct NodePresentation {
     int contractVersion = 0;
 };
 
+struct ViewerParameter {
+    double value, minimum, maximum;
+};
+struct ViewerParameterEdit {
+    QString executionNode, parameter;
+    double value;
+};
+struct ViewerEditRequest {
+    quint64 revision;
+    QString label;
+    std::vector<ViewerParameterEdit> parameters;
+};
+// Source-level optional command capability. Targets are execution identities;
+// the application resolves ordinary nodes or exposed component controls.
+struct ViewerCommands {
+    std::function<quint64()> revision;
+    std::function<std::optional<ViewerParameter>(const QString&,const QString&)> parameter;
+    // Empty string on success; otherwise leave the project unchanged.
+    std::function<QString(const ViewerEditRequest&)> apply;
+};
 class OutputViewer : public QWidget {
 public:
     using QWidget::QWidget;
@@ -31,6 +52,8 @@ public:
     virtual QJsonObject workspaceState() const { return {}; }
     virtual void restoreWorkspaceState(const QJsonObject&) {}
     std::function<void()> workspaceStateChanged;
+    ViewerCommands commands;
+    virtual void projectChanged() {}
     virtual QString describe(const tp_data::Collection&) const { return {}; }
 };
 

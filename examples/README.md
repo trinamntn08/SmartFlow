@@ -11,6 +11,7 @@ build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples
 build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/data.smartflow"
 build/desktop-test/bin/smartflow-data.exe --project "$PWD/build/desktop-test/examples/components.smartflow"
 build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples/scene-tool.smartflow"
+build/desktop-test/bin/smartflow.exe --project "$PWD/build/desktop-test/examples/scene-interaction-tool.smartflow"
 build/desktop-test/bin/smartflow-data.exe --use --project "$PWD/build/desktop-test/examples/components.smartflow"
 ```
 
@@ -28,6 +29,11 @@ insert additional instances without changing the original definition.
 mode with exposed size, position, rotation and material controls. The data
 component example also supports Use mode with `--use`. Choose Build in the
 toolbar to inspect the underlying graph. See [Use mode](../docs/USE_MODE.md).
+
+`scene-interaction-tool.smartflow` uses a separate component identity exposing
+position X/Y/Z, rotation Y, scale X/Y/Z, size and material. Select the mesh, choose
+Move/Rotate Y/Scale and drag it; release commits one undoable instance edit.
+Escape cancels the preview. See [scene controls](../docs/SCENE_INTERACTION.md).
 
 The primary executable can also use `--data --project <data-file>`. Select the
 matching application configuration; the current preview does not infer or load

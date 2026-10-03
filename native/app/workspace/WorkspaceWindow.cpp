@@ -1,5 +1,6 @@
 #include "GanttWidget.h"
 #include "WorkspaceWindow.h"
+#include "ViewerCommandAdapter.h"
 #include "ComponentDialogs.h"
 #include "PanelWorkspace.h"
 #include "UseWorkspace.h"
@@ -238,6 +239,7 @@ WorkspaceWindow::WorkspaceWindow(WorkspaceConfiguration configuration)
     panels->addPanel("library","Node library",nodeLibrary);
     if(configuration.createViewer) {
         viewer = configuration.createViewer();
+        attachViewerCommands(*viewer,document);
         panels->addPanel("viewer","Result viewer",viewer);
         buildOutputs=addToolBar("Build output");
         buildOutputs->setMovable(false);
@@ -639,7 +641,7 @@ WorkspaceWindow::~WorkspaceWindow()
     // Scene teardown emits selection changes after later members (including
     // the runner and selected ID) have been destroyed. Disconnect while all
     // members still exist, before QObject's automatic disconnection occurs.
-    if(viewer) viewer->workspaceStateChanged = {};
+    if(viewer) { viewer->workspaceStateChanged = {}; viewer->commands = {}; }
     disconnect(&canvasScene, nullptr, this, nullptr);
     disconnect(&document, nullptr, this, nullptr);
     disconnect(&runner, nullptr, this, nullptr);

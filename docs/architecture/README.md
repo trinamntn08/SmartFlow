@@ -125,7 +125,13 @@ production/file exchange acceptance are complete. See [the web guide](../WEB_DEV
 
 ## Verification and open work
 
-Current Release builds, 28 CTest entries and packaged startup checks passed. Full
+[Decision 0024](decisions/0024-native-viewer-commands.md) adds a domain-independent
+viewer command capability. The bundled scene extension composes scene snapshots,
+camera, renderer/picker and object gestures; application adapters resolve edits
+to ordinary parameters or exposed component controls. Independent data command
+tests link no scene libraries. See [native scene interaction](../SCENE_INTERACTION.md).
+
+Current Release builds, 31 CTest entries and packaged startup checks passed. Full
 Windows desktop interaction acceptance is pending manual testing, as recorded in
 [the roadmap](../ROADMAP.md). Automated native computer-use is deferred by the user.
 The primitive viewer is not production GPU rendering; importer/asset handling,

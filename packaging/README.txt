@@ -15,6 +15,14 @@ Open the matching examples with File > Open:
   examples/scene.smartflow       - use smartflow.exe
   examples/data.smartflow        - use smartflow-data.exe
   examples/components.smartflow  - use smartflow-data.exe
+  examples/scene-interaction-tool.smartflow - use smartflow.exe (Use mode)
+
+In the scene viewer choose Orbit/Front/Right/Top. Middle or Shift-drag pans;
+wheel zooms at the cursor. Select an object, choose Move/Rotate Y/Scale and drag.
+Move has X/Y/Z controls and colored axis handles. Ctrl snaps; Escape cancels.
+Release commits one undoable graph edit. A shared Transform edits all meshes
+it drives. Use-mode edits require exposed component controls.
+See docs/SCENE_INTERACTION.md for supported behavior and module boundaries.
 
 Try selecting a node, editing its inspector value and applying it. Run, Undo
 and Redo should update the results. Save As to a separate file, close the app,

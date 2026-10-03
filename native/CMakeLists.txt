@@ -37,6 +37,7 @@ add_library(smartflow_pipeline_widgets STATIC
 target_include_directories(smartflow_pipeline_widgets PUBLIC vendor/pipeline-widgets/inc)
 target_link_libraries(smartflow_pipeline_widgets PUBLIC smartflow_legacy smartflow_qtnodes)
 add_library(smartflow_workspace STATIC
+  app/workspace/ViewerCommandAdapter.cpp
   app/workspace/UseWorkspace.cpp app/workspace/UseWorkspace.h
   app/workspace/GanttWidget.cpp app/workspace/GanttWidget.h
   app/workspace/PanelWorkspace.cpp app/workspace/PanelWorkspace.h
@@ -60,6 +61,8 @@ if(WIN32)
   install(TARGETS smartflow smartflow-data RUNTIME DESTINATION bin)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION examples)
   install(FILES ${CMAKE_SOURCE_DIR}/packaging/README.txt DESTINATION .)
+  install(FILES vendor/scene-controls/tp_math_utils/LICENSE DESTINATION licenses/scene-controls RENAME tp_math_utils-LICENSE)
+  install(FILES vendor/scene-controls/tp_maps/LICENSE DESTINATION licenses/scene-controls RENAME tp_maps-LICENSE)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/ DESTINATION docs)
   qt_generate_deploy_app_script(TARGET smartflow OUTPUT_SCRIPT smartflow_deploy_script
     NO_COMPILER_RUNTIME NO_TRANSLATIONS)
@@ -69,6 +72,20 @@ if(WIN32)
   install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
 endif()
 if(BUILD_TESTING)
+  add_executable(viewer_command_tests tests/ViewerCommandTests.cpp)
+  target_link_libraries(viewer_command_tests PRIVATE smartflow_workspace smartflow_data Qt6::Test)
+  target_compile_definitions(viewer_command_tests PRIVATE SMARTFLOW_COMPONENT_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/components.smartflow")
+  add_test(NAME native_viewer_commands COMMAND viewer_command_tests -platform offscreen -o -,txt -o viewer-command-results.xml,junitxml)
+  set_tests_properties(native_viewer_commands PROPERTIES TIMEOUT 60)
+  add_executable(scene_interaction_tests tests/SceneInteractionTests.cpp)
+  target_link_libraries(scene_interaction_tests PRIVATE smartflow_workspace smartflow_scene_3d Qt6::Test)
+  target_compile_definitions(scene_interaction_tests PRIVATE
+    SMARTFLOW_SCENE_INTERACTION_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/scene-interaction-tool.smartflow"
+    SMARTFLOW_SCENE_TOOL_EXAMPLE="${CMAKE_SOURCE_DIR}/examples/scene-tool.smartflow")
+  add_test(NAME native_scene_interaction COMMAND scene_interaction_tests -platform offscreen -o -,txt -o scene-interaction-results.xml,junitxml)
+  add_test(NAME native_scene_interaction_startup COMMAND smartflow --project ${CMAKE_SOURCE_DIR}/examples/scene-interaction-tool.smartflow --smoke-test -platform offscreen)
+  set_tests_properties(native_scene_interaction PROPERTIES TIMEOUT 60)
+  set_tests_properties(native_scene_interaction_startup PROPERTIES TIMEOUT 15)
   add_executable(scene_controller_tests tests/SceneControllerTests.cpp)
   target_link_libraries(scene_controller_tests PRIVATE smartflow_workspace smartflow_scene_3d Qt6::Test)
   add_test(NAME native_scene_controllers COMMAND scene_controller_tests -platform offscreen -o -,txt -o scene-controller-results.xml,junitxml)

@@ -36,7 +36,10 @@ creation, deletion, connections, and movement. Live updates recompute after edit
 disable them to use Run explicitly. Cancel discards the active result. Select
 nodes or result rows to inspect outputs. Pin output keeps one result in the viewer
 while inspecting another node. Drag the 3D preview to orbit, wheel to zoom,
-double-click to frame and click to select an object. Use File > Open, Save or
+double-click to frame and click to select an object. The modular scene viewer
+also supports pan, orthographic views and undoable Move/Rotate Y/Scale gestures.
+See [scene interaction](SCENE_INTERACTION.md) and the included
+`scene-interaction-tool.smartflow`. Use File > Open, Save or
 Save As for project files. Canvas layout/navigation, selection, pinned output and viewer settings are saved;
 clipboard import/duplication is disabled.
 
@@ -97,7 +100,7 @@ that acceptance is pending until results are reported.
 
 The sections below organize current code/tests by their originating checkpoint.
 Dated handoffs describe the state at that date; later steps supersede earlier
-limitations. The current suite has 28 CTest entries. Release presets/builds are
+limitations. The current suite has 31 CTest entries. Release presets/builds are
 verified; the separate Debug configuration has not been built in this session.
 
 ## N2 pipeline foundation

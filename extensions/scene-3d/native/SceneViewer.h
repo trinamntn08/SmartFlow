@@ -3,7 +3,9 @@
 #include "model/SceneSnapshot.h"
 #include "controllers/CameraController.h"
 #include "rendering/SceneRenderer.h"
+#include "interaction/ObjectInteractionController.h"
 class QComboBox;
+class QLabel;
 
 namespace smartflow::scene3d {
 // Composition only: immutable scene, camera controller and renderer are independent modules.
@@ -16,6 +18,7 @@ public:
     QJsonObject workspaceState() const override;
     void restoreWorkspaceState(const QJsonObject& state) override;
     void frameScene();
+    void projectChanged() override;
     size_t objectCount() const { return snapshot.scene() ? snapshot.scene()->objects.size() : 0; }
     QPointF cameraAngles() const { return {camera.yaw,camera.pitch}; }
     int selectedObject() const { return snapshot.selectedIndex(); }
@@ -28,14 +31,25 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void keyPressEvent(QKeyEvent*) override;
     void resizeEvent(QResizeEvent*) override;
+    void hideEvent(QHideEvent*) override;
 private:
     QRectF viewport() const;
     void workspaceChanged();
+    void refreshObjects();
+    void selectObject(int index);
+    void cancelGesture();
+    const SceneMember* displayedScene() const;
+    int pickedAxis(QPointF point) const;
     SceneSnapshot snapshot;
     CameraController camera;
     SceneRenderer renderer;
+    ObjectInteractionController interaction;
     QWidget* tools;
     QComboBox* viewChoice;
+    QComboBox* modeChoice;
+    QComboBox* axisChoice;
+    QComboBox* objectChoice;
+    QLabel* status;
     QPointF lastPosition, pressPosition;
     bool dragged=false;
 };

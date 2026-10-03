@@ -1,4 +1,5 @@
 add_library(smartflow_scene_3d STATIC SceneExtension.cpp SceneViewer.cpp
-  model/SceneSnapshot.cpp controllers/CameraController.cpp rendering/SceneRenderer.cpp)
+  model/SceneSnapshot.cpp controllers/CameraController.cpp rendering/SceneRenderer.cpp
+  interaction/ObjectInteractionController.cpp)
 target_include_directories(smartflow_scene_3d PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(smartflow_scene_3d PUBLIC smartflow_scene_controls smartflow_extension_sdk)
