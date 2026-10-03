@@ -74,3 +74,4 @@ results; automated native computer-use is deferred by the user.
 - [S2: object interaction and generic viewer commands](2026-10-03-scene-s2.md)
 - [Native inline node controls](2026-10-03-inline-node-controls.md)
 - [Simpler aligned inline node fields](2026-10-03-inline-node-layout.md)
+- [Inline numeric parameter sliders](2026-10-03-inline-node-sliders.md)

@@ -5,6 +5,7 @@
 #include <vector>
 
 class QDoubleSpinBox;
+class QSlider;
 class QLabel;
 class QVBoxLayout;
 namespace smartflow {
@@ -16,7 +17,7 @@ public:
     void setTiming(const QString& text);
 private:
     void commit(const tp_utils::StringID& name,double value);
-    struct Field { tp_utils::StringID name; QPointer<QDoubleSpinBox> editor; };
+    struct Field { tp_utils::StringID name; QPointer<QDoubleSpinBox> editor; QPointer<QSlider> slider; };
     QPointer<GraphProject> project;
     tp_utils::StringID node;
     QWidget* controls=nullptr;

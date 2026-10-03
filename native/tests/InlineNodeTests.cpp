@@ -11,6 +11,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QLayout>
+#include <QSlider>
+#include <QStyleOptionSlider>
 #include <QTemporaryDir>
 #include <QFontDatabase>
 #include <tp_data/members/NumberMember.h>
@@ -117,6 +119,55 @@ private Q_SLOTS:
         QTRY_VERIFY(window.execution().result());
         QCoreApplication::sendPostedEvents(nullptr,QEvent::DeferredDelete);
         QVERIFY(window.grab().save("inline-scene-smoke.png"));
+    }
+    void sliderDragCommitCancelAndExternalUpdate()
+    {
+        WorkspaceWindow window(scene3d::sceneConfiguration()); window.show(); QTRY_VERIFY(window.execution().result());
+        const auto cube=findNode(window,"smartflow.scene-3d.cube@1"); const auto id=window.canvas().projectId(cube);
+        auto* slider=body(window,cube)->findChild<QSlider*>("nodeSlider_size"); QVERIFY(slider);
+        auto* editor=field(window,cube,"size");
+        auto handle=[&] {
+            QStyleOptionSlider option; option.initFrom(slider); option.orientation=Qt::Horizontal;
+            option.minimum=slider->minimum(); option.maximum=slider->maximum(); option.sliderPosition=slider->value();
+            option.sliderValue=slider->value(); option.upsideDown=false;
+            return slider->style()->subControlRect(QStyle::CC_Slider,&option,QStyle::SC_SliderHandle,slider).center();
+        };
+        const auto revision=window.project().revision(); const auto before=editor->value();
+        const auto position=window.canvas().nodeData(cube,QtNodes::NodeRole::Position).value<QPointF>();
+        QTest::mousePress(slider,Qt::LeftButton,Qt::NoModifier,handle());
+        QVERIFY(slider->isSliderDown());
+        const auto destination=QPoint(slider->width()-15,slider->height()/2);
+        QTest::mouseMove(slider,destination);
+        QVERIFY(editor->value()>before); QCOMPARE(window.project().revision(),revision);
+        QTest::mouseRelease(slider,Qt::LeftButton,Qt::NoModifier,destination);
+        QCOMPARE(window.project().revision(),revision+1); QCOMPARE(window.scene().undoStack().count(),1);
+        QCOMPARE(window.project().step(id)->parameterValue<double>("size"),editor->value());
+        QCOMPARE(window.canvas().nodeData(cube,QtNodes::NodeRole::Position).value<QPointF>(),position);
+        window.scene().undoStack().undo(); QCOMPARE(editor->value(),before);
+        QTest::mousePress(slider,Qt::LeftButton,Qt::NoModifier,handle()); QTest::mouseMove(slider,destination);
+        QTest::keyClick(slider,Qt::Key_Escape); QCOMPARE(editor->value(),before);
+        QTest::mouseRelease(slider,Qt::LeftButton,Qt::NoModifier,destination); QCOMPARE(window.project().revision(),revision+2);
+        QTest::mousePress(slider,Qt::LeftButton,Qt::NoModifier,handle()); QTest::mouseMove(slider,destination);
+        window.project().commands().setParameter(id.toString(),"size",3);
+        QTest::mouseMove(slider,QPoint(slider->width()/2,slider->height()/2));
+        QTest::mouseRelease(slider,Qt::LeftButton,Qt::NoModifier,destination);
+        QCOMPARE(editor->value(),3.0); QCOMPARE(window.project().step(id)->parameterValue<double>("size"),3.0);
+        QTest::keyClick(slider,Qt::Key_Right); QVERIFY(editor->value()>3.0);
+        QTRY_VERIFY(window.execution().result());
+    }
+    void sliderWindowKeepsLargeTypedValuesPrecise()
+    {
+        WorkspaceWindow window; window.show(); window.execution().setLive(false);
+        const auto number=findNode(window,"smartflow.numeric.number@1"); const auto id=window.canvas().projectId(number);
+        auto* editor=field(window,number,"value");
+        auto* slider=body(window,number)->findChild<QSlider*>("nodeSlider_value"); QVERIFY(slider);
+        editor->setValue(500000); QCOMPARE(slider->value(),5000);
+        QCOMPARE(window.project().step(id)->parameterValue<double>("value"),500000.0);
+        QTest::keyClick(slider,Qt::Key_Right);
+        QCOMPARE(editor->value(),500001.0);
+        window.scene().undoStack().undo(); QCOMPARE(editor->value(),500000.0);
+        editor->setValue(-1000000); QCOMPARE(slider->value(),0);
+        QTest::keyClick(slider,Qt::Key_Left); QCOMPARE(editor->value(),-1000000.0);
     }
     void dataComponentControlsAndOpaqueRoundTrip()
     {

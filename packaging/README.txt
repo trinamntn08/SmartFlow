@@ -28,6 +28,8 @@ You can also edit numeric fields directly inside graph nodes: type and Enter
 or leave the field; Up/Down steps apply immediately. Escape cancels unfinished
 typing. Inline edits share Undo/Redo and execution with the inspector and viewers.
 See docs/INLINE_NODE_CONTROLS.md.
+Each numeric row has a slider: drag to preview the value and release to apply
+one undoable edit. Escape cancels. You can still type precise values.
 Selecting a node also provides its inspector with an Apply button.
 Run, Undo and Redo should update the results. Save As to a separate file, close the app,
 relaunch and Open it to check restoration of the graph, layout and pinned viewer.
